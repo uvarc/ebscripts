@@ -1,0 +1,60 @@
+# from EB repo
+# modified Ruoshi Sun
+# 2023-03-27
+# 2020-04-03
+
+easyblock = 'MakeCp'
+
+name = 'angsd'
+version = '0.940'
+
+homepage = 'http://www.popgen.dk/angsd'
+description = """Program for analysing NGS data."""
+
+toolchain = SYSTEM
+toolchainopts = {'pic': True}
+
+source_urls = ['https://github.com/ANGSD/angsd/releases/download/%(version)s/']
+sources = [{
+    'extract_cmd': 'tar xf %s -C %(builddir)s',
+    'filename': '%(name)s%(version)s.tar.gz'
+}]
+
+dependencies = [
+    ('htslib', '1.17'),
+    ('curl', '8.4.0'),
+]
+
+prebuildopts = 'cd %(name)s && '
+buildopts = 'HTSSRC=$EBROOTHTSLIB/lib'
+
+files_to_copy = [
+    (['angsd/angsd',
+      'angsd/misc/realSFS', 
+      'angsd/misc/NGSadmix', 
+      'angsd/misc/ngsPSMC', 
+      'angsd/misc/contamination', 
+      'angsd/misc/contamination2', 
+      'angsd/misc/scounts', 
+      'angsd/misc/thetaStat', 
+      'angsd/misc/msToGlf', 
+      'angsd/misc/ibs', 
+      'angsd/misc/supersim', 
+      'angsd/misc/smartCount', 
+      'angsd/misc/msHOT2glf', 
+      'angsd/misc/haploToPlink', 
+      'angsd/misc/splitgl', 
+      'angsd/misc/printIcounts', 
+      'angsd/misc/plot_psmc.py',
+     ], 'bin'),
+     'angsd/doc',
+     'angsd/R',
+     'angsd/scripts',
+]
+
+sanity_check_paths = {
+    'files': ['bin/angsd'],
+    'dirs': ['doc'],
+}
+
+moduleclass = 'bio'

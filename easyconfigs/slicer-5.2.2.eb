@@ -1,0 +1,22 @@
+# 2023-03-15
+easyblock = 'Tarball'
+
+name = 'slicer'
+version = '5.2.2'
+
+homepage = 'https://www.slicer.org'
+description = "3D Slicer is an open source software platform for medical image informatics, image processing, and three-dimensional visualization."
+
+toolchain = SYSTEM
+
+source_urls = ['https://download.slicer.org/bitstream/63f5bee68939577d9867b4c7']
+sources = ['Slicer-%(version)s-linux-amd64.tar.gz']
+
+modextrapaths = {'PATH': ['']}
+
+sanity_check_paths = {
+    'files': ['Slicer'],
+    'dirs': [],
+}
+
+moduleclass = 'tools'

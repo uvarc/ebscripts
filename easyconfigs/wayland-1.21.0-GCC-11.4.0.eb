@@ -1,0 +1,148 @@
+# Built with EasyBuild version 4.7.1 on 2023-08-09_11-03-18
+# Built with EasyBuild version 4.7.1 on 2023-08-07_14-22-34
+# Author: Jasper Grimm (UoY)
+# URL of Wayland download changed to GitLab due to changes upstream
+# Author: J. Sassmannshausen (Imperial College London/UK)
+easyblock = 'Bundle'
+
+name = 'wayland'
+version = '1.21.0'
+
+homepage = 'https://wayland.freedesktop.org/'
+description = """
+Wayland is a project to define a protocol for a compositor to talk to
+ its clients as well as a library implementation of the protocol.  The
+ compositor can be a standalone display server running on Linux kernel
+ modesetting and evdev input devices, an X application, or a wayland
+ client itself.  The clients can be traditional applications, X servers
+ (rootless or fullscreen) or other display servers.
+"""
+
+toolchain = {'name': 'GCC', 'version': '11.4.0'}
+
+builddependencies = [
+    ('cmake', '3.24.3'),
+    ('Meson', '1.0.1', '-py3.11'),
+    ('Ninja', '1.11.1', '-py3.11'),
+    ('pkgconf', '1.9.5'),
+    #('binutils', '2.38'),
+]
+
+dependencies = [
+    ('libffi', '3.4.4'),
+    ('expat', '2.5.0'),
+    ('libxml2', '2.10.3'),
+]
+
+default_easyblock = 'MesonNinja'
+default_component_specs = {
+    'source_urls': ['https://wayland.freedesktop.org/releases'],
+    'sources': [SOURCE_TAR_XZ],
+    'start_dir': '%(namelower)s-%(version)s',
+}
+
+components = [
+    ('wayland', version, {
+        'source_urls': ['https://gitlab.freedesktop.org/wayland/wayland/-/releases/%(version)s/downloads'],
+        'checksums': ['6dc64d7fc16837a693a51cfdb2e568db538bfdc9f457d4656285bb9594ef11ac'],
+        'configopts': "-Ddocumentation=false",
+    }),
+    ('wayland-protocols', '1.25', {
+        'checksums': ['f1ff0f7199d0a0da337217dd8c99979967808dc37731a1e759e822b75b571460'],
+        'preconfigopts': "PKG_CONFIG_PATH=%(installdir)s/lib/pkgconfig:$PKG_CONFIG_PATH "
+    }),
+]
+
+_libs = ['lib/libwayland-%s.%s' % (x, SHLIB_EXT) for x in ['client', 'cursor', 'egl', 'server']]
+sanity_check_paths = {
+    'files': ['bin/wayland-scanner'] + _libs,
+    'dirs': ['lib'],
+}
+
+sanity_check_commands = ["wayland-scanner --help", "wayland-scanner --version"]
+
+moduleclass = 'vis'
+
+# Build statistics
+buildstats = [{
+    "build_time": 21.83,
+    "command_line": ["--buildpath='/tmp/uvacse'", "--default-opt-level='opt'", '--disable-fixed-installdir-naming-scheme', "--hide-deps='automake,autoconf,binutils,bison,cairo-core,clibs,expat,flex,freetype-core,gcccore,glib,help2man,icc,ifort,iccifort,imkl,iompi,libassuan,libgcrypt,ibffi,libgtextutils,libiconv,libjpeg-turbo,libksba,libgpg-error,libpng,libreadline,libtiff,libtool,libxc,libxml2,m4,ncurses,netcdf-c,netcdf-cxx,netcdf-fortran,npth,pixman,pcre,protobuf,protobuf-python3,szip,tensorflowpkg3,x264,xz,zlib,X11'", "--hide-toolchains='gcccore,iompi'", "--hooks='/home/uvacse/ebhook/rivanna_hook.py'", "--installpath='/apps'", "--module-naming-scheme='RivannaHMNS'", "--moduleclasses='base,ai,astro,bio,cae,chem,compiler,data,debugger,devel,geo,ide,lang,lib,math,mpi,numlib,perf,quantum,phys,system,toolchain,tools,vis,licensed,singularity,containersystem'", "--optarch='{\\'Intel\\': \\'xavx -axCORE-AVX2,CORE-AVX512\\', \\'GCC\\': \\'march=sandybridge\\'}'", "--repositorypath='/apps/ebscripts/easybuild/easyconfigs'", "--robot-paths='/apps/ebscripts/easybuild/easyconfigs'", "--sourcepath='/share/resources/apps/source'", "--subdir-modules='modulefiles/standard'", "--subdir-software='software/standard'", "--suffix-modules-path=''", 'wayland-1.21.0-GCC-11.4.0.eb'],
+    "core_count": 20,
+    "cpu_arch": "x86_64",
+    "cpu_arch_name": "UNKNOWN",
+    "cpu_model": "Intel(R) Xeon(R) CPU E5-2670 v2 @ 2.50GHz",
+    "cpu_speed": 2501.0,
+    "cpu_vendor": "Intel",
+    "easybuild-easyblocks_version": "4.7.1",
+    "easybuild-framework_version": "4.7.1",
+    "gcc_version": "Using built-in specs.; COLLECT_GCC=gcc; COLLECT_LTO_WRAPPER=/apps/software/standard/core/gcc/11.4.0/libexec/gcc/x86_64-pc-linux-gnu/11.4.0/lto-wrapper; Target: x86_64-pc-linux-gnu; Configured with: ../configure --enable-languages=c,c++,fortran --enable-lto --enable-checking=release --disable-multilib --enable-shared=yes --enable-static=yes --enable-threads=posix --enable-plugins --enable-gold --enable-ld=default --prefix=/apps/software/standard/core/gcc/11.4.0 --with-local-prefix=/apps/software/standard/core/gcc/11.4.0 --enable-bootstrap --with-isl=/tmp/uvacse/GCC/11.4.0/system-system/gcc-11.4.0/stage2_stuff --build=x86_64-pc-linux-gnu --host=x86_64-pc-linux-gnu; Thread model: posix; Supported LTO compression algorithms: zlib zstd; gcc version 11.4.0 (GCC) ; ",
+    "glibc_version": "2.28",
+    "hostname": "udc-ba38-31c9",
+    "install_size": 2941769,
+    "modules_tool": ('Lmod', '/usr/share/lmod/lmod/libexec/lmod', '8.7.19'),
+    "os_name": "Rocky Linux",
+    "os_type": "Linux",
+    "os_version": "8.7",
+    "platform_name": "x86_64-unknown-linux",
+    "python_version": "3.6.8 (default, Nov  8 2022, 11:32:15) ; [GCC 8.5.0 20210514 (Red Hat 8.5.0-15)]",
+    "system_gcc_path": "/apps/software/standard/core/gcc/11.4.0/bin/gcc",
+    "system_python_path": "/apps/software/standard/compiler/gcc/11.4.0/python/3.11.4/bin/python",
+    "timestamp": 1691432554,
+    "total_memory": 128798,
+}]
+
+# Build statistics
+buildstats = [
+{
+    "build_time": 21.83,
+    "command_line": ["--buildpath='/tmp/uvacse'", "--default-opt-level='opt'", '--disable-fixed-installdir-naming-scheme', "--hide-deps='automake,autoconf,binutils,bison,cairo-core,clibs,expat,flex,freetype-core,gcccore,glib,help2man,icc,ifort,iccifort,imkl,iompi,libassuan,libgcrypt,ibffi,libgtextutils,libiconv,libjpeg-turbo,libksba,libgpg-error,libpng,libreadline,libtiff,libtool,libxc,libxml2,m4,ncurses,netcdf-c,netcdf-cxx,netcdf-fortran,npth,pixman,pcre,protobuf,protobuf-python3,szip,tensorflowpkg3,x264,xz,zlib,X11'", "--hide-toolchains='gcccore,iompi'", "--hooks='/home/uvacse/ebhook/rivanna_hook.py'", "--installpath='/apps'", "--module-naming-scheme='RivannaHMNS'", "--moduleclasses='base,ai,astro,bio,cae,chem,compiler,data,debugger,devel,geo,ide,lang,lib,math,mpi,numlib,perf,quantum,phys,system,toolchain,tools,vis,licensed,singularity,containersystem'", "--optarch='{\\'Intel\\': \\'xavx -axCORE-AVX2,CORE-AVX512\\', \\'GCC\\': \\'march=sandybridge\\'}'", "--repositorypath='/apps/ebscripts/easybuild/easyconfigs'", "--robot-paths='/apps/ebscripts/easybuild/easyconfigs'", "--sourcepath='/share/resources/apps/source'", "--subdir-modules='modulefiles/standard'", "--subdir-software='software/standard'", "--suffix-modules-path=''", 'wayland-1.21.0-GCC-11.4.0.eb'],
+    "core_count": 20,
+    "cpu_arch": "x86_64",
+    "cpu_arch_name": "UNKNOWN",
+    "cpu_model": "Intel(R) Xeon(R) CPU E5-2670 v2 @ 2.50GHz",
+    "cpu_speed": 2501.0,
+    "cpu_vendor": "Intel",
+    "easybuild-easyblocks_version": "4.7.1",
+    "easybuild-framework_version": "4.7.1",
+    "gcc_version": "Using built-in specs.; COLLECT_GCC=gcc; COLLECT_LTO_WRAPPER=/apps/software/standard/core/gcc/11.4.0/libexec/gcc/x86_64-pc-linux-gnu/11.4.0/lto-wrapper; Target: x86_64-pc-linux-gnu; Configured with: ../configure --enable-languages=c,c++,fortran --enable-lto --enable-checking=release --disable-multilib --enable-shared=yes --enable-static=yes --enable-threads=posix --enable-plugins --enable-gold --enable-ld=default --prefix=/apps/software/standard/core/gcc/11.4.0 --with-local-prefix=/apps/software/standard/core/gcc/11.4.0 --enable-bootstrap --with-isl=/tmp/uvacse/GCC/11.4.0/system-system/gcc-11.4.0/stage2_stuff --build=x86_64-pc-linux-gnu --host=x86_64-pc-linux-gnu; Thread model: posix; Supported LTO compression algorithms: zlib zstd; gcc version 11.4.0 (GCC) ; ",
+    "glibc_version": "2.28",
+    "hostname": "udc-ba38-31c9",
+    "install_size": 2941769,
+    "modules_tool": ('Lmod', '/usr/share/lmod/lmod/libexec/lmod', '8.7.19'),
+    "os_name": "Rocky Linux",
+    "os_type": "Linux",
+    "os_version": "8.7",
+    "platform_name": "x86_64-unknown-linux",
+    "python_version": "3.6.8 (default, Nov  8 2022, 11:32:15) ; [GCC 8.5.0 20210514 (Red Hat 8.5.0-15)]",
+    "system_gcc_path": "/apps/software/standard/core/gcc/11.4.0/bin/gcc",
+    "system_python_path": "/apps/software/standard/compiler/gcc/11.4.0/python/3.11.4/bin/python",
+    "timestamp": 1691432554,
+    "total_memory": 128798,
+},
+{
+    "build_time": 32.6,
+    "command_line": ["--buildpath='/tmp/uvacse'", "--default-opt-level='opt'", '--disable-fixed-installdir-naming-scheme', '--force', "--hide-deps='automake,autoconf,binutils,bison,cairo-core,clibs,expat,flex,freetype-core,gcccore,glib,help2man,icc,ifort,iccifort,imkl,iompi,libassuan,libgcrypt,ibffi,libgtextutils,libiconv,libjpeg-turbo,libksba,libgpg-error,libpng,libreadline,libtiff,libtool,libxc,libxml2,m4,ncurses,netcdf-c,netcdf-cxx,netcdf-fortran,npth,pixman,pcre,protobuf,protobuf-python3,szip,tensorflowpkg3,x264,xz,zlib,X11'", "--hide-toolchains='gcccore,iompi'", "--hooks='/home/uvacse/ebhook/rivanna_hook.py'", "--installpath='/apps'", "--module-naming-scheme='RivannaHMNS'", "--moduleclasses='base,ai,astro,bio,cae,chem,compiler,data,debugger,devel,geo,ide,lang,lib,math,mpi,numlib,perf,quantum,phys,system,toolchain,tools,vis,licensed,singularity,containersystem'", "--optarch='{\\'Intel\\': \\'xavx -axCORE-AVX2,CORE-AVX512\\', \\'GCC\\': \\'march=sandybridge\\'}'", "--repositorypath='/apps/ebscripts/easybuild/easyconfigs'", "--robot-paths='/apps/ebscripts/easybuild/easyconfigs'", "--sourcepath='/share/resources/apps/source'", "--subdir-modules='modulefiles/standard'", "--subdir-software='software/standard'", "--suffix-modules-path=''", 'wayland-1.21.0-GCC-11.4.0.eb'],
+    "core_count": 20,
+    "cpu_arch": "x86_64",
+    "cpu_arch_name": "UNKNOWN",
+    "cpu_model": "Intel(R) Xeon(R) CPU E5-2670 v2 @ 2.50GHz",
+    "cpu_speed": 2501.0,
+    "cpu_vendor": "Intel",
+    "easybuild-easyblocks_version": "4.7.1",
+    "easybuild-framework_version": "4.7.1",
+    "gcc_version": "Using built-in specs.; COLLECT_GCC=gcc; COLLECT_LTO_WRAPPER=/apps/software/standard/core/gcc/11.4.0/libexec/gcc/x86_64-pc-linux-gnu/11.4.0/lto-wrapper; Target: x86_64-pc-linux-gnu; Configured with: ../configure --enable-languages=c,c++,fortran --enable-lto --enable-checking=release --disable-multilib --enable-shared=yes --enable-static=yes --enable-threads=posix --enable-plugins --enable-gold --enable-ld=default --prefix=/apps/software/standard/core/gcc/11.4.0 --with-local-prefix=/apps/software/standard/core/gcc/11.4.0 --enable-bootstrap --with-isl=/tmp/uvacse/GCC/11.4.0/system-system/gcc-11.4.0/stage2_stuff --build=x86_64-pc-linux-gnu --host=x86_64-pc-linux-gnu; Thread model: posix; Supported LTO compression algorithms: zlib zstd; gcc version 11.4.0 (GCC) ; ",
+    "glibc_version": "2.28",
+    "hostname": "udc-ba38-31c9",
+    "install_size": 2947958,
+    "modules_tool": ('Lmod', '/usr/share/lmod/lmod/libexec/lmod', '8.7.19'),
+    "os_name": "Rocky Linux",
+    "os_type": "Linux",
+    "os_version": "8.7",
+    "platform_name": "x86_64-unknown-linux",
+    "python_version": "3.6.8 (default, Nov  8 2022, 11:32:15) ; [GCC 8.5.0 20210514 (Red Hat 8.5.0-15)]",
+    "system_gcc_path": "/apps/software/standard/core/gcc/11.4.0/bin/gcc",
+    "system_python_path": "/apps/software/standard/compiler/gcc/11.4.0/python/3.11.4/bin/python",
+    "timestamp": 1691593398,
+    "total_memory": 128798,
+},
+]

@@ -1,0 +1,74 @@
+# easybuild easyconfig
+#
+#  John Dey jfdey@fredhutch.org
+#
+#  Fred Hutchinson Cancer Research Center
+easyblock = 'PerlModule'
+
+name = 'bioperl'
+version = '1.7.8'
+
+homepage = 'http://www.bioperl.org/'
+description = """Bioperl is the product of a community effort to produce Perl code which is useful in biology.
+ Examples include Sequence objects, Alignment objects and database searching objects."""
+
+toolchain = {'name': 'GCC', 'version': '11.4.0'}
+
+dependencies = [
+    ('perl', '5.36.0'),
+    ('xml-libxml', '2.0207'),
+    ('db_file', '1.858'),
+]
+
+exts_defaultclass = 'PerlModule'
+exts_list = [
+    ('XML::Writer', '0.900', {
+        'source_tmpl': 'XML-Writer-%(version)s.tar.gz',
+        'source_urls': ['https://cpan.metacpan.org/authors/id/J/JO/JOSEPHW'],
+    }),
+    ('Test::Exception', '0.43', {
+        'source_tmpl': 'Test-Exception-%(version)s.tar.gz',
+        'source_urls': ['https://cpan.metacpan.org/authors/id/E/EX/EXODIST'],
+        'checksums': ['156b13f07764f766d8b45a43728f2439af81a3512625438deab783b7883eb533'],
+    }),
+    ('Test::Differences', '0.69', {
+        'source_tmpl': 'Test-Differences-%(version)s.tar.gz',
+        'source_urls': ['https://cpan.metacpan.org/authors/id/D/DC/DCANTRELL'],
+        'checksums': ['18f644fdd4a1fef93ef3f7f67df8e95b593d811899f34bcbbaba4d717222f58f'],
+    }),
+    ('Test::Deep', '1.130', {
+        'source_tmpl': 'Test-Deep-%(version)s.tar.gz',
+        'source_urls': ['https://cpan.metacpan.org/authors/id/R/RJ/RJBS'],
+        'checksums': ['4064f494f5f62587d0ae501ca439105821ee5846c687dc6503233f55300a7c56'],
+    }),
+    ('Test::Warn', '0.37', {
+        'source_tmpl': 'Test-Warn-%(version)s.tar.gz',
+        'source_urls': ['https://cpan.metacpan.org/authors/id/B/BI/BIGJ'],
+        'checksums': ['98ca32e7f2f5ea89b8bfb9a0609977f3d153e242e2e51705126cb954f1a06b57'],
+    }),
+    ('Test::More', '1.302191', {
+        'source_tmpl': 'Test-Simple-%(version)s.tar.gz',
+        'source_urls': ['https://cpan.metacpan.org/authors/id/E/EX/EXODIST'],
+        'checksums': ['a82f652bc4f2ef1ddcae99d04fc0f8924a35386066a2ab363aabf8372bc5a7ab'],
+    }),
+    ('Test::Most', '0.37', {
+        'source_tmpl': 'Test-Most-%(version)s.tar.gz',
+        'source_urls': ['https://cpan.metacpan.org/authors/id/O/OV/OVID'],
+        'checksums': ['533370141eb9f18cf4ac380f6ded2ab57802a6e184008a80fd2304bfcc474fc7'],
+    }),
+    ('DB_File', '1.859', {
+        'source_urls': ['https://cpan.metacpan.org/authors/id/P/PM/PMQS']
+    }),
+    ('BioPerl', version, {
+        'source_urls': ['https://cpan.metacpan.org/authors/id/C/CJ/CJFIELDS/'],
+        'checksums': ['c490a3be7715ea6e4305efd9710e5edab82dabc55fd786b6505b550a30d71738'],
+    }),
+]
+
+options = {'modulename': 'BioPerl'}
+
+modextrapaths = {
+    'PERL5LIB': 'lib/perl5/site_perl/%(perlver)s/',
+}
+
+moduleclass = 'bio'

@@ -1,0 +1,36 @@
+easyblock = 'ConfigureMake'
+
+name = 'libgeotiff'
+version = '1.7.1'
+
+homepage = 'https://directory.fsf.org/wiki/Libgeotiff'
+description = """Library for reading and writing coordinate system information from/to GeoTIFF files"""
+
+toolchain = {'name': 'GCC', 'version': '11.4.0'}
+
+source_urls = ['https://download.osgeo.org/geotiff/libgeotiff']
+sources = [SOURCE_TAR_GZ]
+checksums = ['05ab1347aaa471fc97347d8d4269ff0c00f30fa666d956baba37948ec87e55d6']
+
+builddependencies = [
+    #('binutils', '2.39'),
+]
+
+dependencies = [
+    ('proj', '9.2.0'),
+    #('libjpeg-turbo', '2.1.4'),
+    ('zlib', '1.2.13'),
+    ('sqlite', '3.41.2', '', SYSTEM),
+    #('LibTIFF', '4.4.0'),
+    ('curl', '8.4.0'),
+]
+
+configopts = ' --with-libtiff=/usr --with-proj=$EBROOTPROJ --with-zlib=$EBROOTZLIB'
+configopts += ' --with-jpeg=/usr'
+
+sanity_check_paths = {
+    'files': ['bin/listgeo', 'lib/libgeotiff.a', 'lib/libgeotiff.%s' % SHLIB_EXT],
+    'dirs': ['include', 'share'],
+}
+
+moduleclass = 'lib'

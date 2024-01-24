@@ -1,0 +1,27 @@
+easyblock = 'ConfigureMake'
+
+name = 'libmatheval'
+version = '1.1.11'
+
+homepage = 'http://www.gnu.org/software/libmatheval/'
+description = """GNU libmatheval is a library (callable from C and Fortran) to parse
+ and evaluate symbolic expressions input as text."""
+
+toolchain = {'name': 'intel-compilers', 'version': '2023.1.0'}
+toolchainopts = {'pic': True}
+
+source_urls = [GNU_SOURCE]
+sources = [SOURCELOWER_TAR_GZ]
+patches = ['fix_matheval_test.patch']
+
+configopts = '--with-pic GUILE_CONFIG="usr/bin/guile -e main -s $EBROOTGUILE/bin/guile-config"'
+
+parallel = 1
+
+
+sanity_check_paths = {
+    'files': ['lib/%(name)s.a', 'include/matheval.h'],
+    'dirs': [],
+}
+
+moduleclass = 'lib'

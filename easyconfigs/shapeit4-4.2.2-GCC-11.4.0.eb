@@ -1,0 +1,47 @@
+# Ruoshi Sun
+# 2023-03-29
+
+easyblock = "MakeCp"
+
+name = 'shapeit4'
+version = '4.2.2'
+
+homepage = 'https://odelaneau.github.io/shapeit4/'
+description = """SHAPEIT4 is a fast and accurate method for estimation of haplotypes (aka phasing) for SNP array and high coverage sequencing data. The version 4 is a refactored and improved version of the SHAPEIT algorithm."""
+
+toolchain = {'name': 'GCC', 'version': '11.4.0'}
+
+source_urls = ['https://github.com/odelaneau/%(name)s/archive']
+sources = ['v%(version)s.tar.gz']
+
+dependencies = [
+    ('htslib', '1.17', '', SYSTEM),
+    ('boost', '1.79.0'),
+    ('curl', '8.4.0'),
+]
+
+# edit makefile
+prebuildopts = "sed -i -e 's/^HTSLIB_INC=.*$/HTSLIB_INC=\$(EBROOTHTSLIB)\/include/' "
+prebuildopts += "-e 's/^HTSLIB_LIB=.*$/HTSLIB_LIB=\$(EBROOTHTSLIB)\/lib\/libhts.a/' "
+prebuildopts += "-e 's/^BOOST_INC=.*$/BOOST_INC=\$(EBROOTBOOST)\/include/' "
+prebuildopts += "-e 's/^BOOST_LIB_IO=.*$/BOOST_LIB_IO=\$(EBROOTBOOST)\/lib\/libboost_iostreams.a/' "
+prebuildopts += "-e 's/^BOOST_LIB_PO=.*$/BOOST_LIB_PO=\$(EBROOTBOOST)\/lib\/libboost_program_options.a/' "
+prebuildopts += "-e 's/^CXXFLAG=.*$/CXXFLAG=-O3/' "
+prebuildopts += "-e 's/^DYN_LIBS=.*$/DYN_LIBS=-lz -lbz2 -lm -lpthread -llzma -lcurl -lssl -lcrypto/' " 
+prebuildopts += "%(builddir)s/%(name)s-%(version)s/makefile && "
+
+files_to_copy = ['./*']
+
+sanity_check_paths = {
+    'files': [],
+    'dirs': ['bin']
+}
+
+files_to_copy = ['./*']
+
+sanity_check_paths = {
+    'files': [],
+    'dirs': ['bin']
+}
+
+moduleclass = 'bio'

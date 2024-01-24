@@ -1,0 +1,17 @@
+easyblock = 'Tarball'
+name = 'pymol'
+version = '2.5.5'
+
+homepage = 'https://pymol.org/'
+description = "PyMOL is a user-sponsored molecular visualization system on an open-source foundation, maintained and distributed by Schrödinger."
+toolchain = SYSTEM
+
+source_urls = ['https://pymol.org/installers/']
+sources = ['PyMOL-%(version)s_496-Linux-x86_64-py37.tar.bz2']
+
+sanity_check_paths = {
+    'files': ['bin/pymol'],
+    'dirs': ['bin', 'lib'],
+}
+
+moduleclass = 'vis'

@@ -1,0 +1,39 @@
+# Ruoshi Sun
+# 2023-08-24
+
+easyblock = 'Mamba'
+
+name = 'pyspark'
+version = '3.4.1'
+versionsuffix = '-py3.11'
+
+hidden = True
+
+homepage = 'https://spark.apache.org'
+description = "PySpark is the Python API for Apache Spark. It enables you to perform real-time, large-scale data processing in a distributed environment using Python. It also provides a PySpark shell for interactively analyzing your data."
+
+toolchain = SYSTEM
+
+builddependencies = [('mamba', '22.11.1-4')]
+
+channels = ["conda-forge"]
+requirements = ' '.join([
+    "python=3.11",
+    "jupyterlab=3.6.3",
+    "ipykernel",
+    "nodejs",
+    "numpy=1.25.2",
+    "scipy=1.11.2",
+    "pandas=2.0.3",
+    "matplotlib=3.7.2",
+])
+
+postinstallcmds = [
+    '%(installdir)s/bin/pip install --no-cache-dir %(name)s==%(version)s',
+]
+
+modextravars = {
+    'PIP_DISABLE_PIP_VERSION_CHECK': '1',
+}
+
+moduleclass = 'devel'

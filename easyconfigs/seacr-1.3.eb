@@ -1,0 +1,28 @@
+easyblock = 'PackedBinary'
+
+name = 'seacr'
+version = '1.3'
+
+homepage = 'https://github.com/FredHutch/SEACR'
+
+description = """SEACR is intended to call peaks and enriched regions from sparse CUT&RUN or chromatin profiling data in which background is dominated by zeroes (i.e. regions with no read coverage)."""
+
+toolchain = SYSTEM
+
+source_urls = ['https://github.com/FredHutch/SEACR/archive/']
+
+sources = ['master.zip']
+
+#dependencies = [
+#    ('R','4.0.0','',('goolf','7.1.0_3.1.4')),
+#    ('bedtools','2.26.0','',('gcc','7.1.0')),
+#]
+
+sanity_check_paths = {
+    'files': ['SEACR_%(version)s.sh', 'SEACR_%(version)s.R'],
+    'dirs': [],
+}
+
+modloadmsg = "Load an R and bedtools module before executing SEACR."
+
+moduleclass = 'bio'

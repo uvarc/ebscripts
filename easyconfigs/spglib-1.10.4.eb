@@ -1,0 +1,28 @@
+# This file is an EasyBuild reciPY as per https://github.com/easybuilders/easybuild
+#
+# Author: Katherine Holcomb
+easyblock = 'CMakeMake'
+
+name = 'spglib'
+version = '1.10.4'
+
+homepage = 'https://atztogo.github.io/spglib/index.html'
+description = "Spglib is a library for finding and handling crystal symmetries written in C."
+
+toolchain = SYSTEM
+
+source_urls = [' https://github.com/atztogo/%(name)s/ ']
+sources = [SOURCE_ZIP]
+
+builddependencies = [
+    ('cmake', '3.23.3'),
+]
+
+separate_build_dir = True
+
+sanity_check_paths = {
+    'files': ['lib/libsymspg.so.%(version)s'],
+    'dirs': ['include', 'lib'],
+}  # ('cmake', '3.5.2', '', True),
+
+moduleclass = 'lib'

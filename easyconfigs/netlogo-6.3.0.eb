@@ -1,0 +1,28 @@
+# from EB repo
+# Ruoshi Sun
+# 2023-03-28
+
+easyblock = 'PackedBinary'
+
+name = 'netlogo'
+version = '6.3.0'
+
+homepage = 'http://ccl.northwestern.edu/netlogo/'
+description = """NetLogo is a multi-agent programmable modeling environment. It
+is used by tens of thousands of students, teachers and researchers worldwide.
+It also powers HubNet participatory simulations. It is authored by Uri Wilensky
+and developed at the CCL."""
+
+# NetLogo is precompiled and needs no particular toolchain.
+# It even comes with its own Java.
+toolchain = SYSTEM
+
+source_urls = ['http://ccl.northwestern.edu/%(name)s/%(version)s/']
+sources = ['NetLogo-%(version)s-64.tgz']
+
+sanity_check_paths = {
+    'files': ['NetLogo', 'NetLogo3D'],
+    'dirs': ['bin'],
+}
+
+moduleclass = 'math'

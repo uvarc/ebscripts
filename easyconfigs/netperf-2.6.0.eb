@@ -1,0 +1,12 @@
+name = 'netperf'
+version = '2.6.0'
+
+easyblock = 'PackedBinary'
+homepage = 'None'
+description = 'None'
+
+toolchain = SYSTEM
+
+sources = [
+    '%s_%s.tgz' % (name, version),
+]

@@ -1,0 +1,79 @@
+easyblock = 'CMakeMake'
+name = 'opensim'
+version = '4.4.1'
+
+homepage = 'https://github.com/opensim-org'
+description = 'OpenSim is software that lets users develop models of musculoskeletal structures and create dynamic simulations of movement'
+
+toolchain = {'name': 'goolf', 'version': '11.4.0_4.1.4'}
+
+source_urls = ['https://github.com/opensim-org/opensim-core/archive/refs/tags']
+sources = ['%(version)s.tar.gz']
+
+builddependencies = [
+    ('cmake', '3.24.3'),
+    ('ninja', '1.11.1', '-py3.11'),
+]
+
+dependencies = [
+    ('python', '3.11.4'),
+    ('swig', '4.1.1', '', SYSTEM),
+    ('java', '12', '', SYSTEM),
+    ('eigen', '3.4.0'),
+]
+
+preconfigopts = 'module load matlab/R2022a && cmake %(builddir)s/opensim-core-%(version)s/dependencies ' + ' '.join([
+    '-DCMAKE_INSTALL_PREFIX=%(installdir)s/deps',
+    '-DSUPERBUILD_ezc3d=ON',
+    '-DOPENSIM_WITH_CASADI=ON',
+    '-DOPENSIM_WITH_TROPTER=ON',
+]) + ' && cmake . -LAH && cmake --build . --config Release -j20 && '
+
+preconfigopts += 'rm -rf * && '
+preconfigopts += 'for i in adol-c colpack docopt ezc3d simbody; do ln -sf %(installdir)s/deps/$i/lib64 %(installdir)s/deps/$i/lib; done && '
+preconfigopts += 'export CPATH=$EBROOTJAVA/include/linux:$CPATH && '
+
+configopts = ' '.join([
+    '%(builddir)s/opensim-core-%(version)s -G Ninja',
+    '-DOPENSIM_DEPENDENCIES_DIR=%(installdir)s/deps',
+    '-DBUILD_JAVA_WRAPPING=ON',
+    '-DBUILD_PYTHON_WRAPPING=ON',
+    '-DOPENSIM_C3D_PARSER=ezc3d',
+    '-DBUILD_TESTING=OFF',
+    '-DCMAKE_INSTALL_PREFIX=%(installdir)s',
+    '-DOPENSIM_INSTALL_UNIX_FHS=OFF',
+    '-DCMAKE_BUILD_TYPE=Release',
+    '-DOPENSIM_WITH_CASADI=ON',
+    '-DOPENSIM_WITH_TROPTER=ON',
+]) + ' && cmake . -LAH'
+
+prebuildopts = 'cd %(builddir)s/easybuild_obj && export CPATH=$EBROOTJAVA/include/linux:$CPATH && '
+
+# these options must precede -jX which is automatically appended to build_cmd by EB
+build_cmd = 'cmake --build . --config Release'
+
+# do not clean up or move the installation from previous steps
+cleanupoldinstall = False
+keeppreviousinstall = True
+preinstallopts = 'cd %(builddir)s/easybuild_obj && ' 
+install_cmd = 'cmake'
+installopts = '--install .'
+
+sanity_check_paths = {
+    'files': ['bin/opensim-cmd'],
+    'dirs': ['bin', 'deps'],
+}
+
+modextrapaths = {
+    'LD_LIBRARY_PATH': ['deps/simbody/lib']
+}
+
+modextravars = {
+    'LD_PRELOAD': "/apps/software/standard/core/gcc/11.4.0/lib64/libstdc++.so.6"
+}
+
+modloadmsg = """Matlab users please run:
+module load matlab/R2022a
+"""
+
+moduleclass = 'data'

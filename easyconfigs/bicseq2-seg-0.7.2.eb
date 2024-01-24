@@ -1,0 +1,31 @@
+# Author: Karsten Siller, Ruoshi Sun
+# 2023-03-29
+# 2017-07-24, 2020-03-30
+
+easyblock = 'MakeCp'
+
+name = 'bicseq2-seg'
+version = '0.7.2'
+
+homepage = 'http://compbio.med.harvard.edu/BIC-seq/'
+description = "BICseq2 is an algorithm developed for the normalization of  high-throughput sequencing (HTS) data and detect copy number variations (CNV) in the genome. BICseq2 can be used for detecting CNVs with or without a control genome. BICseq2-seg is for detecting CNVs based on the normalized data given by BICseq2-norm."
+
+toolchain = SYSTEM
+
+source_urls = ['http://compbio.med.harvard.edu/BIC-seq']
+sources = ['NBICseq-seg_v%(version)s.tar.gz']
+
+osdependencies = [
+    ('perl'),
+]
+
+modextrapaths = {'PATH': ''}
+files_to_copy = ['./*']
+start_dir = 'NBICseq-seg_v%(version)s'
+
+sanity_check_paths = {
+    'files': ['BICseqOneSample.pl', 'BICseqTwoSample.pl', 'BICseqMulSample.pl', 'combineFile/combineFile', 'EstimateLambdaFactor/EstLambdaFct', 'genotype/genotype', 'R/report.R'],
+    'dirs': ['combineFile', 'EstimateLambdaFactor', 'genotype', 'R'],
+}
+
+moduleclass = 'bio'

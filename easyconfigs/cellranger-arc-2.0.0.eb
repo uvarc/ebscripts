@@ -1,0 +1,37 @@
+# This file is an EasyBuild reciPY as per https://github.com/easybuilders/easybuild
+# Author: Ravi Tripathi
+# modified by khs3z
+
+easyblock = "Tarball"
+
+name = "cellranger-arc"
+version = "2.0.0"
+
+homepage = "https://support.10xgenomics.com/single-cell-multiome-atac-gex/software/pipelines/latest/what-is-cell-ranger-arc"
+
+description = """Cell Ranger ARC is a set of analysis pipelines that process Chromium Single Cell Multiome ATAC + Gene Expression sequencing data to generate a variety of analyses pertaining to gene expression, chromatin accessibility and their linkage."""
+
+toolchain = SYSTEM
+
+# Download manually from https://support.10xgenomics.com/single-cell-multiome-atac-gex/software/downloads/latest?
+sources = [SOURCELOWER_TAR_GZ]
+
+dependencies = [
+    ('bcl2fastq2', '2.20.0'),
+]
+
+keepsymlinks = True
+
+sanity_check_paths = {
+    "files": ["cellranger-arc"],
+    "dirs": ["bin"],
+}
+
+sanity_check_commands = ["cellranger-arc testrun --id=tiny"]
+
+modextravars = {
+    'CELLRANGER_ARC_DATA_PATH': '/project/apps_data/cellranger-arc',
+}
+
+modloadmsg = """Reference dataset located at: $CELLRANGER_ARC_DATA_PATH"""
+moduleclass = "bio"

@@ -1,0 +1,37 @@
+# from EB repo
+# Ruoshi Sun
+# 2023-03-27
+
+easyblock = 'CMakeMake'
+
+name = 'ants'
+version = '2.4.3'
+
+homepage = 'https://stnava.github.io/ANTs/'
+description = """ANTs extracts information from complex datasets that include imaging. ANTs is useful for managing,
+ interpreting and visualizing multidimensional data."""
+
+toolchain = SYSTEM
+toolchainopts = {'pic': True}
+
+source_urls = ['https://github.com/stnava/ANTs/archive/']
+sources = ['v%(version)s.tar.gz']
+
+builddependencies = [('cmake', '3.23.3')]
+
+separate_build_dir = True
+
+configopts = '-DCMAKE_BUILD_TYPE=Release '
+configopts += '-DBUILD_SHARED_LIBS=ON -DBUILD_TESTING=OFF '
+configopts += '-DSuperBuild_ANTS_USE_GIT_PROTOCOL=OFF'
+
+preinstallopts = "cd ANTS-build && "
+
+sanity_check_paths = {
+    'files': ['bin/ANTS', 'bin/antsBrainExtraction.sh'],
+    'dirs': ['lib'],
+}
+
+modextravars = {'ANTSPATH': '%(installdir)s/bin'}
+
+moduleclass = 'data'

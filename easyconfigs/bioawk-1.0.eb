@@ -1,0 +1,33 @@
+# Ruoshi Sun
+# 2023-03-27
+# 2021-11-22 SUP-1933
+
+easyblock = 'MakeCp'
+
+name = 'bioawk'
+version = '1.0'
+
+homepage = 'https://github.com/lh3/bioawk'
+description = """Bioawk is an extension to Brian Kernighan's awk, adding the support of several common biological data formats, including optionally gzip'ed BED, GFF, SAM, VCF, FASTA/Q and TAB-delimited formats with column names. It also adds a few built-in functions and an command line option to use TAB as the input/output delimiter. When the new functionality is not used, bioawk is intended to behave exactly the same as the original BWK awk."""
+
+toolchain = SYSTEM
+
+source_urls = ['https://github.com/lh3/%(name)s/archive/refs/tags']
+sources = ['v%(version)s.zip']
+
+dependencies = [
+    ('bison', '3.8.2'),
+]
+
+parallel = 1
+
+files_to_copy = [
+    (['bioawk', 'maketab'], 'bin'),
+]
+
+sanity_check_paths = {
+    'files': ['bin/bioawk'],
+    'dirs': ['bin'],
+}
+
+moduleclass = 'bio'

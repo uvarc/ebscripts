@@ -1,0 +1,25 @@
+# Ruoshi Sun
+# 2021-08-01
+easyblock = 'MakeCp'
+
+name = 'perf'
+version = '5.13'
+
+homepage = 'https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git'
+description = "Performance analysis tools for Linux"
+
+toolchain = SYSTEM
+
+source_urls = ['https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/snapshot']
+sources = ['linux-%(version)s.tar.gz']
+
+prebuildopts = 'cd %(builddir)s/linux-%(version)s/tools/%(name)s &&'
+files_to_copy = ['tools/%(name)s/%(name)s']
+
+sanity_check_paths = {
+    'files': ['perf'],
+    'dirs': []
+}
+
+modextrapaths = {'PATH': ''}
+moduleclass = 'tools'

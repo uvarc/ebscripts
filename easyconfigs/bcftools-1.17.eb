@@ -1,0 +1,38 @@
+##
+# This is an easyconfig file for EasyBuild, see https://github.com/easybuilders/easybuild
+# 
+# Author: Jonas Demeulemeester
+# The Francis Crick Insitute, London, UK
+##
+easyblock = 'ConfigureMake'
+
+name = 'bcftools'
+version = '1.17'
+
+homepage = 'http://www.htslib.org/'
+description = """SAMtools is a suite of programs for interacting with high-throughput sequencing data.
+ BCFtools - Reading/writing BCF2/VCF/gVCF files and calling/filtering/summarising SNP and short indel sequence
+ variants"""
+
+toolchain = SYSTEM
+toolchainopts = {'pic': True}
+
+source_urls = ['https://github.com/samtools/%(namelower)s/releases/download/%(version)s/']
+sources = [SOURCELOWER_TAR_BZ2]
+
+dependencies = [
+    ('htslib', '1.17'),
+    ('gsl', '2.7.1'),
+]
+
+osdependencies = ['zlib', 'bzip2', 'xz']
+
+configopts = "--with-htslib=${EBROOTHTSLIB} --enable-libgsl --with-pic"
+
+
+sanity_check_paths = {
+    'files': ['bin/%(name)s', 'bin/plot-vcfstats', 'bin/vcfutils.pl'],
+    'dirs': ['libexec/%(name)s'],
+}
+
+moduleclass = 'bio'

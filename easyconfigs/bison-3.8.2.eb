@@ -1,0 +1,27 @@
+# modified from EB repo
+# Ruoshi Sun
+# 2023-03-17
+# 2021-11-22 SUP-1933
+
+easyblock = 'ConfigureMake'
+
+name = 'bison'
+version = '3.8.2'
+
+hidden = True
+
+homepage = 'https://www.gnu.org/software/bison'
+description = """Bison is a general-purpose parser generator that converts an annotated context-free grammar
+ into a deterministic LR or generalized LR (GLR) parser employing LALR(1) parser tables."""
+
+toolchain = SYSTEM
+
+source_urls = ['https://ftp.gnu.org/gnu/%(name)s']
+sources = ['%(name)s-%(version)s.tar.gz']
+
+sanity_check_paths = {
+    'files': ['bin/%s' % x for x in ['bison', 'yacc']] + [('lib/liby.a', 'lib64/liby.a')],
+    'dirs': [],
+}
+
+moduleclass = 'lang'

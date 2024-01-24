@@ -1,0 +1,47 @@
+# Ruoshi Sun <rs7wz@virginia.edu>
+# Research Computing, University of Virginia
+# 2020-05-24
+
+easyblock = 'ConfigureMake'
+
+name = 'atat'
+version = '3.36'
+
+homepage = 'https://www.brown.edu/Departments/Engineering/Labs/avdw/atat/'
+description = """
+The Alloy-Theoretic Automated Toolkit (ATAT) is a generic name that refers to a collection of alloy theory tools
+"""
+
+toolchain = SYSTEM
+
+source_urls = ['http://alum.mit.edu/www/avdw/%(name)s']
+sources = ['%%(name)s%s.tar.gz' % version.replace('.', '_')]
+
+skipsteps = ['configure']
+
+local_bindir = '%(builddir)s/%(name)s/bin'
+
+prebuildopts = 'mkdir -p %s && ' % local_bindir
+buildopts = 'BINDIR=%s' % local_bindir
+
+install_cmd = 'make -C src BINDIR=%s install && ' % local_bindir
+install_cmd += 'make -C glue/jobctrl BINDIR=%s install && ' % local_bindir
+install_cmd += 'make -C glue/vasp BINDIR=%s install' % local_bindir
+
+postinstallcmds = [
+    'cp -r %(builddir)s/%(namelower)s/bin %(installdir)s',
+    'cp -r %(builddir)s/%(namelower)s/data %(installdir)s',
+    'cp -r %(builddir)s/%(namelower)s/examples %(installdir)s',
+    'cp -r %(builddir)s/%(namelower)s/glue %(installdir)s',
+    'cp %(builddir)s/%(namelower)s/license.txt %(installdir)s',
+    'chmod +x %(installdir)s/bin/*',
+]
+
+sanity_check_paths = {
+    'files': ['bin/maps'],
+    'dirs': ['bin']
+}
+
+modloadmsg = "First-time users please run:\necho set atatdir=$EBROOTATAT > $HOME/.atat.rc\n"
+
+moduleclass = 'chem'

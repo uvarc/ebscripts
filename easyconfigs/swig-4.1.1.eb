@@ -1,0 +1,35 @@
+##
+## This file is an EasyBuild reciPY as per https://github.com/easybuilders/easybuild
+##
+#  Copyright:: 2017 University of Virginia
+## Author::   Katherine Holcomb
+#  License::  MIT/GPL
+#  $Id$
+#
+
+easyblock = 'ConfigureMake'
+
+name = 'swig'
+version = '4.1.1'
+
+homepage = 'http://www.swig.org/'
+description = """SWIG is a software development tool that connects programs written in C and C++ with
+ a variety of high-level programming languages."""
+
+toolchain = SYSTEM
+toolchainopts = {'pic': True}
+
+source_urls = [SOURCEFORGE_SOURCE]
+sources = [SOURCELOWER_TAR_GZ]
+
+osdependencies = [('pcre')]
+builddependencies = [
+    ('anaconda', '2019.10', '-py2.7'),
+]
+
+sanity_check_paths = {
+    'files': ['bin/swig'],
+    'dirs': []
+}
+
+moduleclass = 'devel'

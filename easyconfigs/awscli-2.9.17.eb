@@ -1,0 +1,30 @@
+# Ruoshi Sun
+# 2023-01-24
+# 2022-01-19
+# 2020-12-14
+
+easyblock = 'PackedBinary'
+
+name = 'awscli'
+version = '2.9.17'
+
+homepage = 'https://github.com/aws/aws-cli'
+description = """
+This package provides a unified command line interface to Amazon Web Services.
+"""
+
+source_urls = ['https://awscli.amazonaws.com/']
+sources = ['%(name)s-exe-linux-x86_64-%(version)s.zip']
+
+toolchain = {'name': 'dummy', 'version': ''}
+
+extract_sources = True
+
+install_cmd = 'aws/install -i %(installdir)s -b %(installdir)s/bin'
+
+sanity_check_paths = {
+    'files': ['bin/aws'],
+    'dirs': ['bin'],
+}
+
+moduleclass = 'tools'

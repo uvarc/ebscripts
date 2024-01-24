@@ -1,0 +1,182 @@
+easyblock = 'EB_LAMMPS'
+name = 'lammps'
+version = '2Aug2023'
+
+homepage = 'https://www.lammps.org'
+description = """LAMMPS stands for Large-scale Atomic/Molecular Massively Parallel Simulator.
+LAMMPS is a classical molecular dynamics simulation code designed to
+run efficiently on parallel computers.
+"""
+
+toolchain = {'name': 'goolf', 'version': '11.4.0_4.1.4'}
+toolchainopts = {'openmp': True, 'usempi': True}
+
+source_urls = [GITHUB_LOWER_SOURCE]
+sources = [
+    'stable_%(version)s.tar.gz',
+]
+
+builddependencies = [
+    ('cmake', '3.24.3'),
+    #('pkg-config', '0.29.2'),
+    ('archspec', '0.1.4'),
+]
+dependencies = [
+    ('CUDA', '12.2.2', '', SYSTEM),
+    ('ucx-cuda', '1.15.0'),
+    ('nccl', '2.18.3', '-CUDA-12.2.2'),
+    ('python', '3.11.4'),
+    ('libpng', '1.6.39'),
+    ('libjpeg-turbo', '2.1.4'),
+    ('netcdf', '4.9.2'),
+    ('gsl', '2.7.1'),
+    ('zlib', '1.2.13'),
+    ('gzip', '1.12', '', SYSTEM),
+    ('curl', '8.4.0'),
+    ('hdf5', '1.12.2'),
+    # ('tbb', '2020.3'),  # Optionally required by Intel package but has a link problem when using nvlink
+    #('PCRE', '8.45'),
+    ('libxml2', '2.10.3'),
+    ('ffmpeg', '5.1.2', '', SYSTEM),
+    ('voro++', '0.4.6'),
+    ('kim-api', '2.3.0'),
+    ('eigen', '3.4.0'),
+    ('plumed', '2.8.2'),
+    #('ScaFaCoS', '1.0.1'),
+    #('SciPy-bundle', '2021.10'),
+    # VTK package is auto-disabled if this dep is not available
+    ('vtk', '9.2.6'),
+]
+
+# To use additional custom configuration options, use the 'configopts' easyconfig parameter
+# See docs and lammps easyblock for more information.
+# https://github.com/lammps/lammps/blob/master/cmake/README.md#lammps-configuration-options
+
+# OpenMP-Kokkos build is default in the current easyblock. One can switch to serial backend of Kokkos,
+# which is claimed to be faster in pure MPI calculations
+# configopts = "-DKokkos_ENABLE_SERIAL=yes "
+
+# packages auto-enabled by easyblock
+# 'GPU'    - if cuda package is present and kokkos is disabled
+# 'KOKKOS' - if kokkos is enabled (by default)
+
+# A100's EPYC 7742 is based on Zen2
+kokkos_arch = "ZEN2"
+# GCC 11/12 defaults to C++17 standard, need to be consistent
+configopts = "-DKokkos_CXX_STANDARD=17 "
+
+# include the following extra packages into the build
+general_packages = [
+    'ASPHERE',
+    'ATC',
+    'AWPMD',
+    'BOCS',
+    'BODY',
+    'BPM',
+    'BROWNIAN',
+    'CG-DNA',
+    'CG-SDK',
+    'CLASS2',
+    'COLLOID',
+    'COLVARS',
+    'COMPRESS',
+    'CORESHELL',
+    'DIELECTRIC',
+    'DIFFRACTION',
+    'DIPOLE',
+    'DPD-BASIC',
+    'DPD-MESO',
+    'DPD-REACT',
+    'DPD-SMOOTH',
+    'DRUDE',
+    'EFF',
+    'ELECTRODE',
+    'EXTRA-COMPUTE',
+    'EXTRA-DUMP',
+    'EXTRA-FIX',
+    'EXTRA-MOLECULE',
+    'EXTRA-PAIR',
+    'FEP',
+    'GRANULAR',
+    'H5MD',
+    'INTERLAYER',
+    'KIM',
+    'KSPACE',
+    'LATBOLTZ',
+    'MANIFOLD',
+    'MACHDYN',
+    'MANYBODY',
+    'MC',
+    'MEAM',
+    'MGPT',
+    'MISC',
+    'ML-IAP',
+    'ML-PACE',
+    'ML-RANN',
+    'ML-SNAP',
+    'MOFFF',
+    'MOLECULE',
+    'MOLFILE',
+    'MPIIO',
+    'NETCDF',
+    'OPENMP',
+    'ORIENT',
+    'PERI',
+    'PHONON',
+    'PLUGIN',
+    'PLUMED',
+    'POEMS',
+    'PTM',
+    'PYTHON',
+    'QEQ',
+    'QTB',
+    'REACTION',
+    'REAXFF',
+    'REPLICA',
+    'RIGID',
+    'SCAFACOS',
+    'SHOCK',
+    'SMTBQ',
+    'SPH',
+    'SPIN',
+    'SRD',
+    'TALLY',
+    'UEF',
+    'VORONOI',
+    'VTK',
+    'YAFF',
+]
+
+# Excluded packages due to requiring additional (non-trivial) deps
+# - ADIOS
+# - LATTE
+# - MESONT (requires very large files downloaded during build)
+# - ML-HDNNP (requires N2P2)
+# - ML-QUIP
+# - MSCG
+# - QMMM (setup seems complex)
+
+# hardware-specific option - entering multiple values has no effect:
+# "WARNING: LAMMPS will be built _only_ for the latest CUDA compute capability known to Kokkos: AMPERE80"
+cuda_compute_capabilities = ['8.0']
+
+postinstallcmds = [
+    'make install-python',
+    'mkdir -p %(installdir)s/lib/python3.11/site-packages',
+    'mv $EBROOTPYTHON/lib/python3.11/site-packages/lammps* %(installdir)s/lib/python3.11/site-packages',
+]
+
+# doesn't work on derp-build but works on derp
+skipsteps = ['sanitycheck']
+
+modluafooter = 'add_property("arch","gpu")'
+modextravars = {
+    'PYTHONPATH': 'lib/python3.11/site-packages',
+}
+
+modloadmsg = """Can only run on A100. In Slurm scripts:
+#SBATCH -p gpu
+#SBATCH --gres=gpu:a100:1
+"""
+
+moduleclass = 'chem'

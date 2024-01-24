@@ -1,0 +1,35 @@
+# Ruoshi Sun
+# 2023-09-08
+
+easyblock = 'ConfigureMake'
+
+name = 'hdf'
+version = '4.2.16'
+
+homepage = 'http://www.hdfgroup.org/products/hdf4/'
+description = """HDF (also known as HDF4) is a library and multi-object file format for storing and managing data
+ between machines."""
+
+toolchain = {'name': 'intel-compilers', 'version': '2023.1.0'}
+toolchainopts = {'pic': True}
+
+source_urls = ['http://www.hdfgroup.org/ftp/HDF/releases/HDF%(version)s/src/']
+sources = [SOURCELOWER_TAR]
+
+dependencies = [
+    ('szip', '2.1.1'),
+    ('zlib', '1.2.13'),
+    ('libtirpc', '1.3.3'),
+]
+
+preconfigopts = "LIBS='-ltirpc' "
+configopts = "--includedir=%(installdir)s/include/%(namelower)s --disable-netcdf --enable-shared --disable-fortran"
+
+sanity_check_paths = {
+    'files': ['lib/libdf.a', 'lib/libhdf4.settings', 'lib/libmfhdf.a'],
+    'dirs': ['bin', 'include/%(name)s'],
+}
+
+modextrapaths = {'CPATH': 'include/%(name)s'}
+
+moduleclass = 'data'

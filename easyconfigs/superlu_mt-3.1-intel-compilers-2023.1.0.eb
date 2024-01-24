@@ -1,0 +1,38 @@
+# Ruoshi Sun
+# 2023-04-11
+
+easyblock = 'MakeCp'
+
+name = 'superlu_mt'
+version = '3.1'
+
+homepage = 'https://portal.nersc.gov/project/sparse/superlu'
+description = """SuperLU is a general purpose library for the direct solution of large, sparse, nonsymmetric systems of linear equations."""
+
+toolchain = {'name': 'intel-compilers', 'version': '2023.1.0'}
+toolchainopts = {'pic': True}
+
+source_urls = [homepage]
+sources = ['%(name)s_%(version)s.tar.gz']
+
+dependencies = [
+    ('imkl', '%(toolchain_version)s', '', SYSTEM),
+]
+
+prebuildopts = 'cp MAKE_INC/make.intel.openmp make.inc &&'
+buildopts = 'CC="icc -qopenmp" FORTRAN="ifort -qopenmp" LOADER="icc -qopenmp" BLASLIB=-L$MKLROOT MKL=-mkl'
+
+parallel = 1
+
+files_to_copy = [
+    './lib/superlu_OPENMP.a', './SRC/*.h'
+]
+
+sanity_check_paths = {
+    'files': ['superlu_OPENMP.a'],
+    'dirs': [],
+}
+
+modextrapaths={'LD_LIBRARY_PATH':''}
+
+moduleclass = 'numlib'

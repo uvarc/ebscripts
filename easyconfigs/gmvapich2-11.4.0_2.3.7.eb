@@ -1,0 +1,21 @@
+# Ruoshi Sun
+# 2023-12-13 RIV-12939
+easyblock = 'Toolchain'
+
+name = 'gmvapich2'
+# version number follows <compiler_version>-<mpi_version
+version = '11.4.0_2.3.7'
+
+homepage = '(none)'
+description = """GNU Compiler Collection (GCC) based compiler toolchain,
+ including MVAPICH2 for MPI support."""
+
+toolchain = SYSTEM
+
+# compiler toolchain dependencies
+dependencies = [
+    ('GCC', '11.4.0'),
+    ('mvapich2', '2.3.7', '', ('GCC', '11.4.0')),
+]
+
+moduleclass = 'toolchain'

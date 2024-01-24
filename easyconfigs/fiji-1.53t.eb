@@ -1,0 +1,49 @@
+# Author: Karsten Siller
+# 2022-01-09
+easyblock = 'PackedBinary'
+
+name = 'fiji'
+version = '1.53t'
+
+homepage = 'https://fiji.sc/'
+description = "Fiji is an image processing distribution of ImageJ, bundling a lot of plugins which facilitate scientific image analysis."
+
+toolchain = SYSTEM
+
+source_urls = [
+    'https://downloads.imagej.net/fiji/archive/20221201-1017/', 
+    'http://downloads.openmicroscopy.org/omero/5.4.1/artifacts',
+]
+sources = ['%(name)s-linux64.zip', 'OMERO.insight-ij-5.4.1-ice36-b75.zip']
+
+dependencies = [
+    ('java', '8'),
+]
+
+maxparallel = 1
+
+modextrapaths = {'PATH': ['']}
+# commands to configure plugin update sites for Fiji updater
+postinstallcmds = [
+    "%(installdir)s/ImageJ-linux64 -Xss1280k -Xmx2048M -- --update add-update-site SlideBook http://sites.imagej.net/SlideBook",
+    "%(installdir)s/ImageJ-linux64 -Xss1280k -Xmx2048M -- --update add-update-site Cookbook http://sites.imagej.net/Cookbook",
+    "%(installdir)s/ImageJ-linux64 -Xss1280k -Xmx2048M -- --update add-update-site ImageScience http://sites.imagej.net/ImageScience",
+    '%(installdir)s/ImageJ-linux64 -Xss1280k -Xmx2048M -- --update add-update-site "3D ImageJ Suite" http://sites.imagej.net/Tboudier',
+    '%(installdir)s/ImageJ-linux64 -Xss1280k -Xmx2048M -- --update add-update-site "OMERO 5.4" http://sites.imagej.net/OMERO-5.4',
+    # "wget http://imagejdocu.tudor.lu/_media/plugin/3d/tissue_organization_toolbox/tissueanalysis_.jar -O %(installdir)s/plugins/tissueanalysis_.jar",
+    # "wget http://imagejdocu.tudor.lu/lib/exe/fetch.php?media=plugin:analysis:droplet_counter:droplet_finder.jar -O %(installdir)s/plugins/droplet_finder.jar",
+    """echo '#! /bin/bash
+# JAVA_HOME is set by module java, which is loaded by %(name)s module
+# FIJI_MEM is set by %(name)s/%(version)s module
+ImageJ-linux64 --java-home $JAVA_HOME --mem=$FIJI_INTERACTIVE_MEM "$@"' > %(installdir)s/%(name)s-gui""",
+    "chmod +x %(installdir)s/%(name)s-gui",
+    "%(installdir)s/ImageJ-linux64 -Xss1280k -Xmx2048m -- --update update-force",
+]
+modextravars = {'JAVA_TOOL_OPTIONS': '-Xss1280k', 'FIJI_INTERACTIVE_MEM': '8096m'}
+
+sanity_check_paths = {
+    'files': ['ImageJ-linux64'],
+    'dirs': ['plugins'],
+}
+
+moduleclass = 'tools'

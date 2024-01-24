@@ -1,0 +1,23 @@
+# Ruoshi Sun
+# 2023-03-09
+
+easyblock = 'Binary'
+
+name = 'kubectl'
+version = '1.26.2'
+
+homepage = 'https://kubernetes.io/docs/tasks/tools/'
+description = 'The Kubernetes command-line tool, kubectl, allows you to run commands against Kubernetes clusters. You can use kubectl to deploy applications, inspect and manage cluster resources, and view logs.'
+
+toolchain = SYSTEM
+
+sources = ['%(name)s-%(version)s']
+
+postinstallcmds = ['mv %(installdir)s/%(name)s-%(version)s %(installdir)s/%(name)s']
+
+sanity_check_paths = {
+    'files': ['%(name)s'],
+    'dirs': [],
+}
+
+moduleclass = 'tools'

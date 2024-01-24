@@ -1,0 +1,26 @@
+easyblock = 'ConfigureMake'
+
+name = 'xz'
+version = '5.2.7'
+
+hidden = True
+
+homepage = 'http://tukaani.org/xz/'
+description = "xz: XZ utilities"
+
+toolchain = SYSTEM
+
+source_urls = ['http://tukaani.org/xz/']
+sources = [SOURCELOWER_TAR_BZ2]
+
+osdependencies = ['gettext']
+
+# may become useful in non-x86 archs
+# configopts = ' --disable-assembler '
+
+sanity_check_paths = {
+    'files': ['bin/xz', 'bin/lzmainfo'],
+    'dirs': [],
+}
+
+moduleclass = 'tools'

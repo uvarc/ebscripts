@@ -1,0 +1,33 @@
+# This is an easyconfig file for EasyBuild, see http://easybuilders.github.io/easybuild
+
+name = 'intel'
+version = 18.0
+official_version = '2018.5.274'
+
+homepage = 'http://software.intel.com/en-us/intel-compilers/'
+description = "Intel C and C++ compilers"
+
+toolchain = {'name': 'dummy', 'version': 'dummy'}
+
+source_urls = ['http://registrationcenter-download.intel.com/akdlm/irc_nas/tec/13723/']
+sources = ['parallel_studio_xe_%s_update4_cluster_edition.tgz' % official_version.split('.')[0]]
+checksums = ['210a5904a860e11b861720e68416f91fd47a459e4500976853291fa8b0478566']
+
+# released as "2018 update 4" despite internal version number if 2018.5.274, so can't use %(version_minor)s template
+# sources = ['parallel_studio_xe_%(version_major)s_update4_composer_edition_for_cpp.tgz']
+# list of regex for components to install
+# full list of components can be obtained from pset/mediaconfig.xml in unpacked sources
+# cfr. https://software.intel.com/en-us/articles/intel-composer-xe-2015-silent-installation-guide
+
+# don't specify components --> defaults to 'ALL'
+# components = ['intel-comp', 'intel-ccomp', 'intel-icc', 'intel-openmp', 'intel-ipsc?_', 'intel-gdb(?!.*mic)']
+
+dontcreateinstalldir = 'True'
+
+license_file = HOME + '/licenses/intel/server.lic'
+
+modextravars = {
+    'I_MPI_FABRICS': 'shm:ofa',
+}
+
+moduleclass = 'compiler'

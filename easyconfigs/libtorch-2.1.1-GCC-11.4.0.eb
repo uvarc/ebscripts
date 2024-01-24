@@ -1,0 +1,21 @@
+# Ruoshi Sun
+# 2023-12-11 RIV-12912
+
+easyblock = 'Tarball'
+
+name = 'libtorch'
+version = '2.1.1'
+
+homepage = 'https://pytorch.org'
+description = 'A binary distribution of all headers, libraries and CMake configuration files required to depend on PyTorch.'
+
+toolchain = {'name': 'GCC', 'version': '11.4.0'}
+
+source_urls = ['https://download.pytorch.org/libtorch/cu121']
+sources = ['%(name)s-cxx11-abi-shared-with-deps-%(version)s%2Bcu121.zip']
+
+sanity_check_paths = {
+    'files': ['lib/libtorch.so'],
+    'dirs': ['lib'],
+}
+moduleclass = 'data'

@@ -1,0 +1,22 @@
+# Ruoshi Sun
+# 2024-01-04
+
+easyblock = 'PackedBinary'
+
+name = 'plink'
+version = '1.90b7.2'
+
+homepage = 'https://www.cog-genomics.org/plink/1.9/'
+description = """PLINK is a free, open-source whole genome association analysis toolset, designed to perform a range of basic, large-scale analyses in a computationally efficient manner."""
+
+toolchain = SYSTEM
+
+source_urls = ['http://s3.amazonaws.com/plink1-assets']
+sources = ['%(name)s_linux_x86_64_20231211.zip']
+
+sanity_check_paths = {
+    'files': ['plink', 'prettify', 'toy.map', 'toy.ped'],
+    'dirs': [],
+}
+
+moduleclass = 'bio'

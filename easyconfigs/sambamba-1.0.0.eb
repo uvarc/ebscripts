@@ -1,0 +1,22 @@
+easyblock = 'Tarball'
+
+name = 'sambamba'
+version = '1.0.0'
+
+homepage = 'https://github.com/biod/sambamba/'
+description = "Sambamba is a tool for processing BAM files."
+
+toolchain = SYSTEM
+
+# "For now use the static binary of the previous release - it is essentially the same."
+source_urls = ['https://github.com/biod/%(name)s/releases/download/v0.8.2']
+sources = ['sambamba-0.8.2-linux-amd64-static.gz']
+
+postinstallcmds = ['mv %(installdir)s/sambamba-0.8.2-linux-amd64-static %(installdir)s/%(name)s']
+
+sanity_check_paths = {
+    'files': ['%(name)s'],
+    'dirs': [],
+}
+
+moduleclass = 'bio'

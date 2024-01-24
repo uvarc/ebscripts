@@ -1,0 +1,32 @@
+##
+# This file is an EasyBuild reciPY as per https://github.com/hpcugent/easybuild
+#
+# Copyright:: Copyright 2013-2014 The Cyprus Institute
+# Authors:: Thekla Loizou <t.loizou@cyi.ac.cy>
+# License:: MIT/GPL
+#
+##
+easyblock = 'Tarball'
+
+name = 'bismark'
+version = '0.22.3'
+
+homepage = 'http://www.bioinformatics.babraham.ac.uk/projects/bismark/'
+description = """A tool to map bisulfite converted sequence reads and 
+determine cytosine methylation states"""
+
+toolchain = SYSTEM
+
+source_urls = ['https://github.com/FelixKrueger/Bismark/archive/']
+sources = ['%(version)s.tar.gz']
+
+dependencies = [
+    ('bowtie2', '2.5.1'),
+]
+
+sanity_check_paths = {
+    'files': ['%(name)s', 'bismark2bedGraph', 'bismark2report', 'bismark_genome_preparation', 'bismark_methylation_extractor', 'coverage2cytosine', 'deduplicate_bismark'],
+    'dirs': [],
+}
+
+moduleclass = 'bio'

@@ -1,0 +1,27 @@
+# 2023-03-15
+easyblock = 'CmdCp'
+
+name = 'sparseassembler'
+version = '2016'
+
+homepage = 'https://github.com/yechengxi/SparseAssembler'
+description = """A sparse graph approach to de novo genome assembly"""
+
+toolchain = SYSTEM
+
+source_urls = ['https://github.com/yechengxi/SparseAssembler/archive/refs/heads']
+sources = [{
+    'filename': 'master.zip',
+    'extract_cmd': 'unzip %s'
+}]
+
+cmds_map = [('.*', '$CXX $CFLAGS *.cpp *.h -o SparseAssembler')]
+
+files_to_copy = ['SparseAssembler']
+
+sanity_check_paths = {
+    'files': ['SparseAssembler'],
+    'dirs': [''],
+}
+
+moduleclass = 'bio'

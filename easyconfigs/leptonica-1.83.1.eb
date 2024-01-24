@@ -1,0 +1,24 @@
+# modified from EB repo 
+# Ruoshi Sun 
+# 2023-03-29
+
+easyblock = 'ConfigureMake'
+
+name = 'leptonica'
+version = '1.83.1'
+
+homepage = 'http://www.leptonica.org'
+description = """Leptonica is a collection of pedagogically-oriented open source software
+ that is broadly useful for image processing and image analysis applications."""
+
+toolchain = SYSTEM
+
+sources = [SOURCELOWER_TAR_GZ]
+source_urls = ['https://github.com/DanBloomberg/leptonica/releases/download/%(version)s/']
+
+sanity_check_paths = {
+    'files': ['bin/convertformat', 'lib/libleptonica.%s' % SHLIB_EXT],
+    'dirs': ['include/leptonica', 'lib/pkgconfig']
+}
+
+moduleclass = 'vis'

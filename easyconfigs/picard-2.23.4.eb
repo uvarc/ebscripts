@@ -1,0 +1,33 @@
+easyblock = 'JAR'
+
+name = 'picard'
+version = '2.23.4'
+
+homepage = 'http://sourceforge.net/projects/picard'
+description = """A set of tools (in Java) for working with next generation sequencing data in the BAM format."""
+
+toolchain = SYSTEM
+
+source_urls = ['https://github.com/broadinstitute/picard/releases/download/%(version)s']
+sources = [{
+    'filename': '%(name)s.jar',
+    'download_filename': '%(name)s.jar',
+}]
+checksums = ['f82c35e1d1e738a3ea0af5d157e72ae9d65cf695f8a26bf264532801fab2e475']
+
+# postinstallcmds = ["mv %(installdir)s/%(name)s-%(version)s.jar %(installdir)s/%(name)s.jar"]
+
+dependencies = [('java', '8')]
+
+modextravars = {
+    'PICARD': '%(installdir)s/picard.jar'
+}
+
+sanity_check_paths = {
+    'files': ['picard.jar'],
+    'dirs': [],
+}
+
+modloadmsg = "To execute picard run: java -jar $EBROOTPICARD/%(name)s.jar\n"
+
+moduleclass = 'bio'

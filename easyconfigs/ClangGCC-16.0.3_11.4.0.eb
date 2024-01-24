@@ -1,0 +1,18 @@
+easyblock = 'Toolchain'
+
+name = 'ClangGCC'
+version = '16.0.3_11.4.0'
+
+homepage = '(none)'
+description = """Clang based compiler toolchain"""
+
+toolchain = SYSTEM
+
+# compiler toolchain dependencies
+dependencies = [
+    ('GCC', '11.4.0'),
+    ('aocc', '4.1.0', '', ('GCC', '11.4.0')),
+]
+
+
+moduleclass = 'toolchain'

@@ -1,0 +1,35 @@
+# 2023-04-07
+
+easyblock = 'MakeCp'
+
+name = 'shengbte'
+version = '1.5.0'
+
+homepage = 'http://www.shengbte.org/home'
+description = """ShengBTE is a software package for solving the Boltzmann Transport Equation for phonons."""
+
+toolchain = {'name': 'intel', 'version': '2023.1'}
+toolchainopts = {'optarch': True, 'usempi': True, 'pic': True}
+
+source_urls = ['https://bitbucket.org/sousaw/shengbte/get/']
+sources = ['2cafc0b2286faf9de9df7604467461b07e9aa424.tar.gz']
+
+dependencies = [('spglib', '2.0.2')]
+
+start_dir = 'Src'
+
+# strip "include arch.make" -- not needed as we already set necessary env vars
+prebuildopts = "sed -i '1d' Makefile && "
+buildopts = 'LIBS="-L$MKLROOT -qmkl -lsymspg" FFLAGS="$FFLAGS -qopenmp -heap-arrays"'
+parallel = 1
+
+local_tests = ["Test-%s" % x for x in ['QE', 'RTA', 'VASP']]
+
+files_to_copy = [(['ShengBTE'], 'bin'), (['LICENSE', 'README.md'], 'share')] + local_tests
+
+sanity_check_paths = {
+    'files': ['bin/ShengBTE'],
+    'dirs': ['share'] + local_tests,
+}
+
+moduleclass = 'chem'

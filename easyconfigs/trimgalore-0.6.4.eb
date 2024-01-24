@@ -1,0 +1,35 @@
+##
+#
+# Author: Karsten Siller
+# 2021-04-02 cutadapt py3.8
+# 2018-03-28
+#
+##
+easyblock = "Tarball"
+
+name = 'trimgalore'
+version = '0.6.4'
+
+homepage = 'http://www.bioinformatics.babraham.ac.uk/projects/bismark/'
+description = """Trim Galore is a wrapper around Cutadapt and FastQC to consistently apply adapter and quality trimming to FastQ files, with extra functionality for RRBS data."""
+
+toolchain = SYSTEM
+
+source_urls = ['https://github.com/FelixKrueger/TrimGalore/archive/']
+sources = ['%(version)s.tar.gz']
+
+dependencies = [
+    ('cutadapt', '3.4'),
+    ('fastqc', '0.11.5'),
+]
+
+modextrapaths = {
+    'PATH': [''],
+}
+ 
+sanity_check_paths = {
+    'files': ['trim_galore'], 
+    'dirs': [],
+}
+
+moduleclass = 'bio'

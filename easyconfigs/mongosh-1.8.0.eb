@@ -1,0 +1,25 @@
+# Ruoshi Sun
+# 2023-03-15
+easyblock = 'Tarball'
+
+name = 'mongosh'
+version = '1.8.0'
+
+homepage = 'https://docs.mongodb.com/mongodb-shell/'
+description = "The MongoDB Shell, mongosh, is a fully functional JavaScript and Node.js 14.x REPL environment for interacting with MongoDB deployments. You can use the MongoDB Shell to test queries and operations directly with your database."
+
+toolchain = SYSTEM
+
+source_urls = ['https://downloads.mongodb.com/compass']
+sources = ['%(name)s-%(version)s-linux-x64.tgz']
+
+postinstallcmds = [
+    'chmod +x %(installdir)s/bin/*',
+]
+
+sanity_check_paths = {
+    'files': ['bin/mongosh'],
+    'dirs': ['bin'],
+}
+
+moduleclass = 'tools'

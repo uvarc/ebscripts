@@ -1,0 +1,26 @@
+# Ruoshi Sun
+# 2023-03-15
+
+easyblock = 'MakeCp'
+
+name = 'agrep'
+version = '3.41.5'
+
+homepage = 'https://github.com/Wikinaut/agrep'
+description = "AGREP - an approximate GREP."
+
+toolchain = SYSTEM
+
+source_urls = ['https://github.com/Wikinaut/agrep/archive/refs/heads']
+sources = ['master.zip']
+
+files_to_copy = ['agrep']
+
+sanity_check_paths = {
+    'files': ['agrep'],
+    'dirs': [''],
+}
+
+modextrapaths = {'PATH': '', 'PYTHONPATH': ''}
+
+moduleclass = 'tools'

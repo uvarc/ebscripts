@@ -1,0 +1,23 @@
+easyblock = 'Toolchain'
+
+name = 'gompi'
+
+gccver  = '11.4.0'
+mpiver = '4.1.4'
+
+version = '%s_%s' % (gccver, mpiver)
+
+homepage = '(none)'
+description = """GNU Compiler Collection (GCC) based compiler toolchain along with CUDA toolkit,
+ including OpenMPI for MPI support."""
+
+toolchain = SYSTEM
+
+comp = ('GCC', gccver)
+
+dependencies = [
+    comp,
+    ('OpenMPI', mpiver, '', comp),
+]
+
+moduleclass = 'toolchain'

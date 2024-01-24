@@ -1,0 +1,33 @@
+# Ruoshi Sun
+# 2023-08-31 Rocky
+# 2023-01-26 move to goolf
+# 2021-08-10 RIV-6849
+
+easyblock = 'CMakeMake'
+
+name = 'gromacs'
+version = '2023.2'
+
+homepage = 'http://www.gromacs.org'
+description = """GROMACS is a versatile package to perform molecular dynamics,
+ i.e. simulate the Newtonian equations of motion for systems with hundreds to millions of particles."""
+
+toolchain = {'name': 'goolf', 'version': '11.4.0_4.1.4'}
+toolchainopts = {'openmp': True, 'usempi': True}
+
+source_urls = ['ftp://ftp.gromacs.org/gromacs/']
+sources = [SOURCELOWER_TAR_GZ]
+
+builddependencies = [
+    ('cmake', '3.23.3', '', SYSTEM),
+]
+
+dependencies = [
+    ('CUDA', '12.2.2', '', SYSTEM),
+    ('ucx-cuda', '1.15.0'),
+]
+
+configopts = '-DGMX_GPU=CUDA -DGMX_MPI=on'
+
+modluafooter = 'add_property("arch","gpu")'
+moduleclass = 'chem'

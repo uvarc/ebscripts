@@ -1,0 +1,56 @@
+# Ruoshi Sun
+# 2023-04-10
+
+easyblock = 'EB_Libint'
+
+name = 'libint'
+version = '2.7.2'
+
+homepage = 'https://github.com/evaleev/libint'
+description = """Libint - a library for the evaluation of molecular integrals of many-body operators over Gaussian functions"""
+
+toolchain = {'name': 'intel-compilers', 'version': '2023.1.0'}
+toolchainopts = {'pic': True, 'cstd': 'c++11'}
+
+source_urls = ['https://github.com/evaleev/%(name)s/archive/refs/tags']
+sources = ['v%(version)s.tar.gz']
+
+patches = [
+    'Libint-2.7.2_remove-test-permute.patch',
+    'Libint-2.7.2_remove-test-eri.patch',
+]
+checksums = [
+    'fd0466ce9eb6786b8c5bbe3d510e387ed44b198a163264dfd7e60b337e295fd9',  # v2.7.2.tar.gz
+    'b019e66a2a3dc7e83ee8a60aa1ae78955a8af4df90ab07b7e57d2ee004ce3677',  # Libint-2.7.2_remove-test-permute.patch
+    '4dd7b2993b6fdebb57e5c14faa9bf46117ae42100c686ace82fe26b7cb0312ab',  # Libint-2.7.2_remove-test-eri.patch
+]
+
+builddependencies = [
+    #('Autotools', '20220317'),
+    ('gmp', '6.2.0'),
+    ('boost', '1.79.0'),
+    ('eigen', '3.4.0'),
+    #('python', '3.9.16'),
+    ('cmake', '3.23.3', '', SYSTEM),
+]
+
+# configure options as required by CP2K,
+# see Jenkinsfile in https://github.com/cp2k/libint-cp2k
+local_lmax = 6
+local_eri_max_am = '%s,%s' % (local_lmax, local_lmax - 1)
+local_eri23_max_am = '%s,%s' % (local_lmax + 2, local_lmax + 1)
+
+libint_compiler_configopts = '--enable-eri=1 --enable-eri2=1 --enable-eri3=1 --with-max-am=%s ' % local_lmax
+libint_compiler_configopts += '--with-eri-max-am=%s ' % local_eri_max_am
+libint_compiler_configopts += '--with-eri2-max-am=%s ' % local_eri23_max_am
+libint_compiler_configopts += '--with-eri3-max-am=%s ' % local_eri23_max_am
+libint_compiler_configopts += '--enable-generic-code --disable-unrolling'
+
+with_fortran = True
+
+sanity_check_paths = {
+    'files': ['include/libint2.h', 'include/libint2.hpp', 'lib/libint2.so', 'lib/libint2.a'],
+    'dirs': ['include/libint2'],
+}
+
+moduleclass = 'chem'

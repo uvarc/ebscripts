@@ -1,0 +1,50 @@
+# Ruoshi Sun
+# 2021-05-18
+
+easyblock = 'JAR'
+
+name = 'beagle'
+version = '5.2'
+
+homepage = 'http://faculty.washington.edu/browning/beagle/beagle.html'
+description = """Beagle is a software package for phasing genotypes and for imputing ungenotyped markers."""
+
+toolchain = SYSTEM
+
+source_urls = ['http://faculty.washington.edu/browning/%(name)s']
+sources = ['%(name)s.21Apr21.304.jar']
+
+extract_sources = False
+
+dependencies = [
+    ('java', '8'),
+]
+
+# data are installed under BEAGLE_DATA_PATH
+postinstallcmds = [
+# bref, unbref
+    "for i in bref unbref; do wget -q -P %(installdir)s http://faculty.washington.edu/browning/beagle/${i}3.21Apr21.304.jar; done",
+# conform-gt
+    "wget -q -P %(installdir)s http://faculty.washington.edu/browning/conform-gt/conform-gt.24May16.cee.jar",
+# Beagle utilities
+    "for i in gtstats.jar splitvcf.jar mergevcf.jar consensusvcf.jar base2genetic.jar beagle2gprobs.jar beagle2linkage.jar beagle2vcf.jar gprobs2beagle.jar linkage2beagle.jar vcf2beagle.jar vcf2gprobs.jar gprobshwe.jar gprobsmetrics.jar gprobsmissing.jar gprobssamplemissing.jar changecolumn.jar changeline.jar cut.jar filtercolumns.jar filterlines.jar paste.jar transpose.jar updategprobs.jar ibdmerge.jar; do wget -q -P %(installdir)s/util https://faculty.washington.edu/browning/beagle_utilities/$i; done",
+]
+
+sanity_check_paths = {
+    'files': ['%(name)s.21Apr21.304.jar'],
+    'dirs': ['']
+}
+
+modextravars = {
+    'BEAGLE_DATA_PATH': '/project/apps_data/beagle',
+}
+
+modloadmsg = """
+JAR files can be found in $EBROOTBEAGLE
+Data files are stored in $BEAGLE_DATA_PATH
+
+To run the main JAR file:
+java -jar $EBROOTBEAGLE/%(name)s.21Apr21.304.jar
+"""
+
+moduleclass = 'bio'

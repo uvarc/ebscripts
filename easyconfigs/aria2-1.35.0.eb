@@ -1,0 +1,24 @@
+# Ruoshi Sun
+# 2021-07-13
+
+easyblock = 'ConfigureMake'
+
+name = 'aria2'
+version = '1.35.0'
+
+homepage = 'https://github.com/aria2/aria2'
+description = """aria2 is a lightweight multi-protocol & multi-source, cross platform download utility operated in command-line. It supports HTTP/HTTPS, FTP, SFTP, BitTorrent and Metalink."""
+
+toolchain = SYSTEM
+
+source_urls = ['https://github.com/%(name)s/%(name)s/archive/refs/tags']
+sources = ['release-%(version)s.tar.gz']
+
+preconfigopts = 'autoreconf -i && '
+
+sanity_check_paths = {
+    'files': ['bin/aria2c'],
+    'dirs': ['bin'],
+}
+
+moduleclass = 'tools'

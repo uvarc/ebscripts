@@ -1,0 +1,23 @@
+# Ruoshi Sun
+# 2023-03-15
+
+easyblock = 'Tarball'
+
+name = 'mothur'
+version = '1.48.0'
+
+homepage = 'http://www.mothur.org/'
+description = """Mothur is a single piece of open-source, expandable software
+ to fill the bioinformatics needs of the microbial ecology community."""
+
+toolchain = SYSTEM
+
+source_urls = ['https://github.com/%(name)s/%(name)s/releases/download/v%(version)s']
+sources = ['Mothur.linux_8_noReadline.zip']
+
+sanity_check_paths = {
+    'files': ['%(name)s'],
+    'dirs': [],
+}
+
+moduleclass = 'bio'

@@ -1,0 +1,36 @@
+# Ruoshi Sun
+# 2022-12-21 RIV-10188
+
+easyblock = 'MakeCp'
+
+name = 'blasr'
+version = '20190414'
+
+homepage = 'https://github.com/mchaisso/blasr'
+description = """Variation graphs provide a succinct encoding of the sequences of many genomes."""
+
+toolchain = SYSTEM
+
+source_urls = ['https://github.com/mchaisso/blasr/archive/refs/heads']
+sources = ['master.tar.gz']
+
+#alignment/bin:
+#blasrmc  Blasr.o  blDotPlot  DotPlot.o  sawritermc  SAWriter.o
+#
+#samutils/bin:
+#printGaps  PrintGaps.o  samtom  SamToM0.o  svrealigner  SVRealigner.o
+files_to_copy = [
+    (['alignment/bin/blasrmc'], 'bin'),
+    (['alignment/bin/blDotPlot'], 'bin'),
+    (['alignment/bin/sawritermc'], 'bin'),
+    (['samutils/bin/printGaps'], 'bin'),
+    (['samutils/bin/samtom'], 'bin'),
+    (['samutils/bin/svrealigner'], 'bin'),
+]
+
+sanity_check_paths = {
+    'files': ['bin/blasrmc'],
+    'dirs': ['bin'],
+}
+
+moduleclass = 'bio'

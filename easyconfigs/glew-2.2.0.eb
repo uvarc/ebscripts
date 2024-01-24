@@ -1,0 +1,21 @@
+easyblock = 'MakeCp'
+
+name = 'glew'
+version = '2.2.0'
+
+homepage = 'http://glew.sourceforge.net/'
+description = "The OpenGL Extension Wrangler Library (GLEW) is a cross-platform open-source C/C++ extension loading library. GLEW provides efficient run-time mechanisms for determining which OpenGL extensions are supported on the target platform."
+
+toolchain = SYSTEM
+
+source_urls = ['https://github.com/nigels-com/glew/releases/download/glew-2.2.0']
+sources = [SOURCELOWER_TGZ]
+
+files_to_copy = ['bin', 'include', 'lib*']
+
+sanity_check_paths = {
+    'files': ['bin/glewinfo', 'bin/visualinfo', 'lib/libGLEW.a', 'lib/libGLEW.so.%(version_major_minor)s', 'lib/libGLEW.so.%(version)s'],
+    'dirs': ['include/GL'],
+}
+
+moduleclass = 'lib'

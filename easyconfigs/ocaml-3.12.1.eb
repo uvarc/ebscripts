@@ -1,0 +1,26 @@
+# Ruoshi Sun
+# 2021-07-13
+
+easyblock = 'ConfigureMake'
+
+name = 'ocaml'
+version = '3.12.1'
+
+homepage = 'https://ocaml.org/'
+description = """OCaml is an industrial-strength programming language supporting functional, imperative and object-oriented styles"""
+
+toolchain = SYSTEM
+
+source_urls = ['https://github.com/%(name)s/%(name)s/archive']
+sources = ['%(version)s.tar.gz']
+
+parallel = 1
+prefix_opt = '-prefix '
+build_cmd = 'make world.opt'
+
+sanity_check_paths = {
+    'files': ['bin/%(name)s'],
+    'dirs': ['bin'],
+}
+
+moduleclass = 'compiler'

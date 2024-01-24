@@ -1,0 +1,51 @@
+easyblock = 'MesonNinja'
+
+name = 'gstreamer'
+version = '1.22.1'
+
+homepage = 'https://gstreamer.freedesktop.org/'
+description = """GStreamer is a library for constructing graphs of media-handling
+ components. The applications it supports range from simple
+ Ogg/Vorbis playback, audio/video streaming to complex audio
+ (mixing) and video (non-linear editing) processing."""
+
+toolchain = {'name': 'GCC', 'version': '11.4.0'}
+
+source_urls = ['https://gstreamer.freedesktop.org/src/gstreamer']
+sources = [SOURCELOWER_TAR_XZ]
+patches = [
+    'GStreamer-1.18_fix_bad_suid.patch',
+]
+checksums = [
+    {'gstreamer-1.22.1.tar.xz': 'cd3ca759f926763615fdfcea63c9761198c42889bc0615ceec73e22b24fde771'},
+    {'GStreamer-1.18_fix_bad_suid.patch': '3d963ffdaf157ed92f46a071c4ef46f548c0b19186427e8404cb066705bbb61a'},
+]
+
+builddependencies = [
+    #('binutils', '2.39'),
+    ('Meson', '1.0.1', '-py3.11'),
+    ('Ninja', '1.11.1', '-py3.11'),
+    ('perl', '5.36.0'),
+    ('bison', '3.8.2', '', SYSTEM),
+    #('flex', '2.6.4'),
+    ('gobject-introspection', '1.74.0'),
+    ('gettext', '0.21.1'),
+    ('pkgconf', '1.9.5'),
+]
+
+dependencies = [
+    ('python', '3.11.4'),
+    ('zlib', '1.2.13'),
+    ('gmp', '6.2.0'),
+    ('gsl', '2.7.1'),
+    ('glib', '2.76.1'),
+    ('libunwind', '1.6.2'),
+    ('elfutils', '0.189'),
+]
+
+sanity_check_paths = {
+    'files': [],
+    'dirs': ['include', 'share', 'libexec'],
+}
+
+moduleclass = 'vis'

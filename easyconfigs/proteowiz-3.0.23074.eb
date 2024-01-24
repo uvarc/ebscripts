@@ -1,0 +1,30 @@
+# author: khs3z
+# 2019-06-18
+
+easyblock = 'Tarball'
+
+name = 'proteowiz'
+version = '3.0.23074'
+
+
+homepage = 'http://proteowizard.sourceforge.net/index.html'
+
+description = """ProteoWizard provides a set of open-source, cross-platform software libraries and tools (e.g. msconvert, Skyline, IDPicker, SeeMS) that facilitate proteomics data analysis. The libraries enable rapid tool creation by providing a robust, pluggable development framework that simplifies and unifies data file access, and performs standard chemistry and LCMS dataset computations."""
+
+toolchain = SYSTEM
+
+# needs to be downloaded manually
+source_urls = ['http://proteowizard.sourceforge.net/download.html']
+
+sources = ['pwiz-bin-linux-x86_64-gcc7-release-%s_144d34c.tar.bz2' % version.replace('.','_') ]
+
+sanity_check_paths = {
+    'files': ['chainsaw'],
+    'dirs': [],
+}
+
+modextrapaths = {
+    'PATH': '',
+}
+
+moduleclass = 'bio'

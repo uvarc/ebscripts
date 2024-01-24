@@ -1,0 +1,21 @@
+easyblock = 'ConfigureMake'
+
+name = 'gzip'
+version = '1.12'
+
+homepage = 'http://www.gnu.org/software/%(name)s/'
+description = "gzip (GNU zip) is a popular data compression program as a replacement for compress"
+
+toolchain = SYSTEM
+
+source_urls = [GNU_SOURCE]
+sources = [SOURCE_TAR_GZ]
+
+sanity_check_paths = {
+    'files': ["bin/gunzip", "bin/gzip", "bin/uncompress"],
+    'dirs': [],
+}
+
+sanity_check_commands = [True, ('gzip', '--version')]
+
+moduleclass = 'tools'

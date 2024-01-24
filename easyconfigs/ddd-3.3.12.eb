@@ -1,0 +1,32 @@
+# Built with EasyBuild version 3.3.0 on 2018-12-07_21-56-55
+easyblock = 'ConfigureMake'
+
+name = 'ddd'
+version = '3.3.12'
+
+homepage = 'https://www.gnu.org/software/ddd/'
+description = """DDD is a graphical front-end for command-line debuggers such as GDB, DBX, WDB, Ladebug, JDB, XDB, the Perl debugger, the bash debugger bashdb, the GNU Make debugger remake, or the Python debugger pydb."""
+
+toolchain = SYSTEM
+toolchainopts = {'pic': True}
+
+sources = [SOURCE_TAR_GZ]
+source_urls = ['http://ftp.gnu.org/gnu/ddd/']
+
+osdependencies = [
+   ('motif', ),
+   ('ncurses', ),
+]
+
+configopts = [ '--with-termlib=ncurses --with-termlib-libraries="/usr/lib64"' ]
+
+patches = ['strclass.patch']
+
+parallel=1
+
+sanity_check_paths = {
+    'files': ['bin/ddd'],
+    'dirs': [],
+}
+
+moduleclass = 'vis'

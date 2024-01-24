@@ -1,0 +1,23 @@
+easyblock = 'JAR'
+
+name = 'jtreeview'
+version = '3'
+
+homepage = 'https://bitbucket.org/TreeView3Dev/treeview3'
+description = "TreeView is an open-source Java app for visualizing large data matrices. It can load a dataset, cluster it, browse it, customize its appearance and export it (or parts of it) into a figure."
+
+toolchain = SYSTEM
+
+source_urls = ['https://bitbucket.org/TreeView3Dev/treeview3/downloads']
+sources = ['tv3_alpha03_release.jar']
+
+dependencies = [
+    ('java', '8'),
+]
+
+sanity_check_paths = {
+    'files': ['tv3_alpha03_release.jar'],
+    'dirs': [],
+}
+
+moduleclass = 'vis'

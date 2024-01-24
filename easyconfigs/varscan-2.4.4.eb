@@ -1,0 +1,33 @@
+# Ruoshi Sun
+# 2020-04-13
+
+easyblock = 'JAR'
+
+name = 'varscan'
+version = '2.4.4'
+
+homepage = 'https://github.com/dkoboldt/varscan'
+description = """VarScan - Variant calling and somatic mutation/CNV detection for next-generation sequencing data"""
+
+toolchain = SYSTEM
+
+source_urls = ['https://github.com/dkoboldt/varscan/raw/master']
+sources = ['VarScan.v%(version)s.jar']
+
+extract_sources = False
+
+dependencies = [
+    ('java', '12'),
+]
+
+#install_cmds = [
+#    'cp %(builddir)s/VarScan.v%(version)s.jar %(installdir)s' 
+#]
+
+sanity_check_paths = {
+    'files': ['VarScan.v%(version)s.jar'],
+    'dirs': ['']
+}
+
+modloadmsg = 'Run: java -jar $EBROOTVARSCAN/VarScan.v%(version)s.jar'
+moduleclass = 'bio'

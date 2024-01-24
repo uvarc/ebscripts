@@ -1,0 +1,28 @@
+##
+# This file is an EasyBuild reciPY as per https://github.com/easybuilders/easybuild
+#
+easyblock = 'ConfigureMake'
+
+name = 'lftp'
+version = '4.9.2'
+
+homepage = 'http://lftp.yar.ru'
+description = """lftp is a sophisticated file transfer program supporting a number of network protocols.""" 
+
+toolchain = SYSTEM
+toolchainopts = {'pic': True, 'opt': True}
+
+configopts = [
+    '--with-openssl',
+    #'--without-gnutls',
+]
+
+source_urls = ['https://lftp.yar.ru/ftp']
+sources = [SOURCELOWER_TAR_GZ]
+
+sanity_check_paths = {
+    'files': ['bin/lftp'],
+    'dirs' : [''],
+}
+
+moduleclass = 'tools'

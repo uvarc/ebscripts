@@ -1,0 +1,31 @@
+easyblock = 'EB_ApptainerImage'
+
+name = 'alphafold'
+version = '2.3.0'
+
+homepage = 'https://github.com/deepmind/alphafold'
+description = """
+Open source code for AlphaFold
+"""
+
+toolchain = {'name': 'apptainer', 'version': '1.2.2'}
+
+sources = [
+    '%(name)s-%(version)s.sif',
+    'run-%(version)s',
+]
+
+use_gpu = True
+
+postinstallcmds = [
+    'mv %(installdir)s/run-%(version)s %(installdir)s/run',
+]
+
+skipsteps = ['sanitycheck']
+
+modextravars = {
+    'ALPHAFOLD_DATA_PATH': '/share/resources/data/alphafold',
+}
+
+modluafooter = 'add_property("arch","gpu")'
+moduleclass = 'bio'

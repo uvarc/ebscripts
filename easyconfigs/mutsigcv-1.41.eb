@@ -1,0 +1,49 @@
+# Ruoshi Sun
+# 2020-04-08
+
+easyblock = 'Tarball'
+
+name = 'mutsigcv'
+version = '1.41'
+
+homepage = 'http://www.broadinstitute.org/cancer/cga/mutsig'
+description = """MutSig stands for "Mutation Significance".  MutSig analyzes lists of mutations discovered in DNA sequencing, to identify genes that were mutated more often than expected by chance given background mutation processes."""
+
+toolchain = SYSTEM
+
+source_urls = [
+    'http://software.broadinstitute.org/cancer/cga/sites/default/files/data/tools/mutsig',
+]
+sources = [
+    'MutSigCV_%(version)s.zip',
+]
+
+dependencies = [('mcr', 'R2016a')]
+
+ref_url = 'http://www.broadinstitute.org/cancer/cga/sites/default/files/data/tools/mutsig/reference_files'
+genome_ref = 'chr_files_hg19.zip'
+exome_ref = 'exome_full192.coverage.zip'
+mutation_ref = 'mutation_type_dictionary_file.txt'
+gene_ref = 'gene.covariates.txt'
+
+cmd  = 'cd %(installdir)s && '
+cmd += 'chmod go+x MutSigCV && '
+cmd += 'chmod go+x run_MutSigCV.sh && '
+cmd += 'wget %s/%s && unzip %s && ' % (ref_url, genome_ref, genome_ref)
+cmd += 'wget %s/%s && unzip %s && ' % (ref_url, exome_ref, exome_ref)
+cmd += 'wget %s/%s && ' % (ref_url, mutation_ref)
+cmd += 'wget %s/%s' % (ref_url, gene_ref)
+
+postinstallcmds = [
+    cmd
+]
+
+sanity_check_paths = {
+    'files': ['MutSigCV'],
+    'dirs': [],
+}
+
+modextrapaths = {'PATH': ''}
+modloadmsg = "Run: run_MutSigCV.sh $EBROOTMCR/v901 <argument_list>\nFor more help: cat $EBROOTMUTSIGCV/readme.txt\n"
+
+moduleclass = 'bio'

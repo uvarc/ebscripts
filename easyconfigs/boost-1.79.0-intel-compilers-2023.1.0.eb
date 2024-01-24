@@ -1,0 +1,27 @@
+# Ruoshi Sun
+# 2023-04-10
+
+easyblock = 'EB_Boost'
+
+name = 'boost'
+version = '1.79.0'
+
+homepage = 'http://www.boost.org/'
+description = "Boost provides free peer-reviewed portable C++ source libraries."
+
+toolchain = {'name': 'intel-compilers', 'version': '2023.1.0'}
+toolchainopts = {'pic': True, 'cstd': 'c++11'}
+
+source_urls = [SOURCEFORGE_SOURCE]
+sources = ['%(name)s_1_79_0.tar.gz']
+
+dependencies = [
+    ('bzip2', '1.0.6', '', SYSTEM),
+    ('zlib', '1.2.13'),
+]
+
+configopts = '--without-libraries=python'
+
+boost_multi_thread = True
+
+moduleclass = 'devel'

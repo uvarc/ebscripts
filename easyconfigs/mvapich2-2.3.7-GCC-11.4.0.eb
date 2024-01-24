@@ -1,0 +1,35 @@
+# Ruoshi Sun
+# 2023-12-13 RIV-12939
+easyblock = 'ConfigureMake'
+
+name = 'mvapich2'
+version = '2.3.7'
+
+homepage = 'http://mvapich.cse.ohio-state.edu'
+description = "The MVAPICH2 software, based on MPI 3.1 standard, delivers the best performance, scalability and fault tolerance for high-end computing systems and servers using InfiniBand, Omni-Path, Ethernet/iWARP, and RoCE networking technologies."
+
+toolchain = {'name': 'GCC', 'version': '11.4.0'}
+toolchainopts = {'optarch': False, 'pic': True}
+
+source_urls = ['https://mvapich.cse.ohio-state.edu/download/mvapich/mv2']
+sources = ['%(name)s-%(version)s-1.tar.gz']
+
+preconfigopts = 'unset F90 && unset F90FLAGS && export FCFLAGS="-O3 -fno-math-errno -fPIC -fallow-argument-mismatch" FFLAGS="-O3 -fno-math-errno -fPIC -fallow-argument-mismatch" && '
+
+configopts = ' '.join([
+    '--with-pmi=pmi2',
+    '--with-pm=slurm',
+    '--with-slurm=/opt/slurm/current',
+    '--enable-g=dbg',
+    '--enable-debuginfo',
+    '--enable-shared'
+])
+
+buildopts = 'SHARED_LIBS=yes CC=gcc CXX=g++ FC=gfortran CFLAGS=-O FCFLAGS="-O3 -fno-math-errno -fPIC -fallow-argument-mismatch" FFLAGS="-O3 -fno-math-errno -fPIC -fallow-argument-mismatch"'
+
+sanity_check_paths = {
+    'files': ['lib/libmpich.so'],
+    'dirs': [],
+}
+
+moduleclass = 'mpi'

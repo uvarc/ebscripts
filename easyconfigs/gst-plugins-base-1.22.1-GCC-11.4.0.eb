@@ -1,0 +1,44 @@
+easyblock = 'MesonNinja'
+
+name = 'gst-plugins-base'
+version = '1.22.1'
+
+homepage = 'https://gstreamer.freedesktop.org/'
+description = """GStreamer is a library for constructing graphs of media-handling
+ components. The applications it supports range from simple
+ Ogg/Vorbis playback, audio/video streaming to complex audio
+ (mixing) and video (non-linear editing) processing."""
+
+toolchain = {'name': 'GCC', 'version': '11.4.0'}
+
+source_urls = ['https://gstreamer.freedesktop.org/src/gst-plugins-base']
+sources = [SOURCELOWER_TAR_XZ]
+checksums = ['59bcaeacc5646b8dbdcfa4ef20ca6e818dd234910efb4cee1bbea441a3801c69']
+
+builddependencies = [
+    #('binutils', '2.39'),
+    ('Meson', '1.0.1', '-py3.11'),
+    ('Ninja', '1.11.1', '-py3.11'),
+    ('gobject-introspection', '1.74.0'),
+    ('gettext', '0.21.1'),
+    ('pkgconf', '1.9.5'),
+    ('bison', '3.8.2', '', SYSTEM),
+]
+
+dependencies = [
+    ('zlib', '1.2.13'),
+    ('glib', '2.76.1'),
+    ('gstreamer', '1.22.1'),
+    ('gdk-pixbuf', '2.42.10'),
+    ('x11', '20230603'),
+    ('mesa', '23.1.4'),
+    ('graphene', '1.10.8'),
+]
+
+sanity_check_paths = {
+    'files': ['bin/gst-%s-1.0' % x for x in ['discoverer', 'play', 'device-monitor']] +
+             ['lib/libgst%s-1.0.%s' % (x, SHLIB_EXT) for x in ['app', 'audio', 'video']],
+    'dirs': ['include', 'share']
+}
+
+moduleclass = 'vis'

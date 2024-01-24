@@ -1,0 +1,32 @@
+# Ruoshi Sun
+# 2023-03-28
+
+name = 'superlu'
+version = '5.3.0'
+
+easyblock = 'CMakeMake'
+
+homepage = 'https://portal.nersc.gov/project/sparse/superlu/'
+description = """SuperLU is a general purpose library for the direct solution of large, sparse, nonsymmetric systems of linear equations."""
+
+toolchain = SYSTEM
+toolchainopts = {'pic': True}
+
+github_account = 'xiaoyeli'
+source_urls = [GITHUB_LOWER_SOURCE]
+sources = ['v%(version)s.tar.gz']
+
+builddependencies = [('cmake','3.23.3')]
+
+configopts = [
+  '-DBUILD_SHARED_LIBS=ON',
+  '-DBUILD_SHARED_LIBS=OFF'
+]
+
+runtest=''
+sanity_check_paths = {
+    'files': ["include/supermatrix.h", "lib64/libsuperlu.%s" % SHLIB_EXT],
+    'dirs': []
+}
+
+moduleclass = 'numlib'

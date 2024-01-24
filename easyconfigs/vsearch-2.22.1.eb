@@ -1,0 +1,22 @@
+easyblock = 'ConfigureMake'
+
+name = 'vsearch'
+version = '2.22.1'
+
+homepage = 'https://github.com/torognes/vsearch'
+description = "VSEARCH which supports de novo and reference based chimera detection, clustering, full-length and prefix dereplication, rereplication, reverse complementation, masking, all-vs-all pairwise global alignment, exact and global alignment searching, shuffling, subsampling and sorting. It also supports FASTQ file analysis, filtering, conversion and merging of paired-end reads."
+
+toolchain = SYSTEM
+
+source_urls = ['https://github.com/torognes/%(name)s/archive/']
+sources = ['v%(version)s.tar.gz']
+
+preconfigopts = "./autogen.sh && "
+
+
+sanity_check_paths = {
+    'files': ['bin/%(name)s'],
+    'dirs': ['bin'],
+}
+
+moduleclass = 'bio'

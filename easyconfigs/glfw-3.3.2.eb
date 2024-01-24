@@ -1,0 +1,33 @@
+# Ruoshi Sun
+# 2020-06-18
+
+easyblock = 'CMakeMake'
+
+name = 'glfw'
+version = '3.3.2'
+
+homepage = 'https://www.glfw.org'
+description = """
+GLFW is an Open Source, multi-platform library for OpenGL, OpenGL ES and Vulkan development on the desktop.
+It provides a simple API for creating windows, contexts and surfaces, receiving input and events.
+"""
+
+toolchain = SYSTEM
+
+source_urls = ['https://github.com/%(name)s/%(name)s/archive']
+sources = ['%(version)s.tar.gz']
+
+builddependencies = [
+    ('cmake', '3.23.3'),
+]
+
+configopts = '-DBUILD_SHARED_LIBS=ON'
+
+separate_build_dir = True
+
+sanity_check_paths = {
+    'files': ['lib64/libglfw.so'],
+    'dirs': ['lib64'],
+}
+
+moduleclass = 'lib'

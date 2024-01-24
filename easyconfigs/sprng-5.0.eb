@@ -1,0 +1,22 @@
+# Ruoshi Sun
+# 2023-03-29
+
+easyblock = 'ConfigureMake'
+
+name = 'sprng'
+version = '5.0'
+
+homepage = 'http://www.sprng.org/'
+description = "Scalable Parallel Pseudo Random Number Generators Library"
+
+toolchain = SYSTEM
+
+source_urls = ['http://www.sprng.org/Version%(version)s/']
+sources = ['%(namelower)s5.tar.bz2']
+
+sanity_check_paths = {
+    'files': ['lib/libsprng.a'],
+    'dirs': [],
+}
+
+moduleclass = 'lib'

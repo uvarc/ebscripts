@@ -1,0 +1,35 @@
+# Ruoshi Sun
+# 2023-04-10
+
+easyblock = 'ConfigureMake'
+
+name = 'FFTW'
+version = '3.3.10'
+
+homepage = 'http://www.fftw.org'
+description = """FFTW is a C subroutine library for computing the discrete Fourier transform (DFT)
+ in one or more dimensions, of arbitrary input size, and of both real and complex data."""
+
+toolchain = {'name': 'intel', 'version': '2023.1'}
+toolchainopts = {'optarch': True, 'usempi': True, 'pic': True}
+
+source_urls = [homepage]
+sources = [SOURCELOWER_TAR_GZ]
+
+common_configopts = "--enable-threads --enable-openmp --enable-shared --with-pic"
+
+configopts = [
+    common_configopts + " --enable-single --enable-avx --enable-mpi",
+    common_configopts + " --enable-long-double --enable-mpi",
+#    common_configopts + " --enable-quad-precision",   # not supported by intel compiler
+    common_configopts + " --enable-avx --enable-mpi",  # default as last
+]
+
+# no quad precision, requires GCC v4.6 or higher
+# # see also http://www.fftw.org/doc/Extended-and-quadruple-precision-in-Fortran.html
+with_quad_prec = False
+
+# # compilation fails when configuring with --enable-avx-128-fma, Intel compilers do not support FMA4 instructions
+use_fma4 = False
+
+moduleclass = 'numlib'

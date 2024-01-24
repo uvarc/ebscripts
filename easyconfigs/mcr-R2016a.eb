@@ -1,0 +1,24 @@
+# from EB repo
+# Ruoshi Sun
+# 2020-04-08
+
+easyblock = 'EB_MCR'
+
+name = 'mcr'
+version = 'R2016a'
+
+homepage = 'http://www.mathworks.com/products/compiler/mcr/'
+description = """The MATLAB Runtime is a standalone set of shared libraries
+ that enables the execution of compiled MATLAB applications
+ or components on computers that do not have MATLAB installed."""
+
+toolchain = SYSTEM
+
+source_urls = [
+    'http://www.mathworks.com/supportfiles/downloads/%(version)s/deployment_files/%(version)s/installers/glnxa64/',
+]
+sources = ['MCR_%(version)s_glnxa64_installer.zip']
+
+dependencies = [('java', '12')]
+
+moduleclass = 'math'

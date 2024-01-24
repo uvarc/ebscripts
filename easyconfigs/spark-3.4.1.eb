@@ -1,0 +1,50 @@
+# Author: Denis Krišťák (INUITS)
+# modified Ruoshi Sun
+# 2023-08-11
+
+easyblock = 'Tarball'
+
+name = 'spark'
+version = '3.4.1'
+
+homepage = 'https://spark.apache.org'
+description = """Spark is Hadoop MapReduce done in memory"""
+
+toolchain = SYSTEM
+
+source_urls = [
+    'https://archive.apache.org/dist//%(namelower)s/%(namelower)s-%(version)s/',
+    'https://downloads.apache.org/%(namelower)s/%(namelower)s-%(version)s/'
+]
+sources = [
+    '%(namelower)s-%(version)s-bin-hadoop3.tgz',
+    'scripts.tar'
+]
+
+dependencies = [
+    ('java', '11'),
+    ('anaconda', '2023.07', '-py3.11'),
+]
+
+postinstallcmds = [
+# spark-env.sh
+    'cp %(installdir)s/conf/spark-env.sh.template %(installdir)s/conf/spark-env.sh',
+    'echo "SPARK_LOCAL_DIRS=/scratch/\$USER" >> %(installdir)s/conf/spark-env.sh',
+    'echo "SPARK_WORKER_DIR=/scratch/\$USER" >> %(installdir)s/conf/spark-env.sh',
+    'echo "SPARK_LOG_DIR=/scratch/\$USER"    >> %(installdir)s/conf/spark-env.sh',
+# spark-defaults.conf
+    'cp %(installdir)s/conf/spark-defaults.conf.template %(installdir)s/conf/spark-defaults.conf',
+    'echo "spark.port.maxRetries 100" >> %(installdir)s/conf/spark-defaults.conf',
+# PSC scripts
+    'mv ../scripts %(installdir)s',
+]
+
+sanity_check_paths = {
+    'files': ['bin/pyspark', 'bin/spark-shell'],
+    'dirs': ['python', 'scripts']
+}
+
+modextrapaths = {'PYTHONPATH': ['python', 'python/lib/py4j-0.10.9.7-src.zip']}
+modextravars = {'SPARK_HOME': '%(installdir)s'}
+
+moduleclass = 'devel'

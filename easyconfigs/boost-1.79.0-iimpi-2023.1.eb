@@ -1,0 +1,26 @@
+# Ruoshi Sun
+# 2022-12-01
+
+easyblock = 'EB_Boost'
+
+name = 'boost'
+version = '1.79.0'
+
+homepage = 'http://www.boost.org/'
+description = """Boost provides free peer-reviewed portable C++ source libraries."""
+
+toolchain = {'name': 'iimpi', 'version': '2023.1'}
+toolchainopts = {'pic': True, 'usempi': True}
+
+source_urls = [SOURCEFORGE_SOURCE]
+sources = ['%%(namelower)s_%s.tar.gz' % '_'.join(version.split('.'))]
+
+boost_mpi = True
+
+dependencies = [
+    ('bzip2', '1.0.6', '', SYSTEM),
+    ('zlib', '1.2.13'),
+    ('xz', '5.2.7', '', SYSTEM),
+]
+
+moduleclass = 'devel'

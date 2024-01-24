@@ -1,0 +1,44 @@
+# This file is an EasyBuild reciPY as per https://github.com/easybuilders/easybuild
+# Author: Pablo Escobar Lopez
+# Swiss Institute of Bioinformatics
+# Biozentrum - University of Basel
+# 2016-11-07 modified by:
+# Adam Huffman
+# The Francis Crick Institute
+easyblock = 'ConfigureMake'
+
+name = 'gmap-gsnap'
+version = '2023-02-17'
+
+homepage = 'http://research-pub.gene.com/gmap/'
+description = """GMAP: A Genomic Mapping and Alignment Program for mRNA and EST Sequences
+ GSNAP: Genomic Short-read Nucleotide Alignment Program"""
+
+toolchain = SYSTEM
+
+source_urls = ['http://research-pub.gene.com/gmap/src/']
+sources = [SOURCELOWER_TAR_GZ]
+patches = [
+    'GMAP-GSNAP-%(version)s_cleanup-headers.patch',
+    'GMAP-GSNAP-%(version)s_fix-typecast.patch',
+]
+checksums = [
+    {'gmap-gsnap-2023-02-17.tar.gz': 'd54abb6bc59da46823f5a1a9d94872a6b90468699112a6f375ddc7b91340db06'},
+]
+
+# with these deps you can use standard compressed files
+# to support files in gobby format take a look at README for extra dependencies
+# http://research-pub.gene.com/gmap/src/README
+dependencies = [
+    ('bzip2', '1.0.6'),
+]
+
+# you can change the MAX_READLENGTH for GSNAP with something like this.
+# details in the README http://research-pub.gene.com/gmap/src/README
+# configopts = 'MAX_READLENGTH=250'
+sanity_check_paths = {
+    'files': ['bin/gmap', 'bin/gsnap'],
+    'dirs': [],
+}
+
+moduleclass = 'bio'

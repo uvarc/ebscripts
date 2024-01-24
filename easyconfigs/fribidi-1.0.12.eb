@@ -1,0 +1,26 @@
+# Authors:: Jack Perdue <j-perdue@tamu.edu> - TAMU HPRC - https://hprc.tamu.edu
+# modified Ruoshi Sun
+
+easyblock = 'ConfigureMake'
+
+name = 'fribidi'
+version = '1.0.12'
+
+homepage = 'https://github.com/fribidi/fribidi'
+
+description = """The Free Implementation of the Unicode Bidirectional Algorithm."""
+
+toolchain = SYSTEM
+
+source_urls = ['https://github.com/%(namelower)s/%(namelower)s/releases/download/v%(version)s']
+sources = [SOURCELOWER_TAR_XZ]
+
+configopts = '--disable-docs'
+
+sanity_check_paths = {
+    'files': ['bin/%(namelower)s', 'include/%(namelower)s/%(namelower)s.h',
+              'lib/lib%%(namelower)s.%s' % SHLIB_EXT],
+    'dirs': []
+}
+
+moduleclass = 'lang'

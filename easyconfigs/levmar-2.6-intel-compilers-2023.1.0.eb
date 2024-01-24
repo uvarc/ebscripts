@@ -1,0 +1,32 @@
+# Ruoshi Sun
+# 2020-04-22
+
+easyblock = 'MakeCp'
+
+name = 'levmar'
+version = '2.6'
+
+homepage = 'http://users.ics.forth.gr/~lourakis/levmar/'
+description = "Levmar is an implementation of Levenberg-Marquardt in C"
+
+toolchain = {'name': 'intel-compilers', 'version': '2023.1.0'}
+toolchainopts = {'pic': True}
+
+source_urls = ['http://users.ics.forth.gr/~lourakis/%(name)s']
+sources = [SOURCELOWER_TGZ]
+
+dependencies = [
+    ('imkl', '%(toolchain_version)s', '', SYSTEM)
+]
+
+buildopts = '-f Makefile.icc LAPACKLIBS_PATH=$MKLROOT ARCHFLAGS=-axCORE-AVX2,CORE-AVX512'
+
+files_to_copy = ['./liblevmar.a', './%(name)s.h']
+
+sanity_check_paths = {
+    'files': ['liblevmar.a'],
+    'dirs': [''],
+}
+
+modextrapaths = {'LD_LIBRARY_PATH': ''}
+moduleclass = 'numlib'

@@ -1,0 +1,22 @@
+# Ruoshi Sun
+
+easyblock = 'EB_Doxygen'
+
+name = 'doxygen'
+version = '1.9.5'
+
+homepage = 'http://www.doxygen.org'
+description = """Doxygen is a documentation system for C++, C, Java, Objective-C, Python, 
+ IDL (Corba and Microsoft flavors), Fortran, VHDL, PHP, C#, and to some extent D."""
+
+toolchain = {'name': 'intel-compilers', 'version': '2023.1.0'}
+
+source_urls = [SOURCEFORGE_SOURCE]
+sources = ['%(namelower)s-%(version)s.src.tar.gz']
+
+builddependencies = [
+    ('cmake', '3.23.3', '', SYSTEM),
+    ('bison', '3.8.2', '', SYSTEM),
+]
+
+moduleclass = 'devel'

@@ -1,0 +1,24 @@
+easyblock = 'ConfigureMake'
+
+name = 'geany'
+version = '1.38'
+
+homepage = 'https://www.geany.org/'
+description = """Geany is a text editor using the GTK+ toolkit with basic features of an integrated development environment. """
+
+toolchain = SYSTEM
+
+sources = [SOURCELOWER_TAR_GZ]
+
+source_urls = ['https://download.geany.org/']
+
+builddependencies = [
+    ('intltool','0.51.0', ),
+]
+
+sanity_check_paths = {
+    'files': ['bin/geany','lib/libgeany.so'],
+    'dirs': [],
+}
+
+moduleclass = 'tools'

@@ -1,0 +1,22 @@
+easyblock = 'MakeCp'
+
+name = 'levmar'
+version = '2.6'
+
+homepage = 'https://users.ics.forth.gr/~lourakis/levmar/'
+description = "Levmar is an implementation of Levenberg-Marquardt in C"
+
+toolchain = SYSTEM
+
+source_urls = [homepage]
+sources = [SOURCELOWER_TGZ]
+
+files_to_copy = ['./liblevmar.a', './%(name)s.h']
+
+sanity_check_paths = {
+    'files': ['liblevmar.a'],
+    'dirs': [''],
+}
+
+modextrapaths = {'LD_LIBRARY_PATH': ''}
+moduleclass = 'numlib'

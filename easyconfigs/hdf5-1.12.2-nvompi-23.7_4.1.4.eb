@@ -1,0 +1,20 @@
+# Ruoshi Sun
+# 2024-01-08
+
+easyblock = 'EB_HDF5'
+
+name = 'hdf5'
+version = '1.12.2'
+
+homepage = 'http://www.hdfgroup.org/HDF5/'
+description = "HDF5 is a unique technology suite that makes possible the management of extremely large and complex data collections."
+
+toolchain = {'name': 'nvompi', 'version': '23.7_4.1.4'}
+toolchainopts = {'pic': True, 'usempi': True}
+
+source_urls = ['http://www.hdfgroup.org/ftp/HDF5/releases/%(name)s-1.12/%(name)s-%(version)s/src']
+sources = [SOURCELOWER_TAR_GZ]
+
+configopts = '--enable-shared --enable-parallel '
+
+moduleclass = 'data'

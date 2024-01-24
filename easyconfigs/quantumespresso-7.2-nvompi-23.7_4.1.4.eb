@@ -1,0 +1,68 @@
+# Ruoshi Sun
+# 2024-01-08 RIV-13096
+
+easyblock = 'ConfigureMake'
+name = 'quantumespresso'
+version = '7.2'
+
+homepage = 'https://www.quantum-espresso.org/'
+description = """ Quantum ESPRESSO is an integrated suite of Open-Source computer codes for electronic-structure calculations and materials modeling at the nanoscale. It is based on density-functional theory, plane waves, and pseudopotentials."""
+
+toolchain = {'name': 'nvompi', 'version': '23.7_4.1.4'}
+toolchainopts = {'usempi': True, 'openmp': True}
+
+local_thermopw_version = '1.8.1'
+sources = [
+    {
+        'filename': 'q-e-qe-%(version)s.tar.gz',
+        'extract_cmd': 'mkdir -p %(builddir)s/qe-%(version)s && tar xzvf %s --strip-components=1 -C $_',
+        'source_urls': ['https://gitlab.com/QEF/q-e/-/archive/qe-%(version)s'],
+    },
+    {
+        'filename': 'qe-gipaw-%(version)s.tar.gz',
+        'source_urls': ['https://github.com/dceresoli/qe-gipaw/releases/download/%(version)s/']
+    },
+    {
+        'filename': 'thermo_pw.%s.tar.gz' % local_thermopw_version,
+        'extract_cmd': 'tar xzvf %s -C %(builddir)s/qe-%(version)s',
+        'source_urls': ['https://github.com/dalcorso/thermo_pw/releases/download/%s' % local_thermopw_version]
+    },
+    {
+        'filename': 'wannier90-3.1.0.tar.gz', 'download_filename': 'v3.1.0.tar.gz',
+        'source_urls': ['https://github.com/wannier-developers/wannier90/archive/']
+    },
+]
+
+preconfigopts = ' && '.join([
+    '(cd thermo_pw',
+    'make join_qe)',
+    '',
+])
+
+local_fflags = '-fast -Mcache_align -Mpreprocess -Mlarge_arrays -Mfree'
+configopts = ' '.join([
+    "BLAS_LIBS=$EBROOTNVHPC/Linux_x86_64/23.7/compilers/lib/libblas.a",
+    "LAPACK_LIBS=$EBROOTNVHPC/Linux_x86_64/23.7/compilers/lib/liblapack.a",
+    "FFLAGS='%s'" % local_fflags,
+    "F90FLAGS='%s'" % local_fflags,
+    "FCFLAGS='%s'" % local_fflags,
+    "--with-cuda=$CUDA_HOME --with-cuda-cc=70,cc80 --with-cuda-runtime=12.2",
+    "--with-scalapack=no",
+    "--enable-openmp --enable-openacc --enable-parallel",
+])
+
+buildopts = 'all gwl xspectra couple epw gipaw w90; make thermo_pw || make thermo_pw || echo'
+
+sanity_check_paths = {
+    'files': ['bin/pw.x'],
+    'dirs': ['bin'],
+}
+
+modloadmsg = """Can only run on V100 and A100. In Slurm scripts:
+#SBATCH -p gpu
+#SBATCH --gres=gpu:1
+#SBATCH -C v100|a100
+"""
+
+modluafooter = 'add_property("arch","gpu")'
+moduleclass = 'chem'

@@ -1,0 +1,25 @@
+easyblock = 'PackedBinary'
+
+name = 'xcrysden'
+version = '1.6.2'
+
+homepage = 'https://github.com/hunspell/hunspell'
+description = """XCrySDen is a crystalline and molecular structure visualisation program aiming at display of isosurfaces and contours, which can be superimposed on crystalline structures and interactively rotated and manipulated."""
+
+toolchain = SYSTEM
+
+source_urls = [
+    'http://www.xcrysden.org/download/'
+]
+
+sources = [
+   '%(name)s-%(version)s-linux_x86_64-shared.tar.gz',
+]
+
+sanity_check_paths = {
+    'files': ['xcrysden'],
+    'dirs': ['bin'],
+}
+
+modextrapaths = {'PATH': ''}
+moduleclass = 'vis'

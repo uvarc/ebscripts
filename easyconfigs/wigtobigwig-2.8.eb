@@ -1,0 +1,32 @@
+# Ruoshi Sun
+# 2023-03-16
+# 2020-07-01
+
+easyblock = 'Binary'
+
+name = 'wigtobigwig'
+version = '2.8'
+
+homepage = 'https://genome.ucsc.edu/goldenPath/help/bigWig.html'
+description = """
+The bigWig format is useful for dense, continuous data that will be displayed in the Genome Browser as a graph.
+BigWig files are created from wiggle (wig) type files using the program wigToBigWig.
+"""
+
+#times out for unknown reason
+#source_urls = ['http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64']
+sources = ['wigToBigWig.tar']
+
+toolchain = SYSTEM
+
+install_cmd = """
+    tar xf %s -C %%(installdir)s
+    chmod +x %%(installdir)s/wigToBigWig
+""" % sources[0]
+
+sanity_check_paths = {
+    'files': ['wigToBigWig'],
+    'dirs': [''],
+}
+
+moduleclass = 'bio'

@@ -1,0 +1,43 @@
+# authors: Kenneth Hoste (Ghent University), George Tsouloupas <g.tsouloupas@cyi.ac.cy>, Fotis Georgatos <fotis@cern.ch>
+#
+# This work implements a part of the HPCBIOS project and is a component of the policy:
+# http://hpcbios.readthedocs.org/en/latest/HPCBIOS_2012-94.html
+# foss-2016b modified by:
+# Adam Huffman
+# The Francis Crick Institute
+easyblock = 'ConfigureMake'
+
+name = 'emboss'
+version = '6.6.0'
+
+homepage = 'http://emboss.sourceforge.net/'
+description = """EMBOSS is 'The European Molecular Biology Open Software Suite'.
+ EMBOSS is a free Open Source software analysis package specially developed for
+ the needs of the molecular biology (e.g. EMBnet) user community."""
+
+toolchain = SYSTEM
+
+source_urls = [
+    'ftp://%(name)s.open-bio.org/pub/EMBOSS/',
+    'ftp://%(name)s.open-bio.org/pub/EMBOSS/old/%(version_major_minor)s.0',
+]
+sources = ['EMBOSS-%(version)s.tar.gz']
+patches = ['EMBOSS_disable-embossupdate.patch']
+
+dependencies = [
+    ('libharu', '2.3.0'),
+    ('java', '8'),
+]
+
+configopts = " --with-hpdf=$EBROOTLIBHARU "
+
+# jemboss.jar does not build in a parallel build
+parallel = 1
+
+
+sanity_check_paths = {
+    'files': ['bin/seqret', 'bin/aligncopy', 'bin/profit', 'bin/prophet', 'lib/libacd.a', 'lib/libajax.a', 'lib/libajaxdb.a', 'lib/libajaxg.a', 'lib/libeexpat.a', 'lib/libensembl.a', 'lib/libepcre.a', 'lib/libeplplot.a', 'lib/libezlib.a', 'lib/libnucleus.a'],
+    'dirs': [],
+}
+
+moduleclass = 'bio'

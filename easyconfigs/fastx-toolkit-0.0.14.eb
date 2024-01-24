@@ -1,0 +1,41 @@
+##
+# This file is an EasyBuild reciPY as per https://github.com/hpcugent/easybuild
+#
+# Copyright:: Copyright 2012-2014 Uni.Lu/LCSB, NTUA
+# Authors::   Cedric Laczny <cedric.laczny@uni.lu>, Fotis Georgatos <fotis@cern.ch>
+# License::   MIT/GPL
+# $Id$
+#
+# This work implements a part of the HPCBIOS project and is a component of the policy:
+# http://hpcbios.readthedocs.org/en/latest/HPCBIOS_2012-94.html
+##
+easyblock = 'ConfigureMake'
+
+name = 'fastx-toolkit'
+version = '0.0.14'
+
+homepage = 'http://hannonlab.cshl.edu/fastx_toolkit/'
+description = """The FASTX-Toolkit is a collection of command line tools for 
+ Short-Reads FASTA/FASTQ files preprocessing."""
+
+toolchain = SYSTEM
+
+source_urls = ['https://github.com/agordon/fastx_toolkit/releases/download/%(version)s']
+sources = ['fastx_toolkit-%(version)s.tar.bz2']
+patches = ['%(name)s-%(version)s_fix-gcc7.patch']
+checksums = [
+    '9e1f00c4c9f286be59ac0e07ddb7504f3b6433c93c5c7941d6e3208306ff5806',  # fastx_toolkit-0.0.14.tar.bz2
+    '10dfca10f8e4678d1034a522535fa85c7273d2c5c04dd007d191f7a484ee42b5',  # FASTX-Toolkit-0.0.14_fix-gcc7.patch
+]
+
+dependencies = [
+    ('libgtextutils', '0.7'),
+]
+
+
+sanity_check_paths = {
+    'files': ['bin/fastx_clipper', 'bin/fastx_trimmer', 'bin/fastx_quality_stats', 'bin/fastx_artifacts_filter', 'bin/fastx_reverse_complement', 'bin/fastx_collapser', 'bin/fastx_uncollapser', 'bin/fastx_renamer', 'bin/fastx_barcode_splitter.pl', 'bin/fastx_nucleotide_distribution_graph.sh', 'bin/fastx_nucleotide_distribution_line_graph.sh', 'bin/fasta_clipping_histogram.pl', 'bin/fasta_formatter', 'bin/fasta_nucleotide_changer', 'bin/fastq_quality_boxplot_graph.sh', 'bin/fastq_quality_converter', 'bin/fastq_to_fasta', 'bin/fastq_quality_filter', 'bin/fastq_quality_trimmer', 'bin/fastq_masker'],
+    'dirs': ['.'],
+}
+
+moduleclass = 'bio'

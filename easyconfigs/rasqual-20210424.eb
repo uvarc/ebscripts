@@ -1,0 +1,44 @@
+# Ruoshi Sun
+# 2023-03-30
+
+easyblock = 'MakeCp'
+
+name = 'rasqual'
+version = '20210424'
+# Based on latest commit date since no version number is provided.
+
+homepage = 'https://github.com/natsuhiko/rasqual'
+description = """RASQUAL (Robust Allele Specific QUAntification and quality controL) maps QTLs for sequenced based cellular traits by combining population and allele-specific signals."""
+
+toolchain = SYSTEM
+
+dependencies = [
+	('gsl', '2.7.1'),
+	('clapack', '3.2.1'),
+	('samtools', '1.17'),
+	('htslib', '1.17'),
+]
+
+source_urls = ['https://github.com/natsuhiko/rasqual/archive/refs/heads']
+sources = ['master.zip']
+
+prebuildopts = 'export CFLAGS="-I$EBROOTCLAPACK/INCLUDE -I$EBROOTCLAPACK/F2CLIBS -I$EBROOTGSL" && '
+prebuildopts += 'export LDFLAGS="-L$EBROOTCLAPACK -L$EBROOTCLAPACK/F2CLIBS -L$EBROOTGSL/lib" && '
+prebuildopts += 'cd src && '
+
+# fix hard coded /dev/stderr in createASVCF.sh
+postinstallcmds = [
+    'sed -i "s|> /dev/stderr|>\&2|g" %(installdir)s/src/ASVCF/createASVCF.sh',
+    'cd %(installdir)s/src/ASVCF && make all'
+]
+
+files_to_copy = ['./*']
+
+modextrapaths = {'PATH': ['src', 'src/ASVCF']}
+
+sanity_check_paths = {
+    'files': ['src/rasqual'],
+    'dirs': ['src'],
+}
+
+moduleclass = 'bio'

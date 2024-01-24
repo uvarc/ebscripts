@@ -1,0 +1,28 @@
+# author: khs3z
+# 2019-06-14
+
+easyblock = 'Tarball'
+
+name = 'knime'
+version = '3.7.2'
+
+homepage = 'https://www.knime.com'
+
+description = """KNIME is an analytics platform for data mining."""
+
+toolchain = SYSTEM
+
+source_urls = [
+    'https://www.knime.com/download-installer/6/64bit' # needs to be downloaded manually
+]
+
+sources = [
+    'knime_%(version)s.linux.gtk.x86_64.tar'
+]
+
+sanity_check_paths = {
+    'files': ['knime'],
+    'dirs': ['features', 'plugins', 'configuration'],
+}
+
+moduleclass = 'data'

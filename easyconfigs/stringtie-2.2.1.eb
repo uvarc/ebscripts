@@ -1,0 +1,30 @@
+# This file is an EasyBuild reciPY as per https://github.com/easybuilders/easybuild
+# modified Ruoshi Sun
+# 2023-03-28
+
+easyblock = 'MakeCp'
+
+name = 'stringtie'
+version = '2.2.1'
+
+homepage = 'http://ccb.jhu.edu/software/%(namelower)/'
+description = "StringTie is a fast and highly efficient assembler of RNA-Seq alignments into potential transcripts."
+
+toolchain = SYSTEM
+
+source_urls = ['http://ccb.jhu.edu/software/%(namelower)s/dl/']
+sources = [SOURCELOWER_TAR_GZ]
+
+# release option must be given to 'make' otherwise a DEBUG version is built by default
+buildopts = 'release '
+
+files_to_copy = [(['%(namelower)s'], 'bin'), 'README.md', 'LICENSE']
+
+#runtest = 'test'
+
+sanity_check_paths = {
+    'files': ['bin/%(namelower)s'],
+    'dirs': [],
+}
+
+moduleclass = 'bio'

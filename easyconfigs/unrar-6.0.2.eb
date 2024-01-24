@@ -1,0 +1,28 @@
+# from EB repo
+# modified Ruoshi Sun
+# 2021-07-09
+
+easyblock = 'ConfigureMake'
+
+name = 'unrar'
+version = '6.0.2'
+
+homepage = 'https://www.rarlab.com/'
+description = "RAR is a powerful archive manager."
+
+toolchain = {'name': 'dummy', 'version': ''}
+
+source_urls = ['http://www.rarlab.com/rar/']
+sources = ['unrarsrc-%(version)s.tar.gz']
+
+skipsteps = ['configure']
+
+prebuildopts = 'CXX="$CXX" CXXFLAGS="$CXXFLAGS" '
+installopts = 'DESTDIR=%(installdir)s'
+
+sanity_check_paths = {
+    'files': ['bin/unrar'],
+    'dirs': [],
+}
+
+moduleclass = 'tools'

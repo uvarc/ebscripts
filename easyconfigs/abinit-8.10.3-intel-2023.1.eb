@@ -1,0 +1,44 @@
+# from EB repo
+# Ruoshi Sun
+# 2023-12-19
+
+easyblock = 'ConfigureMake'
+
+name = 'abinit'
+version = '8.10.3'
+
+homepage = 'http://www.abinit.org/'
+description = """ABINIT is a package whose main program allows one to find the total energy, charge density and
+ electronic structure of systems made of electrons and nuclei (molecules and periodic solids) within Density Functional
+ Theory (DFT), using pseudopotentials and a planewave or wavelet basis."""
+
+toolchain = {'name': 'intel', 'version': '2023.1'}
+toolchainopts = {'usempi': True, 'pic': True}
+
+source_urls = ['https://www.abinit.org/sites/default/files/packages']
+sources = [SOURCELOWER_TAR_GZ]
+
+preconfigopts = 'FCFLAGS="$FCFLAGS -heap-arrays" F90FLAGS="$F90FLAGS -heap-arrays" && '
+
+configopts = '--enable-mpi --enable-mpi-io --with-mpi-prefix=$EBROOTIMPI/mpi/latest '
+configopts += '--with-dft-flavor="atompaw+libxc+wannier90" '
+configopts += '--with-libxc-incs="-I/$EBROOTLIBXC/include" --with-libxc-libs="-L/$EBROOTLIBXC/lib -lxcf90 -lxc" '
+configopts += '--with-linalg-flavor="mkl" --with-linalg-libs="-L$MKLROOT/lib/intel64 $EBVARLIBSCALAPACK" ' #-lmkl_scalapack_lp64 -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -lmkl_blacs_intelmpi_lp64"
+configopts += '--with-netcdf-incs="-I$EBROOTNETCDF/include" '
+configopts += '--with-netcdf-libs="-L$EBROOTNETCDF/lib -lnetcdf -lnetcdff" '
+configopts += '--with-fft-flavor=fftw3-mkl '
+configopts += '--with-fft-libs="-L$MKLROOT/lib/intel64 -lmkl_intel_lp64 -lmkl_sequential -lmkl_core" '
+configopts += '--with-fftw-incs="-I$MKLROOT/include/fftw" '
+
+dependencies = [
+    ('libxc', '2.2.0'), # abinit requires this version
+    ('netcdf', '4.9.2'),
+]
+
+sanity_check_paths = {
+    'files': ['bin/%s' % x for x in ['abinit', 'aim', 'cut3d', 'conducti', 'mrgddb', 'mrgscr', 'optic']],
+    'dirs': ['lib/pkgconfig'],
+}
+
+moduleclass = 'chem'
+

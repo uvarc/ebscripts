@@ -1,0 +1,26 @@
+# Ruoshi Sun
+# 2022-08-02
+easyblock = 'Tarball'
+
+name = 'crossftp'
+version = '1.99.9'
+
+homepage = 'http://www.crossftp.com'
+description = "CrossFTP is a free FTP, SFTP, WebDav, Amazon S3, Amazon Glacier, Microsoft Azure, Google storage, and OpenStack Swift client for Win, Mac, and Linux."
+
+toolchain = SYSTEM
+
+source_urls = ['http://www.crossftp.com/']
+sources = ['%(name)s-all-bin-%(version)s.zip']
+
+dependencies = [('java', '8')]
+
+sanity_check_paths = {
+    'files': ['crossftp-all-bin/run_client.sh'],
+    'dirs': [],
+}
+
+modextrapaths = {'PATH': ['crossftp-all-bin']}
+modloadmsg = 'Execute: run_client.sh'
+
+moduleclass = 'tools'

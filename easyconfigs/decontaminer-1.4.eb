@@ -1,0 +1,61 @@
+# Ruoshi Sun
+# 2020-04-10
+
+easyblock = 'PackedBinary'
+
+name = 'decontaminer'
+version = '1.4'
+
+homepage = 'http://www-labgtp.na.icar.cnr.it/decontaminer/'
+description = """decontaMiner, a tool for detecting contaminating organisms in human unmapped sequences."""
+
+toolchain = SYSTEM
+
+# URL not exposed
+sources = [
+    'decontaMiner.tar.gz',
+    'Human_rna.zip',
+    'VIRUSES_db.zip',
+# ignore exit status
+    {'filename': 'FUNGI_db.zip', 'extract_cmd': 'UNZIP_DISABLE_ZIPBOMB_DETECTION=TRUE unzip %s || echo'},
+    {'filename': 'BACTERIA_db.zip', 'extract_cmd': 'UNZIP_DISABLE_ZIPBOMB_DETECTION=TRUE unzip %s || echo'},
+]
+
+dependencies = [
+    ('blast', '2.13.0'),
+    ('samtools', '1.17'),
+    ('fastx-toolkit', '0.0.14'),
+    ('sortmerna', '2.1'),
+]
+
+install_cmd = """
+    cd %(builddir)s/decontaMiner_%(version)s
+    mkdir db
+    cp -r ../{Human_rna,VIRUSES_db,FUNGI_db,BACTERIA_db} db
+    export INSTALLDIR=%(installdir)s
+    sed -e "s|^SAMTOOLS_EXEC.*$|SAMTOOLS_EXEC= $EBROOTSAMTOOLS/bin/samtools|"\
+        -e "s|^FASTX_EXEC.*$|FASTX_EXEC= $EBROOTFASTXMINTOOLKIT/bin/fastq_quality_filter|"\
+        -e "s|^BLASTN_EXEC.*$|BLASTN_EXEC= $EBROOTBLAST/bin/blastn|"\
+        -e "s|^SORTMERNA_EXEC.*$|SORTMERNA_EXEC= $EBROOTSORTMERNA/bin/sortmerna|"\
+        -e "s|^RIBO_DB.*$|RIBO_DB=$INSTALLDIR/db/Human_rna|"\
+        -e "s|^BACTERIA_DB.*$|BACTERIA_DB=$INSTALLDIR/db/BACTERIA_db|"\
+        -e "s|^BACTERIA_NAME.*$|BACTERIA_NAME=Bacteria_newblast|"\
+        -e "s|^FUNGI_DB.*$|FUNGI_DB=$INSTALLDIR/db/FUNGI_db|"\
+        -e "s|^FUNGI_NAME.*$|FUNGI_NAME=Fungi_new|"\
+        -e "s|^VIRUSES_DB.*$|VIRUSES_DB=$INSTALLDIR/db/VIRUSES_db|"\
+        -e "s|^VIRUSES_NAME.*$|VIRUSES_NAME=Virus_new|"\
+        %(builddir)s/decontaMiner_%(version)s/config_files/configure.txt > %(builddir)s/decontaMiner_%(version)s/configure.txt 
+    cp -R %(builddir)s/decontaMiner_%(version)s/* %(installdir)s
+    cd %(installdir)s/db/FUNGI_db
+    mv fungi_all.fna Fungi_new.fna
+"""
+
+sanity_check_paths = {
+    'files': ['shell_scripts/decontaMiner.sh'],
+    'dirs': ['shell_scripts']
+}
+
+modextrapaths = {'PATH': 'shell_scripts'}
+modloadmsg = 'Run: decontaMiner.sh -c $EBROOTDECONTAMINER/configure.txt <options>\nHelp: decontaMiner.sh -h\n'
+
+moduleclass = 'bio'

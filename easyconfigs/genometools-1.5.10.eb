@@ -1,0 +1,30 @@
+# Author: Karsten Siller
+# 2018-06-26
+easyblock = 'MakeCp'
+
+name = 'genometools'
+version = '1.5.10'
+
+homepage = 'http://genometools.org'
+description = "The GenomeTools genome analysis system is a free collection of bioinformatics tools (in the realm of genome informatics) combined into a single binary named gt. It is based on a C library named “libgenometools” which consists of several modules."
+
+toolchain = SYSTEM
+
+#toolchainopts = {'openmp': True}
+source_urls = ['http://%(name)s.org/pub']
+sources = [SOURCE_TAR_GZ]
+
+skipsteps = ['configure']
+
+buildopts = 'useshared=no errorcheck=no cairo=yes threads=yes'
+installopts = 'prefix=%(installdir)s'
+
+modextrapaths = {'PYTHONPATH': 'gtpython', 'RUBYLIB': 'gtruby'}
+files_to_copy = ['lib', 'bin', 'testdata', 'testsuite', 'gt*']
+
+sanity_check_paths = {
+    'files': ['bin/gt', 'lib/libgenometools.a', 'lib/libgenometools.so'],
+    'dirs': ['bin', 'lib'],
+}
+
+moduleclass = 'bio'

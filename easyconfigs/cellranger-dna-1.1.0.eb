@@ -1,0 +1,32 @@
+# Author: khs3z 
+# 2019-05-31
+
+name = 'cellranger-dna'
+version = '1.1.0'
+easyblock = 'Tarball'
+
+homepage = 'https://www.10xgenomics.com/'
+description = """Cell Ranger DNA is a set of analysis pipelines that process Chromium single cell DNA sequencing output to align reads, identify copy number variation (CNV), and compare heterogeneity among cells."""
+
+toolchain = SYSTEM
+
+sources = [{
+    'source_urls': ['http://cf.10xgenomics.com/releases/cell-dna/'], # download requires token
+    'filename': 'cellranger-dna-%(version)s.tar.gz',
+    'extract_cmd': "tar xfvz %s && rm cellranger-dna-%(version)s/miniconda-dna-cs/4.3.21-miniconda-dna-cs-c10/lib/libstdc++.so.6.0.21",  # unpack and remove broken symlink
+}]
+
+dependencies = [
+    ('bcl2fastq2', '2.20.0'),
+]
+
+sanity_check_paths = {
+    'files': ['cellranger-dna', 'cellranger-dna-shell'],
+    'dirs': ['cellranger-dna-cs', 'miniconda-dna-cs', 'bwa']
+}
+
+modextrapaths = {
+    'PATH': ['cellranger-dna-cs/%(version)s/bin'],
+}
+
+moduleclass = 'bio'

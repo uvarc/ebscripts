@@ -1,0 +1,20 @@
+easyblock = 'Tarball'
+
+name = 'sbt'
+version = '1.8.2'
+
+homepage = 'http://www.scala-sbt.org'
+description = "A build tool for Scala."
+
+toolchain = SYSTEM
+
+source_urls = ['https://github.com/%(name)s/%(name)s/releases/download/v%(version)s']
+sources = [SOURCE_TGZ]
+
+dependencies = [
+    ('java', '8'),
+]
+
+skipsteps = ['sanitycheck']
+
+moduleclass = 'lang'

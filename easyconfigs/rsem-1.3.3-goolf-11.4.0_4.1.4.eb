@@ -1,0 +1,45 @@
+# Ruoshi Sun
+# 2023-04-04
+
+easyblock = 'ConfigureMake'
+
+name = 'rsem'
+version = '1.3.3'
+
+homepage = 'http://deweylab.github.io/RSEM/'
+description = """RNA-Seq by Expectation-Maximization"""
+
+toolchain = {'name': 'goolf', 'version': '11.4.0_4.1.4'}
+
+source_urls = ['https://github.com/deweylab/RSEM/archive/']
+sources = ['v%(version)s.tar.gz']
+
+patches = ['RSEM-1.3.0_makefiles.patch']
+
+skipsteps = ['configure']
+installopts = "prefix=%(installdir)s"
+
+osdependencies = [
+    'ncurses',
+]
+
+dependencies = [
+    ('zlib', '1.2.13'),
+    ('perl', '5.36.0'),
+    ('R', '4.3.1'),
+    ('hisat2', '2.2.1'),
+    ('star', '2.7.9a', '', SYSTEM),
+    ('bowtie2', '2.5.1', '', SYSTEM),
+]
+
+skipsteps = ['configure']
+
+installopts = "prefix=%(installdir)s"
+
+sanity_check_paths = {
+    'files': ['bin/rsem-calculate-expression', 'bin/rsem-plot-model', 'bin/rsem-plot-transcript-wiggles',
+              'bin/rsem-bam2wig', 'bin/rsem-generate-data-matrix', 'bin/rsem-run-em', 'bin/convert-sam-for-rsem'],
+    'dirs': ['bin/samtools-1.3'],
+}
+
+moduleclass = 'bio'

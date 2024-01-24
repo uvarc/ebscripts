@@ -1,0 +1,11 @@
+--- qtwebengine/src/3rdparty/chromium/third_party/breakpad/breakpad/src/client/linux/handler/exception_handler.cc 2023-09-01 11:05:11.364829564 -0400
++++ qtwebengine/src/3rdparty/chromium/third_party/breakpad/breakpad/src/client/linux/handler/exception_handler.cc 2023-09-01 11:05:35.254319335 -0400
+@@ -138,7 +138,7 @@
+   // SIGSTKSZ may be too small to prevent the signal handlers from overrunning
+   // the alternative stack. Ensure that the size of the alternative stack is
+   // large enough.
+-  static const unsigned kSigStackSize = std::max(16384U, (unsigned)SIGSTKSZ);
++  static const unsigned kSigStackSize = std::max<size_t>(16384U, (unsigned)SIGSTKSZ);
+ 
+   // Only set an alternative stack if there isn't already one, or if the current
+   // one is too small.

@@ -1,0 +1,54 @@
+easyblock = 'Bundle'
+
+name = 'intelmpi'
+version = '18.0'
+
+longversion = '2018.5.274'
+
+homepage = 'http://software.intel.com/en-us/intel-compilers/'
+description = """IntelMPI from Intel."""
+
+toolchain = {'name': 'intel', 'version': version}
+
+import os
+intelroot = os.path.join(os.getenv('EASYBUILD_INSTALLPATH'), os.getenv('EASYBUILD_SUBDIR_SOFTWARE'), 'core', 'intel', version)
+mpidir = '%s/compilers_and_libraries_%s/linux/mpi' % (intelroot, longversion)
+
+allow_prepend_abs_path = True
+
+
+modextravars = {
+    'EBROOTINTELMPI': mpidir,
+    'TMI_CONFIG': '%s/intel64/etc/tmi.conf' % (mpidir,),
+    'SLURM_MPI_TYPE': 'pmi2',
+    'SLURM_CPU_BIND_TYPE': 'cores',
+}
+
+
+modextrapaths = {
+	'PATH': [
+                '%s/intel64/bin' % (mpidir),
+		],
+	'CPATH': [
+                '%s/intel64/include' % mpidir,
+		],
+	'LD_LIBRARY_PATH': [
+		'%s/intel64/lib' % mpidir,
+		],
+        'LIBRARY_PATH': [
+                '%s/intel64/lib' % mpidir,
+                ],
+        'CLASSPATH': [
+                '%s/intel64/lib/mpi.jar' % mpidir,
+                ],
+        'MANPATH': [
+                '%s/man' % mpidir,
+                ],
+}
+
+
+# license_file = '%s/license/server.lic' % intelroot # set by Intel compiler module
+
+languages = ['c', 'c++', 'fortran']
+
+moduleclass = 'mpi'

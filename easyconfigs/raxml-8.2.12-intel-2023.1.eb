@@ -1,0 +1,27 @@
+# Ruoshi Sun
+# 2020-04-23
+
+easyblock = 'MakeCp'
+
+name = 'raxml'
+version = '8.2.12'
+
+homepage = 'https://github.com/stamatak/standard-RAxML'
+description = "RAxML search algorithm for maximum likelihood based inference of phylogenetic trees."
+
+toolchain = {'name': 'intel', 'version': '2023.1'}
+toolchainopts = {'usempi': True}
+
+source_urls = ['https://github.com/stamatak/standard-RAxML/archive/refs/tags']
+sources = ['v%(version)s.zip']
+
+buildopts = '-f Makefile.AVX2.MPI.gcc'
+
+files_to_copy = [(["raxmlHPC-MPI-AVX2"], "bin"), "usefulScripts", "README", "manual"]
+
+sanity_check_paths = {
+    'files': ["bin/raxmlHPC-MPI-AVX2"],
+    'dirs': ['bin'],
+}
+
+moduleclass = 'bio'

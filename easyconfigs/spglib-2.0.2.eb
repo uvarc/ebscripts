@@ -1,0 +1,28 @@
+# Ruoshi Sun
+# 2024-01-02
+easyblock = 'CMakeMake'
+
+name = 'spglib'
+version = '2.0.2'
+
+homepage = 'https://github.com/spglib/spglib'
+description = "Spglib is a library for finding and handling crystal symmetries written in C."
+
+toolchain = SYSTEM
+
+source_urls = ['https://github.com/spglib/spglib/archive']
+sources = ['v%(version)s.tar.gz']
+checksums = ['10e44a35099a0a5d0fc6ee0cdb39d472c23cb98b1f5167c0e2b08f6069f3db1e']
+
+builddependencies = [
+    ('cmake', '3.23.3'),
+]
+
+postinstallcmds = ["cd %(installdir)s/include && mkdir spglib && ln -s ../spglib.h spglib/"]
+
+sanity_check_paths = {
+    'files': ['lib/libsymspg.so.%(version)s'],
+    'dirs': ['include', 'lib'],
+} 
+
+moduleclass = 'lib'

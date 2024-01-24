@@ -1,0 +1,22 @@
+# Ruoshi Sun
+# 2023-03-17
+
+easyblock = 'Conda'
+
+name = 'openms'
+version = '2.9.1'
+
+homepage = 'https://abibuilder.informatik.uni-tuebingen.de/archive/openms/Documentation/release/latest/html/index.html'
+description = """OpenMS is an open-source software C++ library for LC-MS data management and analyses. It offers an infrastructure for rapid development of mass spectrometry related software."""
+
+toolchain = SYSTEM
+
+channels = ['bioconda', 'conda-forge']
+requirements = '%(name)s=%(version)s'
+
+sanity_check_paths = {
+    'files': ['bin/OpenMSInfo'],
+    'dirs': ['lib', 'bin'],
+}
+
+moduleclass = 'bio'

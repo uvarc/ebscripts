@@ -1,0 +1,26 @@
+# This file is an EasyBuild reciPY 
+# Author: Katherine Holcomb
+# Email: kah3f@virginia.edu
+easyblock = 'CMakeMake'
+
+name = 'openjpeg'
+version = '2.5.0'
+
+homepage = 'http://www.openjpeg.org/'
+description = "OpenJPEG is an open-source JPEG 2000 codec written in C."
+
+toolchain = SYSTEM
+
+source_urls = ['https://github.com/uclouvain/%(name)s/archive/refs/tags']
+sources = ['v%(version)s.tar.gz']
+
+builddependencies = [('cmake', '3.23.3')]
+
+dependencies = [('jbigkit', '2.1')]
+
+sanity_check_paths = {
+    'files': [],
+    'dirs': ['lib'],
+}
+
+moduleclass = 'lib'

@@ -1,0 +1,35 @@
+# contributed by Guilherme Peretti-Pezzi (CSCS)
+# modified Ruoshi Sun
+# 2023-03-30
+
+easyblock = 'ConfigureMake'
+
+name = 'ntl'
+version = '11.5.1'
+
+homepage = 'http://www.shoup.net/ntl/'
+description = """NTL is a high-performance, portable C++ library providing data structures and algorithms 
+for manipulating signed, arbitrary length integers, and for vectors, matrices, and polynomials over the 
+integers and over finite fields."""
+
+toolchain = SYSTEM
+
+source_urls = ['http://www.shoup.net/ntl/']
+sources = [SOURCELOWER_TAR_GZ]
+
+osdependencies = [
+    ('gmp-devel'),
+]
+
+prefix_opt = 'PREFIX='
+
+configopts = 'CXX="$CXX" GMP_PREFIX=$EBROOTGMP'
+
+start_dir = 'src/'
+
+sanity_check_paths = {
+    'files': ["lib/libntl.a"],
+    'dirs': ["include/"],
+}
+
+moduleclass = 'math'

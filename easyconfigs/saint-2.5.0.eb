@@ -1,0 +1,30 @@
+easyblock = 'MakeCp'
+
+name = 'saint'
+version = '2.5.0'
+
+homepage = 'http://saint-apms.sourceforge.net/Main.html'
+description = "Significance Analysis of INTeractome (SAINT) consists of a series of software tools for assigning confidence scores to protein-protein interactions based on quantitative proteomics data in AP-MS experiments."
+
+toolchain = SYSTEM
+
+source_urls = ['https://sourceforge.net/projects/%(name)s-apms/files/']
+sources = ['SAINT_v%(version)s.zip']
+
+dependencies = [
+    ('gsl', '2.7.1'),
+]
+
+buildopts = ['all']
+
+maxparallel = 1
+
+files_to_copy = [(['bin/*'], 'bin')]
+start_dir = 'SAINT_v%(version)s'
+
+sanity_check_paths = {
+    'files': [],
+    'dirs': ['bin'],
+}
+
+moduleclass = 'bio'

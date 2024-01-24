@@ -1,0 +1,19 @@
+easyblock = 'Tarball'
+
+name = 'locuszoom'
+version = '1.4'
+
+homepage = 'https://github.com/statgen/locuszoom-standalone'
+description = """LocusZoom Standalone is for the command line (standalone) version of LocusZoom, an application for creating regional plots from genome-wide association studies built in Python and R."""
+
+toolchain = SYSTEM
+
+source_urls = ['https://statgen.sph.umich.edu/locuszoom/download/']
+sources = ['%(name)s_%(version)s.tgz']
+
+sanity_check_paths = {
+    'files': ['bin/locuszoom'],
+    'dirs': ['bin', 'conf', 'data', 'src'],
+}
+
+moduleclass = 'bio'

@@ -1,0 +1,41 @@
+# from EB repo
+# modified Ruoshi Sun
+# 2021-06-28
+
+easyblock = 'ConfigureMake'
+
+name = 'openslide'
+version = '3.4.1'
+
+homepage = 'https://openslide.org/'
+description = """OpenSlide is a C library that provides a simple interface to
+read whole-slide images (also known as virtual slides)."""
+
+toolchain = SYSTEM
+
+github_account = 'openslide'
+source_urls = [GITHUB_SOURCE]
+sources = ['v%(version)s.tar.gz']
+checksums = ['a5d869916e370125421535dcce778b2ba625dc50d920aa4ca93bbaaa6a7b470c']
+
+dependencies = [
+    #('zlib', '1.2.11'),
+    #('libpng', '1.6.36'),
+    #('libjpeg-turbo', '2.0.2'),
+    #('LibTIFF', '4.0.10'),
+    ('openjpeg', '2.5.0'),
+    #('libxml2', '2.9.8'),
+    #('SQLite', '3.27.2'),
+    #('cairo', '1.16.0'),
+    #('Gdk-Pixbuf', '2.38.1'),
+]
+
+preconfigopts = 'autoreconf -f -i && '
+
+sanity_check_paths = {
+    'files': ['bin/openslide-quickhash1sum', 'bin/openslide-show-properties', 'bin/openslide-write-png',
+              'lib/libopenslide.la', 'lib/libopenslide.%s' % SHLIB_EXT],
+    'dirs': ['include/openslide']
+}
+
+moduleclass = 'vis'

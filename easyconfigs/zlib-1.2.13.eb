@@ -1,0 +1,26 @@
+# Built with EasyBuild version 4.5.1 on 2023-03-16_19-39-29
+# Ruoshi Sun
+
+easyblock = 'ConfigureMake'
+
+name = 'zlib'
+version = '1.2.13'
+
+hidden = True
+
+homepage = 'http://www.zlib.net/'
+description = """zlib is designed to be a free, general-purpose, legally unencumbered -- that is,
+ not covered by any patents -- lossless data-compression library for use on virtually any
+ computer hardware and operating system."""
+
+toolchain = SYSTEM
+
+source_urls = ['http://zlib.net/fossils/']
+sources = [SOURCELOWER_TAR_GZ]
+
+sanity_check_paths = {
+    'files': ['include/zconf.h', 'include/zlib.h', 'lib/libz.a', 'lib/libz.%s' % SHLIB_EXT],
+    'dirs': [],
+}
+
+moduleclass = 'lib'

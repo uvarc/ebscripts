@@ -1,0 +1,36 @@
+##
+# This is a contribution from DeepThought HPC Service, Flinders University, Adelaide, Australia
+# Homepage: 	https://staff.flinders.edu.au/research/deep-thought
+#
+# Authors::	Robert Qiao <rob.qiao@flinders.edu.au>
+# License::	MIT
+#
+# Notes::	requires glibc v2.14 or higher
+##
+
+easyblock = 'Tarball'
+
+name = 'dotnet-sdk'
+version = '3.1.426'
+
+homepage = 'https://www.microsoft.com/net/'
+description = """.NET is a free, cross-platform, open source developer platform for building many different types
+ of applications."""
+
+toolchain = SYSTEM
+
+source_urls = ['https://download.visualstudio.microsoft.com/download/pr/' +
+               'e89c4f00-5cbb-4810-897d-f5300165ee60/027ace0fdcfb834ae0a13469f0b1a4c8']
+sources = ['%(name)s-%(version)s-linux-x64.tar.gz']
+
+sanity_check_paths = {
+    'files': ['dotnet'],
+    'dirs': ['shared/Microsoft.NETCore.App', 'shared/Microsoft.AspNetCore.App'],
+}
+
+modextrapaths = {
+    'PATH': [''],
+    'DOTNET_ROOT': [''],
+}
+
+moduleclass = 'lang'

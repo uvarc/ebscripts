@@ -1,0 +1,35 @@
+# Ruoshi Sun
+# 2022-12-21 RIV-10188
+
+easyblock = 'CmdCp'
+
+name = 'dbg2olc'
+version = '20200723'
+
+homepage = 'https://github.com/yechengxi/DBG2OLC'
+description = 'A genome assembler that reduces the computational time of human genome assembly from 400,000 CPU hours to 2,000 CPU hours, utilizing long erroneous 3GS sequencing reads and short accurate NGS sequencing reads.'
+
+toolchain = SYSTEM
+
+source_urls = ['https://github.com/yechengxi/DBG2OLC/archive/refs/heads']
+sources = ['master.zip']
+
+dependencies = [
+    ('blasr', '20190414'),
+    ('sparc', '20180702'),
+    ('sparseassembler', '2016'),
+]
+
+with_configure = False
+cmds_map = [('master.zip', '$CXX $CFLAGS *.cpp -o DBG2OLC')]
+
+files_to_copy = [
+    (['DBG2OLC'], '%(installdir)s/bin'),
+]
+
+sanity_check_paths = {
+    'files': ['bin/DBG2OLC'],
+    'dirs': ['bin']
+}
+
+moduleclass = 'bio'

@@ -1,0 +1,51 @@
+# from EB repo
+# Ruoshi Sun
+# 2023-03-17
+# 2020-04-16
+
+easyblock = 'ConfigureMake'
+
+name = 'ghostscript'
+version = '10.0.0'
+
+homepage = 'https://ghostscript.com'
+description = """Ghostscript is a versatile processor for PostScript data with the ability to render PostScript to
+ different targets. It used to be part of the cups printing stack, but is no longer used for that."""
+
+toolchain = SYSTEM
+toolchainopts = {'pic': True}
+
+source_urls = [
+    'https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs%(version_major)s%(version_minor)s0/',
+]
+sources = [SOURCELOWER_TAR_GZ]
+
+osdependencies = [
+    ('libpng'),
+    ('freetype'),
+    ('libjpeg-turbo'),
+    ('expat'),
+    ('libtiff'),
+]
+
+# Do not use local copies of zlib, jpeg, freetype, and png
+preconfigopts = "mv zlib zlib.no && mv jpeg jpeg.no && mv freetype freetype.no && mv libpng libpng.no && "
+preconfigopts += 'export LIBS="$LIBS -lz" && '
+
+configopts = "--with-system-libtiff --enable-dynamic"
+
+postinstallcmds = [
+    # build and install shared libs
+    "make so && make soinstall",
+    # install header files
+    "mkdir -p %(installdir)s/include/ghostscript",
+    "install -v -m644 base/*.h %(installdir)s/include/ghostscript",
+    "install -v -m644 psi/*.h %(installdir)s/include/ghostscript",
+]
+
+sanity_check_paths = {
+    'files': ['bin/gs', 'lib/libgs.%s' % SHLIB_EXT],
+    'dirs': ['lib/ghostscript', 'include/ghostscript', 'share/man'],
+}
+
+moduleclass = 'tools'

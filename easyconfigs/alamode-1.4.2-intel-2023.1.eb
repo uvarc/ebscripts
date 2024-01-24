@@ -1,0 +1,45 @@
+# Ruoshi Sun
+# 2023-04-10
+
+easyblock = 'CMakeMakeCp'
+
+name = 'alamode'
+version = '1.4.2'
+
+homepage = 'https://sourceforge.net/projects/alamode/'
+description = """
+ALAMODE is designed for analyzing lattice anharmonicity and lattice thermal conductivity of solids.
+By using an external DFT package such as VASP and Quantum ESPRESSO, you can extract harmonic and 
+anharmonic force constants straightforwardly with ALAMODE. Using the anharmonic force constants, 
+you can also calculate lattice thermal conductivity from first principles.
+"""
+
+toolchain = {'name': 'intel', 'version': '2023.1'}
+
+source_urls = ['https://github.com/ttadano/%(name)s/archive/refs/tags']
+sources = ['v.%(version)s.tar.gz']
+
+builddependencies = [
+    ('cmake', '3.23.3', '', SYSTEM),
+]
+
+dependencies = [
+    ('boost', '1.79.0'),
+    ('eigen', '3.4.0'),
+    ('spglib', '2.0.2'),
+]
+
+configopts = '-DCMAKE_C_COMPILER=icc -DCMAKE_CXX_COMPILER=icpc -DCMAKE_CXX_FLAGS="-O3 -axCORE-AVX2,CORE-AVX512 -I$EBROOTINTELMINCOMPILERS/compiler/2023.1.0/linux/compiler/include/icc" -DUSE_MKL_FFT=yes'
+
+files_to_copy = [
+    (['alm/alm', 'anphon/anphon', 'tools/analyze_phonons', 'tools/qe2alm', 'tools/dfc2', 'tools/fc_virtual'], 'bin'),
+    'docs',
+    'example',
+]
+
+sanity_check_paths = {
+    'files': ['bin/alm'],
+    'dirs': ['bin']
+}
+
+moduleclass = 'chem'

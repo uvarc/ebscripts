@@ -1,0 +1,24 @@
+# Ruoshi Sun
+# 2022-12-01
+
+easyblock = 'EB_Eigen'
+
+name = 'eigen'
+version = '3.4.0'
+
+homepage = 'http://eigen.tuxfamily.org/index.php?title=Main_Page'
+description = """Eigen is a C++ template library for linear algebra:
+ matrices, vectors, numerical solvers, and related algorithms."""
+
+toolchain = {'name': 'intel-compilers', 'version': '2023.1.0'}
+
+source_urls = ['http://gitlab.com/lib%(namelower)s/%(namelower)s/-/archive/%(version)s']
+sources = ['%(name)s-%(version)s.tar.bz2']
+
+builddependencies = [
+    ('cmake', '3.23.3', '', SYSTEM),
+]
+
+postinstallcmds = ['cp -r %(builddir)s/%(name)s-%(version)s/cmake "%(installdir)s/share"']
+
+moduleclass = 'math'

@@ -1,0 +1,22 @@
+# Ruoshi Sun
+# 2022-02-01 RIV-2025
+easyblock = 'Tarball'
+
+name = 'cufflinks'
+version = '2.2.1'
+
+homepage = 'https://github.com/cole-trapnell-lab/cufflinks'
+description = """Cufflinks assembles transcripts, estimates their abundances, and tests for differential expression and regulation in RNA-Seq samples. It accepts aligned RNA-Seq reads and assembles the alignments into a parsimonious set of transcripts. Cufflinks then estimates the relative abundances of these transcripts based on how many reads support each one, taking into account biases in library preparation protocols."""
+
+toolchain = SYSTEM
+
+source_urls = ['http://cole-trapnell-lab.github.io/%(name)s/assets/downloads/']
+sources = ['%(name)s-%(version)s.Linux_x86_64.tar.gz']
+
+sanity_check_paths = {
+    'files': ['%(name)s'],
+    'dirs': [],
+}
+
+modextrapaths = {'PATH': ''}
+moduleclass = 'bio'

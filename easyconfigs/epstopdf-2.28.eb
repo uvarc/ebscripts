@@ -1,0 +1,26 @@
+# Author:khs3z
+# 2020-10-25
+
+easyblock = 'PackedBinary'
+
+name = 'epstopdf'
+version = '2.28'
+
+homepage = 'http://tug.org/epstopdf/'
+description = """Epstopdf is a Perl script that converts an EPS file to an ‘encapsulated’ PDF file (a single page file whose media box is the same as the original EPS’s bounding box)."""
+
+toolchain = SYSTEM
+
+source_urls = ['http://mirrors.ctan.org/support/']
+sources = ['epstopdf.zip']
+
+postinstallcmds = [
+    'ln -s %(installdir)s/epstopdf.pl %(installdir)s/epstopdf'
+]
+
+sanity_check_paths = {
+    'files': ['epstopdf.pl'], 
+    'dirs': []
+}
+
+moduleclass = 'tools'

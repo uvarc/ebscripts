@@ -1,0 +1,37 @@
+# Ruoshi Sun
+# 2023-04-07
+
+easyblock = 'Binary'
+
+name = 'python'
+version = '3.9.16'
+
+homepage = 'https://software.intel.com/en-us/intel-distribution-for-python'
+
+description = """
+ Intel® Distribution for Python. Powered by Anaconda.
+ Accelerating Python* performance on modern architectures from Intel.
+"""
+
+toolchain = {'name': 'intel', 'version': '2023.1'}
+
+source_urls = ['https://registrationcenter-download.intel.com/akdlm/IRC_NAS/176aff1f-4922-4bd1-90ef-e4ab66fe76a0']
+sources = ['l_pythoni%(version_major)s%(version_minor)s_oneapi_p_%(toolchain_version)s.0.46399_offline.sh']
+
+install_cmd = """
+    chmod +x %s
+    ./%s -a --action install -s --eula accept --install-dir %%(installdir)s
+""" % (sources[0], sources[0])
+
+sanity_check_paths = {
+    'files': ['intelpython/python%(version_major_minor)s/bin/python'],
+    'dirs': ['intelpython/python%%(version_major_minor)s/%s' % x for x in ['bin', 'etc', 'include', 'lib']],
+}
+
+modextrapaths = {
+    'CONDA_PREFIX': 'intelpython/python%(version_major_minor)s',
+    'PATH': 'intelpython/python%(version_major_minor)s/bin',
+    'LD_LIBRARY_PATH': 'intelpython/python%(version_major_minor)s/lib',
+}
+
+moduleclass = 'lang'

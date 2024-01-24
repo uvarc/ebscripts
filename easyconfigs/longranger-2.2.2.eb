@@ -1,0 +1,36 @@
+# Karsten Siller, Ruoshi Sun
+# 2018-09-06, 2020-03-30
+
+easyblock = 'Tarball'
+
+name = 'longranger'
+version = '2.2.2'
+
+homepage = 'https://support.10xgenomics.com/genome-exome/software/pipelines/latest/what-is-long-ranger'
+description = """Long Ranger is a set of analysis pipelines that processes Chromium sequencing output to align reads and call and phase SNPs, indels, and structural variants."""
+
+toolchain = SYSTEM
+
+sources = [
+    'longranger-%(version)s.tar.gz'
+]
+
+# original src contains two dead symlinks that need to be removed
+# rm longranger-2.2.2/anaconda-cs/2.2.0-anaconda-cs-c8/lib/libtcl.so 
+# rm longranger-2.2.2/anaconda-cs/2.2.0-anaconda-cs-c8/lib/libtk.so 
+
+dependencies = [
+    ('bcl2fastq2', '2.20.0') 
+]
+
+binpath = 'longranger-cs/%(version)s/bin'
+modextrapaths = {
+    'PATH': [binpath],
+}
+
+sanity_check_paths = {
+    'files': ['longranger', ],
+    'dirs': ['longranger-cs', ]
+}
+
+moduleclass = 'bio'

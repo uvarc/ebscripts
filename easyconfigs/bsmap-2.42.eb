@@ -1,0 +1,24 @@
+# Author: Ruoshi Sun
+# 2020-01-02
+easyblock = 'MakeCp'
+
+name = 'bsmap'
+version = '2.42'
+
+homepage = 'http://korflab.ucdavis.edu/software.html'
+description = "BSMAP is a short reads mapping program for bisulfite sequencing in DNA methylation study.  Bisulfite treatment coupled with next generation sequencing could estimate the methylation ratio of every single Cytosine location in the genome by mapping high throughput bisulfite reads to the reference sequences."
+
+toolchain = SYSTEM
+
+source_urls = ['https://github.com/genome-vendor/bsmap/archive/']
+sources = ['v%(version)s.tar.gz']
+
+modextrapaths = {'PATH': ''}
+files_to_copy = [(['./*'], '')]
+
+sanity_check_paths = {
+    'files': ['bsmap'],
+    'dirs': ['samtools'],
+}
+
+moduleclass = 'bio'

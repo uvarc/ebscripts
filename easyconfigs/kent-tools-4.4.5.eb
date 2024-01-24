@@ -1,0 +1,29 @@
+#
+# Author: Karsten Siller
+# 
+easyblock = 'MakeCp'
+
+name = 'kent-tools'
+version = '4.4.5'
+
+homepage = 'http://genome.ucsc.edu/'
+description = "A set of genome utilities developed at the University of California Santa Cruz."
+
+toolchain = SYSTEM
+
+source_urls = ['https://hgdownload.cse.ucsc.edu/admin/exe/userApps.archive/']
+sources = ['userApps.v445.src.tgz']
+
+prebuildopts = ['make fetchSource && ']
+
+parallel = 1
+
+modextrapaths = {'PATH': ['']}
+files_to_copy = ['bin/*']
+
+sanity_check_paths = {
+    'files': ['faRc'],
+    'dirs': [],
+}
+
+moduleclass = 'bio'

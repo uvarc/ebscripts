@@ -1,0 +1,34 @@
+# rs7wz
+# 2021-12-13 maintenance upgrade
+
+easyblock = 'JAR'
+
+name = 'jcuda'
+version = '11.4.1'
+
+homepage = 'http://www.jcuda.org'
+description = """Java bindings for NVIDIA CUDA and related libraries."""
+
+toolchain = SYSTEM
+
+local_list = ['jcublas', 'jcuda', 'jcudnn', 'jcufft', 'jcurand', 'jcusolver', 'jcusparse']
+
+source_urls = ['https://repo1.maven.org/maven2/org/%%(name)s/%s/%%(version)s/' % x for x in local_list]
+sources = ['%s-%%(version)s.jar' % x for x in local_list]
+
+dependencies = [
+    ('CUDA', '11.4.2'),
+    ('cudnn', '8.2.4.15'),
+    ('java', '12')
+]
+
+modextravars = {
+    'JCUDA_HOME': '%(installdir)s'
+}
+
+sanity_check_paths = {
+    'files': ['jcufft-%(version)s.jar'],
+    'dirs': [],
+}
+
+moduleclass = 'bio'

@@ -1,0 +1,28 @@
+easyblock = 'Binary'
+
+name = 'aspera-connect'
+version = '4.2.4'
+
+homepage = 'http://downloads.asperasoft.com/connect2/'
+description = """Connect is an install-on-demand Web browser plug-in that facilitates high-speed uploads and
+ downloads with an Aspera transfer server."""
+
+toolchain = SYSTEM
+
+source_urls = ['https://d3gcli72yxqn2z.cloudfront.net/downloads/connect/latest/bin']
+sources = ['ibm-%(name)s_%(version)s.265_linux.tar.gz']
+
+# install script has ~/.aspera/connect hardcoded, but this can be overridden by redefining $HOME
+install_cmd = "tar xfvz ibm-%(namelower)s*.tar.gz && HOME=%(builddir)s ./ibm-%(namelower)s*.sh && "
+install_cmd += "cp -a %(builddir)s/.aspera/connect/* %(installdir)s"
+
+sanity_check_paths = {
+    'files': ['bin/%s' % x for x in ['ascp', 'asperaconnect', 'asperaconnect.bin', 'asperacrypt', 'asunprotect']],
+    'dirs': ['lib'],
+}
+
+modextravars = {
+    'ASPERA_CONNECT_DIR': '%(installdir)s',
+}
+
+moduleclass = 'tools'

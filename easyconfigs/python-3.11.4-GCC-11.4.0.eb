@@ -1,0 +1,115 @@
+# Ruoshi Sun
+# 2023-08-07
+
+easyblock='EB_Python'
+
+name = 'python'
+version = '3.11.4'
+
+hidden = True
+
+homepage = 'http://python.org/'
+description = """Python is a programming language that lets you work 
+more effectively."""
+
+toolchain = {'name': 'GCC', 'version':'11.4.0'}
+toolchainopts = {'pic': True}
+
+source_urls = ['http://www.python.org/ftp/%(namelower)s/%(version)s/']
+sources = ["Python-%(version)s.tgz"]
+
+# python needs bzip2 to build the bz2 package
+osdependencies = [
+    ('readline','ncurses','sqlite')
+]
+
+dependencies = [
+    ('bzip2', '1.0.6', '', SYSTEM),  # required for bz2 package in Python stdlib
+    ('zlib', '1.2.13'),
+    ('xz', '5.2.7', '', SYSTEM),
+    ('libffi', '3.4.4'),
+    #('openssl', '1.1.1s'),
+]
+
+install_pip = True
+
+buildopts=['"CFLAGS=-O3"']
+
+# symlink 'pip' command to 'pip3' that is included with Python installation
+# required so we can update pip to version included in extensions, using pip
+installopts = " && ln -s %(installdir)s/bin/pip3 %(installdir)s/bin/pip"
+
+exts_default_options = {
+    'download_dep_fail': True,
+    'use_pip': True,
+    'source_urls': [PYPI_SOURCE],
+    'sanity_pip_check': True,
+}
+
+# order is important!
+# package versions updated 2023-05-17
+exts_list = [
+    ('flit_core', '3.9.0', {
+        'checksums': ['72ad266176c4a3fcfab5f2930d76896059851240570ce9a98733b658cb786eba'],
+    }),
+    ('wheel', '0.40.0', {
+        'checksums': ['cd1196f3faee2b31968d626e1731c94f99cbdb67cf5a46e4f5656cbee7738873'],
+    }),
+    ('setuptools', '67.7.2', {
+        'checksums': ['f104fa03692a2602fa0fec6c6a9e63b6c8a968de13e17c026957dd1f53d80990'],
+    }),
+    ('pip', '23.1.2', {
+        'checksums': ['0e7c86f486935893c708287b30bd050a36ac827ec7fe5e43fe7cb198dd835fba'],
+    }),
+    ('Cython', '0.29.32', {
+        'checksums': ['8733cf4758b79304f2a4e39ebfac5e92341bce47bcceb26c1254398b2f8c1af7'],
+    }),
+    ('six', '1.16.0', {
+        'checksums': ['1e61c37477a1626458e36f7b1d82aa5c9b094fa4802892072e49de9c60c4c926'],
+    }),
+    ('toml', '0.10.2', {
+        'checksums': ['b3bda1d108d5dd99f4a20d24d9c348e91c4db7ab1b749200bded2f839ccbe68f'],
+    }),
+    ('tomli', '2.0.1', {
+        'checksums': ['de526c12914f0c550d15924c62d72abc48d6fe7364aa87328337a31007fe8a4f'],
+    }),
+    ('packaging', '21.3', {
+        'checksums': ['dd47c42927d89ab911e606518907cc2d3a1f38bbd026385970643f9c5b8ecfeb'],
+    }),
+    ('pyparsing', '3.0.9', {
+        'checksums': ['2b020ecf7d21b687f219b71ecad3631f644a47f01403fa1d1036b0c6416d70fb'],
+    }),
+    ('trove_classifiers', '2023.8.7', {
+        'source_tmpl': SOURCE_PY3_WHL,
+    }),
+    ('pathspec', '0.10.1', {
+        'checksums': ['7ace6161b621d31e7902eb6b5ae148d12cfd23f4a249b9ffb6b9fee12084323d'],
+    }),
+    ('typing_extensions', '4.4.0', {
+        'checksums': ['1511434bb92bf8dd198c12b1cc812e800d4181cfcb867674e0f8279cc93087aa'],
+    }),
+    ('editables', '0.3', {
+        'checksums': ['167524e377358ed1f1374e61c268f0d7a4bf7dbd046c656f7b410cde16161b1a'],
+    }),
+    ('pluggy', '1.2.0'),
+    ('hatchling', '1.18.0'),
+    ('hatch_vcs', '0.3.0'),
+    ('setuptools_scm', '7.0.5', {
+        'checksums': ['031e13af771d6f892b941adb6ea04545bbf91ebc5ce68c78aaf3fff6e1fb4844'],
+    }),
+    ('platformdirs', '2.5.3', {
+        'checksums': ['6e52c21afff35cb659c6e52d8b4d61b9bd544557180440538f255d9382c8cbe0'],
+    }),
+    ('scandir', '1.10.0', {
+        'checksums': ['4d4631f6062e658e9007ab3149a9b914f3548cb38bfb021c64f39a025ce578ae'],
+    }),
+    ('pathlib2', '2.3.7.post1', {
+        'checksums': ['9fe0edad898b83c0c3e199c842b27ed216645d2e177757b2dd67384d4113c641'],
+    }),
+    ('iniconfig', '2.0.0'),
+    ('pytest', '7.4.0'),
+]
+
+skipsteps = ['sanitycheck']
+
+moduleclass = 'lang'

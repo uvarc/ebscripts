@@ -1,0 +1,34 @@
+# Ruoshi Sun
+# 2023-04-10
+
+easyblock = 'CMakeMake'
+
+name = 'neuron'
+version = '8.2.2'
+
+homepage = 'http://www.neuron.yale.edu/neuron'
+description = """Empirically-based simulations of neurons and networks of neurons."""
+
+toolchain = {'name': 'intel', 'version': '2023.1'}
+
+source_urls = ['https://github.com/neuronsimulator/nrn/releases/download/%(version)s']
+sources = ['full-src-package-%(version)s.tar.gz']
+
+osdependencies = [
+    'readline',
+    'ncurses'
+]
+
+builddependencies = [
+    #('krb5', '1.20.1'),
+    ('cmake', '3.23.3', '', SYSTEM),
+]
+
+dependencies = [
+    ('python', '3.9.16'),
+    #('openssl', '1.1.1s'),
+]
+
+configopts = '-DNRN_ENABLE_INTERVIEWS=OFF -DNRN_ENABLE_MPI=ON -DNRN_ENABLE_RX3D=OFF -DPYTHON_EXECUTABLE=$(which python3)'
+
+moduleclass = 'bio'

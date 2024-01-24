@@ -1,0 +1,255 @@
+# Ruoshi Sun
+# 2023-08-07
+
+easyblock='EB_Python'
+
+name = 'python'
+version = '3.11.4'
+
+homepage = 'http://python.org/'
+description = """Python is a programming language that lets you work 
+more effectively."""
+
+toolchain = {'name': 'goolf', 'version':'11.4.0_4.1.4'}
+toolchainopts={'pic':True}
+
+source_urls = ['http://www.python.org/ftp/%(namelower)s/%(version)s/']
+sources = ["Python-%(version)s.tgz"]
+
+# python needs bzip2 to build the bz2 package
+osdependencies = [
+    ('bzip2','zlib','readline','ncurses','sqlite')
+]
+
+builddependencies = [
+    ('pkgconf', '1.9.5'),
+    ('rust', '1.66.1'),
+    ('Meson', '1.0.1', '-py3.11'),
+    ('Ninja', '1.11.1', '-py3.11'),
+]
+
+dependencies = [
+    ('libffi', '3.4.4'),
+    ('openssl', '1.1.1s'),
+    ('pybind11', '2.10.3'),
+]
+
+install_pip = True
+
+exts_default_options = {
+    'download_dep_fail': True,
+    'use_pip': True,
+    'source_urls': [PYPI_SOURCE],
+    'sanity_pip_check': True,
+}
+
+# order is important!
+# package versions updated 2021-03-25
+exts_list = [
+    ('flit_core', '3.9.0', {
+        'checksums': ['72ad266176c4a3fcfab5f2930d76896059851240570ce9a98733b658cb786eba'],
+    }),
+    ('wheel', '0.40.0', {
+        'checksums': ['cd1196f3faee2b31968d626e1731c94f99cbdb67cf5a46e4f5656cbee7738873'],
+    }),
+    ('setuptools', '67.7.2', {
+        'checksums': ['f104fa03692a2602fa0fec6c6a9e63b6c8a968de13e17c026957dd1f53d80990'],
+    }),
+    ('pip', '23.1.2', {
+        'checksums': ['0e7c86f486935893c708287b30bd050a36ac827ec7fe5e43fe7cb198dd835fba'],
+    }),
+    ('Cython', '0.29.36'),
+    ('six', '1.16.0', {
+        'checksums': ['1e61c37477a1626458e36f7b1d82aa5c9b094fa4802892072e49de9c60c4c926'],
+    }),
+    ('toml', '0.10.2', {
+        'checksums': ['b3bda1d108d5dd99f4a20d24d9c348e91c4db7ab1b749200bded2f839ccbe68f'],
+    }),
+    ('tomli', '2.0.1', {
+        'checksums': ['de526c12914f0c550d15924c62d72abc48d6fe7364aa87328337a31007fe8a4f'],
+    }),
+    ('packaging', '21.3', {
+        'checksums': ['dd47c42927d89ab911e606518907cc2d3a1f38bbd026385970643f9c5b8ecfeb'],
+    }),
+    ('pyparsing', '3.0.9', {
+        'checksums': ['2b020ecf7d21b687f219b71ecad3631f644a47f01403fa1d1036b0c6416d70fb'],
+    }),
+    ('pbr', '5.11.0', {
+        'checksums': ['b97bc6695b2aff02144133c2e7399d5885223d42b7912ffaec2ca3898e673bfe'],
+    }),
+    ('numpy', '1.25.2'),
+    ('setuptools_scm', '7.0.5', {
+        'checksums': ['031e13af771d6f892b941adb6ea04545bbf91ebc5ce68c78aaf3fff6e1fb4844'],
+    }),
+    ('typing_extensions', '4.4.0', {
+        'checksums': ['1511434bb92bf8dd198c12b1cc812e800d4181cfcb867674e0f8279cc93087aa'],
+    }),
+    ('python-dateutil', '2.8.2', {
+        'modulename': 'dateutil',
+        'checksums': ['0123cacc1627ae19ddf3c27a5de5bd67ee4586fbdd6440d9748f8abb483d3e86'],
+    }),
+    ('decorator', '5.1.1', {
+        'checksums': ['637996211036b6385ef91435e4fae22989472f9d571faba8927ba8253acbc330'],
+    }),
+    ('liac-arff', '2.5.0', {
+        'modulename': 'arff',
+        'checksums': ['3220d0af6487c5aa71b47579be7ad1d94f3849ff1e224af3bf05ad49a0b5c4da'],
+    }),
+    ('ecdsa', '0.18.0', {
+        'checksums': ['190348041559e21b22a1d65cee485282ca11a6f81d503fddb84d5017e9ed1e49'],
+    }),
+    ('ipaddress', '1.0.23', {
+        'checksums': ['b7f8e0369580bb4a24d5ba1d7cc29660a4a6987763faf1d8a8046830e020e7e2'],
+    }),
+    ('asn1crypto', '1.5.1', {
+        'checksums': ['13ae38502be632115abf8a24cbe5f4da52e3b5231990aff31123c805306ccb9c'],
+    }),
+    ('idna', '3.4', {
+        'checksums': ['814f528e8dead7d329833b91c5faa87d60bf71824cd12a7530b5526063d02cb4'],
+    }),
+    ('pycparser', '2.21', {
+        'checksums': ['e644fdec12f7872f86c58ff790da456218b10f863970249516d60a5eaca77206'],
+    }),
+    ('cffi', '1.15.1', {
+        'checksums': ['d400bfb9a37b1351253cb402671cea7e89bdecc294e8016a707f6d1d8ac934f9'],
+    }),
+    ('semantic_version', '2.10.0', {
+        'checksums': ['bdabb6d336998cbb378d4b9db3a4b56a1e3235701dc05ea2690d9a997ed5041c'],
+    }),
+    ('setuptools-rust', '1.5.2', {
+        'checksums': ['d8daccb14dc0eae1b6b6eb3ecef79675bd37b4065369f79c35393dd5c55652c7'],
+    }),
+    ('cryptography', '38.0.3', {
+        # avoid that cargo uses $HOME/.cargo, which can lead to build failures if home directory is NFS mounted,
+        # see https://github.com/rust-lang/cargo/issues/6652
+        'preinstallopts': "export CARGO_HOME=%(builddir)s/cargo && ",
+        'checksums': ['bfbe6ee19615b07a98b1d2287d6a6073f734735b49ee45b11324d85efc4d5cbd'],
+    }),
+    ('pyasn1', '0.4.8', {
+        'checksums': ['aef77c9fb94a3ac588e87841208bdec464471d9871bd5050a287cc9a475cd0ba'],
+    }),
+    ('PyNaCl', '1.5.0', {
+        'modulename': 'nacl',
+        'checksums': ['8ac7448f09ab85811607bdd21ec2464495ac8b7c66d146bf545b0f08fb9220ba'],
+    }),
+    ('bcrypt', '4.0.1', {
+        'checksums': ['27d375903ac8261cfe4047f6709d16f7d18d39b1ec92aaf72af989552a650ebd'],
+    }),
+    ('paramiko', '2.12.0', {
+        'checksums': ['376885c05c5d6aa6e1f4608aac2a6b5b0548b1add40274477324605903d9cd49'],
+    }),
+    ('netifaces', '0.11.0', {
+        'checksums': ['043a79146eb2907edf439899f262b3dfe41717d34124298ed281139a8b93ca32'],
+    }),
+    ('netaddr', '0.8.0', {
+        'checksums': ['d6cc57c7a07b1d9d2e917aa8b36ae8ce61c35ba3fcd1b83ca31c5a0ee2b5a243'],
+    }),
+    ('mock', '4.0.3', {
+        'checksums': ['7d3fbbde18228f4ff2f1f119a45cdffa458b4c0dee32eb4d2bb2f82554bac7bc'],
+    }),
+    ('pytz', '2022.6', {
+        'checksums': ['e89512406b793ca39f5971bc999cc538ce125c0e51c27941bef4568b460095e2'],
+    }),
+    #('pandas', '1.5.2'), # Cython.Compiler.Errors.CompileError: pandas/_libs/tslibs/timedeltas.pyx
+    ('Pillow', '9.3.0', {
+        'modulename': 'PIL',
+    }),
+    ('bitstring', '3.1.9', {
+        'checksums': ['a5848a3f63111785224dca8bb4c0a75b62ecdef56a042c8d6be74b16f7e860e7'],
+    }),
+    ('appdirs', '1.4.4', {
+        'checksums': ['7d5d0167b2b1ba821647616af46a749d1c653740dd0d2415100fe26e27afdf41'],
+    }),
+    ('distlib', '0.3.6', {
+        'checksums': ['14bad2d9b04d3a36127ac97f30b12a19268f211063d8f8ee4f47108896e11b46'],
+    }),
+    ('filelock', '3.8.0', {
+        'checksums': ['55447caa666f2198c5b6b13a26d2084d26fa5b115c00d065664b2124680c4edc'],
+    }),
+    ('zipp', '3.10.0', {
+        'checksums': ['7a7262fd930bd3e36c50b9a64897aec3fafff3dfdeec9623ae22b40e93f99bb8'],
+    }),
+    ('importlib_metadata', '5.0.0', {
+        'checksums': ['da31db32b304314d044d3c12c79bd59e307889b287ad12ff387b3500835fc2ab'],
+    }),
+    ('backports.entry-points-selectable', '1.2.0', {
+        'sources': ['backports.entry_points_selectable-%(version)s.tar.gz'],
+        'checksums': ['4706f59179657ca7c1d325a543ee1370f8f46331f432bcac62fab242fdf0afa5'],
+    }),
+    ('pathspec', '0.10.1', {
+        'checksums': ['7ace6161b621d31e7902eb6b5ae148d12cfd23f4a249b9ffb6b9fee12084323d'],
+    }),
+    ('pluggy', '1.2.0'),
+    ('editables', '0.3', {
+        'checksums': ['167524e377358ed1f1374e61c268f0d7a4bf7dbd046c656f7b410cde16161b1a'],
+    }),
+    ('trove_classifiers', '2023.8.7', {
+        'source_tmpl': SOURCE_PY3_WHL,
+    }),
+    ('hatchling', '1.18.0'),
+    ('hatch_vcs', '0.3.0'),
+    ('platformdirs', '2.5.3', {
+        'checksums': ['6e52c21afff35cb659c6e52d8b4d61b9bd544557180440538f255d9382c8cbe0'],
+    }),
+    ('scandir', '1.10.0', {
+        'checksums': ['4d4631f6062e658e9007ab3149a9b914f3548cb38bfb021c64f39a025ce578ae'],
+    }),
+    ('pathlib2', '2.3.7.post1', {
+        'checksums': ['9fe0edad898b83c0c3e199c842b27ed216645d2e177757b2dd67384d4113c641'],
+    }),
+    #('attrs', '23.1.0', {
+        #'modulename': 'attr'
+    #}), # hatchling.plugin.exceptions.UnknownPluginError: Unknown metadata hook: fancy-pypi-readme
+	('iniconfig', '2.0.0'),
+	('pytest', '7.4.0'),
+    ('importlib_resources', '5.10.0', {
+        'checksums': ['c01b1b94210d9849f286b86bb51bcea7cd56dde0600d8db721d7b81330711668'],
+    }),
+    ('virtualenv', '20.16.6', {
+        'checksums': ['530b850b523c6449406dfba859d6345e48ef19b8439606c5d74d7d3c9e14d76e'],
+    }),
+    ('docopt', '0.6.2', {
+        'checksums': ['49b3a825280bd66b3aa83585ef59c4a8c82f2c8a522dbe754a8bc8d08c85c491'],
+    }),
+    ('joblib', '1.2.0', {
+        'checksums': ['e1cee4a79e4af22881164f218d4311f60074197fb707e082e803b61f6d137018'],
+    }),
+    ('chardet', '5.0.0', {
+        'checksums': ['0368df2bfd78b5fc20572bb4e9bb7fb53e2c094f60ae9993339e8671d0afb8aa'],
+    }),
+    ('certifi', '2022.9.24', {
+        'checksums': ['0d9c601124e5a6ba9712dbc60d9c53c21e34f5f641fe83002317394311bdce14'],
+    }),
+    ('urllib3', '1.26.12', {
+        'checksums': ['3fa96cf423e6987997fc326ae8df396db2a8b7c667747d47ddd8ecba91f4a74e'],
+    }),
+    ('charset-normalizer', '2.1.1', {
+        'checksums': ['5a3d016c7c547f69d6f81fb0db9449ce888b418b5b9952cc5e6e66843e9dd845'],
+    }),
+    ('requests', '2.28.1', {
+        'checksums': ['7c5599b102feddaa661c826c56ab4fee28bfd17f5abca1ebbe3e7f19d7c97983'],
+    }),
+    ('xlrd', '2.0.1', {
+        'checksums': ['f72f148f54442c6b056bf931dbc34f986fd0c3b0b6b5a58d013c9aef274d0c88'],
+    }),
+    ('py_expression_eval', '0.3.14', {
+        'checksums': ['ea60f9404a18346d5a63854db21c50666dfb4274ae111000165b31c6f8ab93f1'],
+    }),
+    ('tabulate', '0.9.0', {
+        'checksums': ['0095b12bf5966de529c0feb1fa08671671b3368eec77d7ef7ab114be2c068b3c'],
+    }),
+#    ('scipy', '1.11.1', {
+#        'patches': [
+#            'scipy-1.11.1_disable-tests.patch',
+#            'scipy-1.11.1_xfail-aarch64_test_maxiter_worsening.patch',
+#        ],
+#        'enable_slow_tests': True,
+#        'ignore_test_result': False,
+#        'use_pip': True
+#    }),
+    #('matplotlib', '3.7.2'),
+]
+
+skipsteps = ['sanitycheck']
+
+moduleclass = 'lang'

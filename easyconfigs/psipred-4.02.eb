@@ -1,0 +1,22 @@
+# Author: khs3z
+easyblock = 'Tarball'
+
+name = 'psipred'
+version = '4.02'
+
+homepage = 'http://bioinf.cs.ucl.ac.uk/psipred/'
+
+description = """The PSIPRED Workbench provides a range of protein structure prediction methods."""
+
+toolchain = SYSTEM
+
+source_urls = ['http://bioinfadmin.cs.ucl.ac.uk/downloads/psipred/']
+
+sources = ['psipred.%(version)s.tar.gz']
+
+sanity_check_paths = {
+    'files': ['bin/chkparse', 'bin/psipass2', 'bin/psipred', 'bin/seq2mtx'],
+    'dirs': ['bin']
+}
+
+moduleclass = 'bio'

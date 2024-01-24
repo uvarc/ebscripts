@@ -1,0 +1,29 @@
+# Ruoshi Sun
+# 2022-12-21 RIV-10188
+
+easyblock = 'CmdCp'
+
+name = 'sparc'
+version = '20180702'
+
+homepage = 'https://github.com/yechengxi/Sparc'
+description = 'Sparc: a sparsity-based consensus algorithm for long erroneous sequencing reads'
+
+toolchain = SYSTEM
+
+source_urls = ['https://github.com/yechengxi/Sparc/archive/refs/heads']
+sources = ['master.zip']
+
+with_configure = False
+cmds_map = [('master.zip', '$CXX $CFLAGS Sparc.cpp -o Sparc')]
+
+files_to_copy = [
+    (['Sparc'], '%(installdir)s/bin'),
+]
+
+sanity_check_paths = {
+    'files': ['bin/Sparc'],
+    'dirs': ['bin']
+}
+
+moduleclass = 'bio'

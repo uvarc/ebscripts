@@ -1,0 +1,26 @@
+# Ruoshi Sun
+# 2023-03-30
+
+easyblock = 'ConfigureMake'
+
+name = 'libgsf'
+version = '1.14.50'
+
+homepage = 'https://github.com/GNOME/libgsf'
+description = """libgsf -- The G Structured File Library aims to provide an efficient extensible i/o abstraction for dealing with different structured file formats."""
+
+toolchain = SYSTEM
+
+osdependencies = [
+    ('libxml2'),
+]
+
+source_urls = [FTPGNOME_SOURCE]
+sources = [SOURCELOWER_TAR_XZ]
+
+sanity_check_paths = {
+    'files': ['bin/gsf'],
+    'dirs': ['lib', 'bin']
+}
+
+moduleclass = 'lib'

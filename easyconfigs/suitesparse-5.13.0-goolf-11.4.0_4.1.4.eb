@@ -1,0 +1,119 @@
+# Built with EasyBuild version 4.7.1 on 2023-08-08_09-22-15
+# Built with EasyBuild version 4.5.1 on 2023-04-20_15-19-23
+# Ruoshi Sun
+# 2023-03-27
+# 2020-04-01
+
+easyblock = 'EB_SuiteSparse'
+name = 'suitesparse'
+version = '5.13.0'
+
+homepage = 'http://faculty.cse.tamu.edu/davis/suitesparse.html'
+description = """SuiteSparse is a collection of libraries manipulate sparse matrices."""
+
+toolchain = {'name': 'goolf', 'version': '11.4.0_4.1.4'}
+toolchainopts = {'unroll': True, 'pic': True}
+
+source_urls = ['https://github.com/DrTimothyAldenDavis/SuiteSparse/archive']
+sources = ['v%(version)s.tar.gz']
+checksums = ['59c6ca2959623f0c69226cf9afb9a018d12a37fab3a8869db5f6d7f83b6b147d']
+
+builddependencies = [
+    ('cmake', '3.23.3', '', SYSTEM),
+]
+
+dependencies = [
+    ('metis', '5.1.0'),
+    ('mpfr', '4.1.0'),
+]
+
+# make sure that bin/demo can find libsuitesparseconfig.so.5 during build
+prebuildopts = "export LD_LIBRARY_PATH=%(builddir)s/SuiteSparse-%(version)s/lib:$LD_LIBRARY_PATH && "
+# remove broken symlink
+prebuildopts += "rm GraphBLAS/CUDA/test/graphblascuda_test && "
+
+moduleclass = 'numlib'
+
+# Build statistics
+buildstats = [{
+    "build_time": 22.13,
+    "command_line": ['--backup-modules', "--buildpath='/tmp/uvacse'", "--default-opt-level='opt'", '--disable-fixed-installdir-naming-scheme', '--force', "--hide-deps='automake,autoconf,binutils,bison,cairo-core,clibs,expat,flex,freetype-core,gcccore,glib,help2man,icc,ifort,iccifort,imkl,iompi,libassuan,libgcrypt,ibffi,libgtextutils,libiconv,libjpeg-turbo,libksba,libgpg-error,libpng,libreadline,libtiff,libtool,libxc,libxml2,m4,ncurses,netcdf-c,netcdf-cxx,netcdf-fortran,npth,pixman,pcre,protobuf,protobuf-python3,szip,tensorflowpkg3,x264,xz,zlib,X11'", "--hide-toolchains='gcccore,iompi'", "--hooks='/home/uvacse/ebhook/rivanna_hook.py'", "--installpath='/apps'", "--module-naming-scheme='RivannaHMNS'", '--module-only', "--moduleclasses='base,astro,bio,cae,chem,compiler,data,debugger,devel,geo,ide,lang,lib,math,mpi,numlib,perf,quantum,phys,system,toolchain,tools,vis,licensed,singularity,containersystem'", "--optarch='{\\'intel\\': \\'xavx -axCORE-AVX2,CORE-AVX512,MIC-AVX512\\', \\'gcc\\': \\'march=sandybridge\\', \\'pgi\\': \\'tp=px\\'}'", "--repositorypath='/apps/ebscripts/easybuild/easyconfigs'", "--robot-paths='/apps/ebscripts/easybuild/easyconfigs'", "--sourcepath='/share/resources/apps/source'", "--subdir-modules='modulefiles/standard'", "--subdir-software='software/standard'", "--suffix-modules-path=''", 'suitesparse-5.13.0-goolf-11.4.0_4.1.4.eb'],
+    "core_count": 28,
+    "cpu_arch": "x86_64",
+    "cpu_arch_name": "UNKNOWN",
+    "cpu_model": "Intel(R) Xeon(R) CPU E5-2680 v4 @ 2.40GHz",
+    "cpu_speed": 2400.009,
+    "cpu_vendor": "Intel",
+    "easybuild-easyblocks_version": "4.5.1",
+    "easybuild-framework_version": "4.5.1",
+    "gcc_version": "Using built-in specs.; COLLECT_GCC=gcc; COLLECT_LTO_WRAPPER=/apps/software/standard/core/gcc/11.4.0/libexec/gcc/x86_64-pc-linux-gnu/11.4.0/lto-wrapper; OFFLOAD_TARGET_NAMES=nvptx-none; Target: x86_64-pc-linux-gnu; Configured with: ../configure --enable-languages=c,c++,fortran --without-cuda-driver --enable-offload-targets=nvptx-none --enable-lto --enable-checking=release --disable-multilib --enable-shared=yes --enable-static=yes --enable-threads=posix --enable-plugins --enable-gold=default --enable-ld --with-plugin-ld=ld.gold --prefix=/apps/software/standard/core/gcc/11.4.0 --with-local-prefix=/apps/software/standard/core/gcc/11.4.0 --enable-bootstrap --with-isl=/tmp/uvacse/GCC/11.4.0/system-system/gcc-11.4.0/stage2_stuff --build=x86_64-pc-linux-gnu --host=x86_64-pc-linux-gnu; Thread model: posix; Supported LTO compression algorithms: zlib zstd; gcc version 11.4.0 (GCC) ; ",
+    "glibc_version": "2.28",
+    "hostname": "udc-ba27-25",
+    "install_size": 1822376755,
+    "modules_tool": ('Lmod', '/usr/share/lmod/lmod/libexec/lmod', '8.7.19'),
+    "os_name": "rocky linux",
+    "os_type": "Linux",
+    "os_version": "8.7",
+    "platform_name": "x86_64-unknown-linux",
+    "python_version": "3.6.8 (default, Nov  8 2022, 11:32:15) ; [GCC 8.5.0 20210514 (Red Hat 8.5.0-15)]",
+    "system_gcc_path": "/apps/software/standard/core/gcc/11.4.0/bin/gcc",
+    "system_python_path": None,
+    "timestamp": 1682018362,
+    "total_memory": 257840,
+}]
+
+# Build statistics
+buildstats = [
+{
+    "build_time": 22.13,
+    "command_line": ['--backup-modules', "--buildpath='/tmp/uvacse'", "--default-opt-level='opt'", '--disable-fixed-installdir-naming-scheme', '--force', "--hide-deps='automake,autoconf,binutils,bison,cairo-core,clibs,expat,flex,freetype-core,gcccore,glib,help2man,icc,ifort,iccifort,imkl,iompi,libassuan,libgcrypt,ibffi,libgtextutils,libiconv,libjpeg-turbo,libksba,libgpg-error,libpng,libreadline,libtiff,libtool,libxc,libxml2,m4,ncurses,netcdf-c,netcdf-cxx,netcdf-fortran,npth,pixman,pcre,protobuf,protobuf-python3,szip,tensorflowpkg3,x264,xz,zlib,X11'", "--hide-toolchains='gcccore,iompi'", "--hooks='/home/uvacse/ebhook/rivanna_hook.py'", "--installpath='/apps'", "--module-naming-scheme='RivannaHMNS'", '--module-only', "--moduleclasses='base,astro,bio,cae,chem,compiler,data,debugger,devel,geo,ide,lang,lib,math,mpi,numlib,perf,quantum,phys,system,toolchain,tools,vis,licensed,singularity,containersystem'", "--optarch='{\\'intel\\': \\'xavx -axCORE-AVX2,CORE-AVX512,MIC-AVX512\\', \\'gcc\\': \\'march=sandybridge\\', \\'pgi\\': \\'tp=px\\'}'", "--repositorypath='/apps/ebscripts/easybuild/easyconfigs'", "--robot-paths='/apps/ebscripts/easybuild/easyconfigs'", "--sourcepath='/share/resources/apps/source'", "--subdir-modules='modulefiles/standard'", "--subdir-software='software/standard'", "--suffix-modules-path=''", 'suitesparse-5.13.0-goolf-11.4.0_4.1.4.eb'],
+    "core_count": 28,
+    "cpu_arch": "x86_64",
+    "cpu_arch_name": "UNKNOWN",
+    "cpu_model": "Intel(R) Xeon(R) CPU E5-2680 v4 @ 2.40GHz",
+    "cpu_speed": 2400.009,
+    "cpu_vendor": "Intel",
+    "easybuild-easyblocks_version": "4.5.1",
+    "easybuild-framework_version": "4.5.1",
+    "gcc_version": "Using built-in specs.; COLLECT_GCC=gcc; COLLECT_LTO_WRAPPER=/apps/software/standard/core/gcc/11.4.0/libexec/gcc/x86_64-pc-linux-gnu/11.4.0/lto-wrapper; OFFLOAD_TARGET_NAMES=nvptx-none; Target: x86_64-pc-linux-gnu; Configured with: ../configure --enable-languages=c,c++,fortran --without-cuda-driver --enable-offload-targets=nvptx-none --enable-lto --enable-checking=release --disable-multilib --enable-shared=yes --enable-static=yes --enable-threads=posix --enable-plugins --enable-gold=default --enable-ld --with-plugin-ld=ld.gold --prefix=/apps/software/standard/core/gcc/11.4.0 --with-local-prefix=/apps/software/standard/core/gcc/11.4.0 --enable-bootstrap --with-isl=/tmp/uvacse/GCC/11.4.0/system-system/gcc-11.4.0/stage2_stuff --build=x86_64-pc-linux-gnu --host=x86_64-pc-linux-gnu; Thread model: posix; Supported LTO compression algorithms: zlib zstd; gcc version 11.4.0 (GCC) ; ",
+    "glibc_version": "2.28",
+    "hostname": "udc-ba27-25",
+    "install_size": 1822376755,
+    "modules_tool": ('Lmod', '/usr/share/lmod/lmod/libexec/lmod', '8.7.19'),
+    "os_name": "rocky linux",
+    "os_type": "Linux",
+    "os_version": "8.7",
+    "platform_name": "x86_64-unknown-linux",
+    "python_version": "3.6.8 (default, Nov  8 2022, 11:32:15) ; [GCC 8.5.0 20210514 (Red Hat 8.5.0-15)]",
+    "system_gcc_path": "/apps/software/standard/core/gcc/11.4.0/bin/gcc",
+    "system_python_path": None,
+    "timestamp": 1682018362,
+    "total_memory": 257840,
+},
+{
+    "build_time": 2220.27,
+    "command_line": ["--buildpath='/tmp/uvacse'", "--default-opt-level='opt'", '--disable-fixed-installdir-naming-scheme', "--hide-deps='automake,autoconf,binutils,bison,cairo-core,clibs,expat,flex,freetype-core,gcccore,glib,help2man,icc,ifort,iccifort,imkl,iompi,libassuan,libgcrypt,ibffi,libgtextutils,libiconv,libjpeg-turbo,libksba,libgpg-error,libpng,libreadline,libtiff,libtool,libxc,libxml2,m4,ncurses,netcdf-c,netcdf-cxx,netcdf-fortran,npth,pixman,pcre,protobuf,protobuf-python3,szip,tensorflowpkg3,x264,xz,zlib,X11'", "--hide-toolchains='gcccore,iompi'", "--hooks='/home/uvacse/ebhook/rivanna_hook.py'", "--installpath='/apps'", "--module-naming-scheme='RivannaHMNS'", "--moduleclasses='base,ai,astro,bio,cae,chem,compiler,data,debugger,devel,geo,ide,lang,lib,math,mpi,numlib,perf,quantum,phys,system,toolchain,tools,vis,licensed,singularity,containersystem'", "--optarch='{\\'Intel\\': \\'xavx -axCORE-AVX2,CORE-AVX512\\', \\'GCC\\': \\'march=sandybridge\\'}'", "--repositorypath='/apps/ebscripts/easybuild/easyconfigs'", "--robot='/apps/ebscripts/easybuild/easyconfigs'", "--robot-paths='/apps/ebscripts/easybuild/easyconfigs'", "--sourcepath='/share/resources/apps/source'", "--subdir-modules='modulefiles/standard'", "--subdir-software='software/standard'", "--suffix-modules-path=''", '/apps/ebscripts/easybuild/easyconfigs/augustus/augustus-3.5.0-goolf-11.4.0_4.1.4.eb'],
+    "core_count": 20,
+    "cpu_arch": "x86_64",
+    "cpu_arch_name": "UNKNOWN",
+    "cpu_model": "Intel(R) Xeon(R) CPU E5-2670 v2 @ 2.50GHz",
+    "cpu_speed": 2501.0,
+    "cpu_vendor": "Intel",
+    "easybuild-easyblocks_version": "4.7.1",
+    "easybuild-framework_version": "4.7.1",
+    "gcc_version": "Using built-in specs.; COLLECT_GCC=gcc; COLLECT_LTO_WRAPPER=/apps/software/standard/core/gcc/11.4.0/libexec/gcc/x86_64-pc-linux-gnu/11.4.0/lto-wrapper; Target: x86_64-pc-linux-gnu; Configured with: ../configure --enable-languages=c,c++,fortran --enable-lto --enable-checking=release --disable-multilib --enable-shared=yes --enable-static=yes --enable-threads=posix --enable-plugins --enable-gold --enable-ld=default --prefix=/apps/software/standard/core/gcc/11.4.0 --with-local-prefix=/apps/software/standard/core/gcc/11.4.0 --enable-bootstrap --with-isl=/tmp/uvacse/GCC/11.4.0/system-system/gcc-11.4.0/stage2_stuff --build=x86_64-pc-linux-gnu --host=x86_64-pc-linux-gnu; Thread model: posix; Supported LTO compression algorithms: zlib zstd; gcc version 11.4.0 (GCC) ; ",
+    "glibc_version": "2.28",
+    "hostname": "udc-ba38-31c9",
+    "install_size": 1746458649,
+    "modules_tool": ('Lmod', '/usr/share/lmod/lmod/libexec/lmod', '8.7.19'),
+    "os_name": "Rocky Linux",
+    "os_type": "Linux",
+    "os_version": "8.7",
+    "platform_name": "x86_64-unknown-linux",
+    "python_version": "3.6.8 (default, Nov  8 2022, 11:32:15) ; [GCC 8.5.0 20210514 (Red Hat 8.5.0-15)]",
+    "system_gcc_path": "/apps/software/standard/core/gcc/11.4.0/bin/gcc",
+    "system_python_path": None,
+    "timestamp": 1691500934,
+    "total_memory": 128798,
+},
+]

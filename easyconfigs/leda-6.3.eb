@@ -1,0 +1,38 @@
+easyblock = 'CmdCp'
+
+name = 'leda'
+version = '6.3'
+
+homepage = 'http://www.algorithmic-solutions.info/free/d5.php'
+description = "RStudio is a set of integrated tools designed to help you be more productive with R. LEDA is a C++ class library for efficient data types and algorithms that provide algorithmic in-depth knowledge of graph- and network problems, geometric computations, combinatorial opimization and other."
+
+toolchain = SYSTEM
+
+source_urls = ['http://www.algorithmic-solutions.info/free/d5.php']
+sources = ['LEDA-%(version)s-free-fedora-core-8-64-g++-4.1.2-mt.tar.gz']
+
+#Force it to have bin and lib directories
+#     -- only because the easyblock needed it
+postinstallcmds = [
+    "mkdir %(installdir)s/bin",
+    "mkdir %(installdir)s/lib",
+    "cp %(installdir)s/libleda* %(installdir)s/bin",
+    "cp %(installdir)s/libleda* %(installdir)s/lib",
+]
+skipsteps = ['configure', 'build', 'extensions']
+files_to_copy = [
+    'CHANGES',
+    'confdir',
+    'FIXES',
+    'incl',
+    'Install',
+    'libleda.a',
+    'libleda.so',
+    'license.txt',
+    'Makefile',
+    'Manual',
+    'Readme.txt',
+    'test',
+]
+
+moduleclass = 'lib'

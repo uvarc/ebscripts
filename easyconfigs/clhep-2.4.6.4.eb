@@ -1,0 +1,25 @@
+# modified from EB repo
+# Ruoshi Sun
+# 2023-03-29
+
+easyblock = 'CMakeMake'
+
+name = 'clhep'
+version = '2.4.6.4'
+
+homepage = 'http://proj-clhep.web.cern.ch/proj-clhep/'
+description = """The CLHEP project is intended to be a set of HEP-specific foundation and
+ utility classes such as random generators, physics vectors, geometry and linear algebra.
+ CLHEP is structured in a set of packages independent of any external package."""
+
+toolchain = SYSTEM
+
+source_urls = ['http://proj-%(name)s.web.cern.ch/proj-%(name)s/dist1']
+sources = [SOURCELOWER_TGZ]
+
+builddependencies = [('cmake', '3.23.3')]
+
+separate_build_dir = True
+configopts = '-DCMAKE_BUILD_TYPE=Release'
+
+moduleclass = 'numlib'

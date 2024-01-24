@@ -1,0 +1,28 @@
+##
+# This file is an EasyBuild reciPY as per https://github.com/easybuilders/easybuild
+#
+easyblock = 'CMakeMake'
+
+name = 'xerces'
+version = '3.2.2'
+
+homepage = 'http://http://xerces.apache.org/'
+description = "Xerces-C++ is a validating XML parser written in a portable subset of C++."
+
+toolchain = SYSTEM
+toolchainopts = {'opt': True, 'pic': True}
+
+source_urls = ['http://%(name)s.apache.org/mirrors.cgi']
+sources = ['%(name)s-c-%(version)s.tar.gz']
+
+builddependencies = [
+    ('cmake', '3.23.3', '', True),
+]
+
+
+sanity_check_paths = {
+    'files': ['bin/DOMPrint'],
+    'dirs': ['bin/'],
+}
+
+moduleclass = 'tools'

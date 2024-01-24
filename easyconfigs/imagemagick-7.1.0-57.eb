@@ -1,0 +1,27 @@
+# This file is an EasyBuild reciPY as per https://github.com/easybuilders/easybuild
+# Author: Ravi Tripathi
+# Email: ravi89@uab.edu
+
+easyblock = 'ConfigureMake'
+
+name = 'imagemagick'
+version = '7.1.0-57'
+
+homepage = 'http://www.imagemagick.org/'
+description = """ImageMagick is a software suite to create, edit, compose, or convert bitmap images"""
+
+toolchain = SYSTEM
+
+source_urls = ['https://github.com/ImageMagick/ImageMagick/archive/refs/tags']
+sources = ['%(version)s.tar.gz']
+
+configopts = "--with-gslib --with-x --with-tiff"
+
+sanity_check_paths = {
+    'files': [],
+    'dirs': ['bin', 'etc/ImageMagick-%(version_major)s', 'include/ImageMagick-%(version_major)s', 'lib', 'share'],
+}
+
+modextravars = {'MAGICK_HOME': '%(installdir)s'}
+
+moduleclass = 'vis'

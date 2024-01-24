@@ -1,0 +1,28 @@
+# Christina Gancayco, Ruoshi Sun
+# 2020-06-18
+
+easyblock = 'MakeCp'
+
+name = 'ngsf'
+version = '1.2.0'
+
+toolchain = SYSTEM
+
+homepage = 'https://github.com/fgvieira/ngsF'
+description = """ngsF is a program to estimate per-individual inbreeding coefficients under a probabilistic framework that takes the uncertainty of genotype's assignation into account. It avoids calling genotypes by using genotype likelihoods or posterior probabilities."""
+
+source_urls = ['https://github.com/fgvieira/%(name)s/archive/']
+sources = ['v%(version)s.tar.gz']
+
+dependencies = [
+	('gsl', '2.7.1')
+]
+
+files_to_copy = [(['ngsF','ngsF.sh'], 'bin'), 'examples', 'htslib', 'LICENSE']
+
+sanity_check_paths = {
+    'files': ['bin/ngsF.sh'],
+    'dirs': ['htslib']
+}
+
+moduleclass = 'bio'

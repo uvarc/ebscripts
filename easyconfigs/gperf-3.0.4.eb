@@ -1,0 +1,12 @@
+easyblock = 'PackedBinary'
+
+name = 'gperf'
+version = '3.0.4'
+
+homepage = 'None'
+description = 'None'
+
+toolchain = SYSTEM
+
+sources = ['gperf_3.0.4.tgz']
+

@@ -1,0 +1,25 @@
+# Ruoshi Sun
+# 2022-12-01
+
+easyblock = 'EB_HDF5'
+
+name = 'hdf5'
+version = '1.12.2'
+
+homepage = 'http://www.hdfgroup.org/HDF5/'
+description = "HDF5 is a unique technology suite that makes possible the management of extremely large and complex data collections."
+
+toolchain = {'name': 'iimpi', 'version': '2023.1'}
+toolchainopts = {'pic': True, 'usempi': True}
+
+source_urls = ['http://www.hdfgroup.org/ftp/HDF5/releases/%(name)s-%(version_major_minor)s/%(name)s-%(version)s/src']
+sources = [SOURCELOWER_TAR_GZ]
+
+dependencies = [
+    ('zlib', '1.2.13'),
+    ('szip', '2.1.1'),
+]
+
+configopts = ['--enable-shared']
+
+moduleclass = 'data'
