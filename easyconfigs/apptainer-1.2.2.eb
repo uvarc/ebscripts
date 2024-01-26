@@ -18,7 +18,7 @@ sources = [SOURCELOWER_TAR_GZ]
 
 builddependencies = [
     #('binutils', '2.38'),
-    ('go', '1.21.4'),
+    ('go', '1.19.4'),
     #('pkgconf', '1.8.0'),
     #('Autotools', '20220317'),
     #('zlib', '1.2.12'),
@@ -52,9 +52,5 @@ sanity_check_commands = [('apptainer', '--version')]
 
 modextrapaths = {
     'MODULEPATH': ['/apps/modulefiles/standard/container/%(name)s/%(version)s']
-}
-modaliases = {
-    'apptainer': 'apptainer -s',
-    'singularity': 'singularity -s',
 }
 moduleclass = 'tools'

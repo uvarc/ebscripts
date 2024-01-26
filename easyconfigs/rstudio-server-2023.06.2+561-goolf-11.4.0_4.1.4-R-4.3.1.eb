@@ -30,12 +30,6 @@ dependencies = [
     ('R', '4.3.1'),
     ('soci', '4.0.3'),
     ('yaml-cpp', '0.7.0'),
-# common dependencies for user packages
-    ('gdal', '3.6.3'),
-    ('gsl', '2.7.1'),
-    ('gmp', '6.2.0'),
-    ('mpfr', '4.1.0'),
-    ('proj', '9.2.0'),
 ]
 
 osdependencies = [
@@ -101,7 +95,4 @@ sanity_check_paths = {
     'dirs': ['bin', 'extras', 'resources', 'www', 'www-symbolmaps', 'R'],
 }
 
-modextravars = {
-    'R_LIBS_USER': '~/R/%(toolchain_name)s/4.3'
-}
 moduleclass = 'lang'
