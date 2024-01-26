@@ -97,12 +97,12 @@ echo $DIVIDER
 
 # easyconfigs
 echo -n "Syncing installed easyconfigs and patches... "
-sync core       4
-sync compiler   6
-sync mpi        8
-sync toolchains 4
-sync container  6
-rsync $RSYNCFLAG --delete $TMP/ $HERE/easyconfigs
+#sync core       4
+#sync compiler   6
+#sync mpi        8
+#sync toolchains 4
+#sync container  6
+#rsync $RSYNCFLAG --delete $TMP/ $HERE/easyconfigs
 rm -rf $TMP
 echo "Done."
 echo $DIVIDER
@@ -115,9 +115,13 @@ echo $DIVIDER
 
 DATE=$(date -Iseconds)
 if [ $# -ne 2 ]; then
-    echo "Pushing to GitHub... "
     git add -A
-    git commit -m $DATE
-    git push
+    if [ ! -z "$(git status -s)" ]; then
+        echo "Pushing to GitHub... "
+        git commit -m $DATE
+        git push
+    else
+        echo "No changes in repo"
+    fi
 fi
 echo "Completed on $DATE."
