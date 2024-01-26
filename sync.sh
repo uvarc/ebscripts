@@ -2,6 +2,12 @@
 # Ruoshi Sun
 # 2024-01-24
 
+if [ ! -z "$(git diff main derp sync.sh)" ]; then
+    echo "Error: sync.sh out of sync across branches"
+    echo "See README.md for instructions"
+    exit 1
+fi
+
 #-------------------------------
 # Global variables and functions
 #-------------------------------
