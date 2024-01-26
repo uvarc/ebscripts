@@ -3,6 +3,17 @@ UVARC easyblocks and easyconfigs
 
 ## Instructions
 
+The hostname does not matter as long as you are on the cluster. In other words, you do not have to be on production/derp to sync the corresponding software stack.
+
+Do not edit files in the subdirectories manually - they are meant to be a mirror.
+
+The sync script makes some assumptions:
+- Production hostname
+- EB version
+- Derp YYYYMM = production YYYYMM + 6 months
+- Path to system python
+If these change, `sync.sh` should be updated accordingly.
+
 ### Syncing the software stack
 Production:
 1. Make sure you're on the `main` branch
@@ -34,6 +45,6 @@ Add a second argument for dry run.
     git checkout derp
     git checkout main -- sync.sh
     git add sync.sh
-    git commit -m "sync sync.sh"
+    git commit -C main
     git push
     ```
