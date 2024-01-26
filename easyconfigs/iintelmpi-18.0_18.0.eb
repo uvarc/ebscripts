@@ -1,18 +1,21 @@
 # This is an easyconfig file for EasyBuild, see http://hpcugent.github.io/easybuild
-easyblock = 'Toolchain'
+easyblock = "Toolchain"
 
 name = 'iintelmpi'
-version = '18.0_18.0'
+compver = '18.0'
+mpiver = '18.0'
+version = '%s_%s' % (compver,mpiver)
+
 
 homepage = 'http://software.intel.com/en-us/intel-cluster-toolkit-compiler/'
-description = "Intel C/C++ and Fortran compilers with IntelMPI."
+description = """Intel C/C++ and Fortran compilers with IntelMPI."""
 
 toolchain = {'name': 'dummy', 'version': 'dummy'}
 
 dependencies = [
-    ('intel', '18.0'),
-    ('intelmpi', '18.0', '', ('intel', '18.0')),
+    ('intel', compver),
+    ('intelmpi', mpiver, '', ('intel', compver)),
 ]
 
-
 moduleclass = 'toolchain'
+
