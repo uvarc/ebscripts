@@ -8,10 +8,11 @@ The hostname does not matter as long as you are on the cluster. In other words, 
 Do not edit files in the subdirectories manually - they are meant to be a mirror.
 
 The sync script makes some assumptions:
-- Production hostname
+- production hostname
 - EB version
-- Derp YYYYMM = production YYYYMM + 6 months
-- Path to system python
+- derp YYYYMM = production YYYYMM + 6 months
+- path to system python
+
 If these change, `sync.sh` should be updated accordingly.
 
 ### Syncing the software stack
