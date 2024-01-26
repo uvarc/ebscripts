@@ -2,8 +2,25 @@
 # Ruoshi Sun
 # 2024-01-24
 
+if [ $# -eq 0 ]; then
+    echo "Usage: `basename $0` p|d [dry]"
+    echo "  p = production"
+    echo "  d = derp"
+    exit 1
+fi
+
+if [ $# -eq 2 ]; then
+    # dry run
+    echo "DRY RUN - no changes will be made in $HERE"
+    RSYNCFLAG=-na
+else
+    RSYNCFLAG=-qa
+fi
+
+#-------------------------------
+# Global variables and functions
+#-------------------------------
 HERE=$(realpath $(dirname $0))
-EBVER=4.7.1
 
 # files to be excluded in easyblock dir
 EXCLUDE="__init__.py
@@ -15,47 +32,54 @@ EXCLUDE=$(echo "$EXCLUDE"|sed 's/^/--exclude /'|tr '\n' ' ')
 TMP=$(mktemp -d)
 DIVIDER=$(printf %"$COLUMNS"s|tr ' ' '-')
 
-if [ $# -eq 1 ]; then
-    # dry run
-    echo "DRY RUN - no changes will be made in $HERE"
-    RSYNCFLAG=-nav
-else
-    RSYNCFLAG=-qav
-fi
+# determine YYYYMM for production and derp
+YMp=$(basename $(ssh rivanna.hpc.virginia.edu realpath /apps))
+YMd=$(date -d "${YMp}01 + 6 month" +%Y%m)
 
 function sync() {
     # collect all files in a temp dir first and then bulk rsync later to capture deleted modules
     cd $SOFTWAREDIR/$1
     find . -mindepth $2 -maxdepth $2 -type f \( -name *.eb -or -name *.patch \) \
-        -exec rsync -qav {} $TMP \;
+        -exec rsync -qa {} $TMP \;
 }
 
-# Initialize variables
+#----------------------------
+# Initialize branch variables
+#----------------------------
 module purge
-if [ "$(hostname)" = "build" ]; then
-    export MODULEPATH=/apps/modulefiles:$MODULEPATH
-    ml easybuild/$EBVER || {
-        echo "Failed to load EasyBuild"
+case $1 in
+    p)
+        EBVER=4.7.1
+        APPSDIR="/sfs/applications/${YMp}_build"
+        PYTHON=/usr/bin/python3
+        BRANCH=main
+        git checkout main
+        ;;
+    d)
+        EBVER=4.7.1
+        APPSDIR="/sfs/applications/${YMd}_build"
+        PYTHON=/usr/bin/python3
+        git checkout derp
+        ;;
+    *)
+        echo "Invalid option"
         exit 1
-    }
-    EBDIR=$EBROOTEASYBUILD
-    PYVER=$($EB_INSTALLPYTHON -V|awk '{print $2}') # e.g. 3.6.8
-    PYVER=${PYVER%.*}                              # e.g. 3.6
-    EASYBLOCKSDIR=$EBDIR/lib/python${PYVER}/site-packages/easybuild/easyblocks/
-    SOFTWAREDIR=${EASYBUILD_INSTALLPATH}/${EASYBUILD_SUBDIR_SOFTWARE}
-else
-    APPSDIR="$(realpath /apps)_build"
-    EBDIR=$APPSDIR/software/EasyBuild/$EBVER
-    PYTHON=/usr/bin/python3
-    PYVER=$($PYTHON -V|awk '{print $2}') # e.g. 3.6.8
-    PYVER=${PYVER%.*}                    # e.g. 3.6
-    echo "Not on build node. Assuming:"
-    echo "- EB in $EBDIR"
-    echo "- software stack in $APPSDIR/software/standard"
-    echo "- python $PYTHON"
-    EASYBLOCKSDIR=$APPSDIR/software/EasyBuild/$EBVER/lib/python${PYVER}/site-packages/easybuild/easyblocks/
-    SOFTWAREDIR=$APPSDIR/software/standard
-fi
+        ;;
+esac
+
+EBDIR=$APPSDIR/software/EasyBuild/$EBVER
+PYVER=$($PYTHON -V|awk '{print $2}') # e.g. 3.6.8
+PYVER=${PYVER%.*}                    # e.g. 3.6
+# the trailing slash matters for rsync
+EASYBLOCKSDIR=$APPSDIR/software/EasyBuild/$EBVER/lib/python${PYVER}/site-packages/easybuild/easyblocks/
+SOFTWAREDIR=$APPSDIR/software/standard
+
+for i in $APPSDIR $EBDIR $EASYBLOCKSDIR $SOFTWAREDIR; do
+    if [ ! -d $i ]; then
+        echo "Error: $i is not a valid directory"
+        exit 1
+    fi
+done
 
 # Configuration
 echo $DIVIDER
@@ -81,4 +105,10 @@ echo -n "Syncing easyblocks... "
 rsync $RSYNCFLAG $EXCLUDE "$EASYBLOCKSDIR" $HERE/easyblocks
 echo "Done."
 echo $DIVIDER
-echo "Completed on $(date)."
+
+echo "Pushing to GitHub... "
+git add -A
+DATE=$(date -Iseconds)
+git commit -m $DATE
+git push
+echo "Completed on $DATE."
