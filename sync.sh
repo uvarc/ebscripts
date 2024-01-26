@@ -2,21 +2,6 @@
 # Ruoshi Sun
 # 2024-01-24
 
-if [ $# -eq 0 ]; then
-    echo "Usage: `basename $0` p|d [dry]"
-    echo "  p = production"
-    echo "  d = derp"
-    exit 1
-fi
-
-if [ $# -eq 2 ]; then
-    # dry run
-    echo "DRY RUN - no changes will be made in $HERE"
-    RSYNCFLAG=-na
-else
-    RSYNCFLAG=-qa
-fi
-
 #-------------------------------
 # Global variables and functions
 #-------------------------------
@@ -43,23 +28,45 @@ function sync() {
         -exec rsync -qa {} $TMP \;
 }
 
+# check args
+if [ $# -eq 0 ]; then
+    echo "Usage: `basename $0` p|d [dry]"
+    echo "  p = production"
+    echo "  d = derp"
+    exit 1
+fi
+
+if [ $# -eq 2 ]; then
+    # dry run
+    echo "DRY RUN - no changes will be made in $HERE"
+    RSYNCFLAG=-na
+else
+    RSYNCFLAG=-qa
+fi
+
 #----------------------------
 # Initialize branch variables
 #----------------------------
 module purge
 case $1 in
     p)
+        if [ ! $(git branch --show-current) = "main" ]; then
+            echo "Error: trying to sync production into a branch other than main"
+            exit 1
+        fi
         EBVER=4.7.1
         APPSDIR="/sfs/applications/${YMp}_build"
         PYTHON=/usr/bin/python3
         BRANCH=main
-        git checkout main
         ;;
     d)
+        if [ ! $(git branch --show-current) = "derp" ]; then
+            echo "Error: trying to sync derp into a branch other than derp"
+            exit 1
+        fi
         EBVER=4.7.1
         APPSDIR="/sfs/applications/${YMd}_build"
         PYTHON=/usr/bin/python3
-        git checkout derp
         ;;
     *)
         echo "Invalid option"
@@ -106,12 +113,10 @@ rsync $RSYNCFLAG $EXCLUDE "$EASYBLOCKSDIR" $HERE/easyblocks
 echo "Done."
 echo $DIVIDER
 
-echo "Pushing to GitHub... "
-git add -A
 DATE=$(date -Iseconds)
-if [ $# -eq 2 ]; then
-    git commit -m --dry-run $DATE
-else
+if [ $# -ne 2 ]; then
+    echo "Pushing to GitHub... "
+    git add -A
     git commit -m $DATE
     git push
 fi
