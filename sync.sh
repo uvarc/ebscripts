@@ -109,6 +109,10 @@ echo $DIVIDER
 echo "Pushing to GitHub... "
 git add -A
 DATE=$(date -Iseconds)
-git commit -m $DATE
-git push
+if [ $# -eq 2 ]; then
+    git commit -m --dry-run $DATE
+else
+    git commit -m $DATE
+    git push
+fi
 echo "Completed on $DATE."
