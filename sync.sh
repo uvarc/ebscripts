@@ -6,6 +6,7 @@
 # Global variables and functions
 #-------------------------------
 HERE=$(realpath $(dirname $0))
+COLUMNS=80
 
 # files to be excluded in easyblock dir
 EXCLUDE="__init__.py
@@ -113,11 +114,17 @@ rsync $RSYNCFLAG $EXCLUDE "$EASYBLOCKSDIR" $HERE/easyblocks
 echo "Done."
 echo $DIVIDER
 
+cd $HERE
 DATE=$(date -Iseconds)
 if [ $# -ne 2 ]; then
-    echo "Pushing to GitHub... "
     git add -A
-    git commit -m $DATE
-    git push
+    if [ ! -z "$(git status -s)" ]; then
+        echo "Pushing to GitHub... "
+        git commit -m $DATE
+        git push
+    else
+        echo "No changes in repo"
+    fi
 fi
+echo $DIVIDER
 echo "Completed on $DATE."
