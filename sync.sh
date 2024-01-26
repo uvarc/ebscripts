@@ -6,6 +6,7 @@
 # Global variables and functions
 #-------------------------------
 HERE=$(realpath $(dirname $0))
+COLUMNS=80
 
 # files to be excluded in easyblock dir
 EXCLUDE="__init__.py
