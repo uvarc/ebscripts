@@ -1,7 +1,9 @@
+# Ruoshi Sun
+# SUP-4057
 easyblock = 'JAR'
 
 name = 'picard'
-version = '2.23.4'
+version = '2.27.5'
 
 homepage = 'http://sourceforge.net/projects/picard'
 description = """A set of tools (in Java) for working with next generation sequencing data in the BAM format."""
@@ -13,7 +15,6 @@ sources = [{
     'filename': '%(name)s.jar',
     'download_filename': '%(name)s.jar',
 }]
-checksums = ['f82c35e1d1e738a3ea0af5d157e72ae9d65cf695f8a26bf264532801fab2e475']
 
 # postinstallcmds = ["mv %(installdir)s/%(name)s-%(version)s.jar %(installdir)s/%(name)s.jar"]
 

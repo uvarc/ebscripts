@@ -1,3 +1,4 @@
+# SUP-4057
 ##
 # This file is an EasyBuild reciPY as per https://github.com/easybuilders/easybuild
 #
@@ -15,7 +16,7 @@
 easyblock = 'Tarball'
 
 name = 'gatk'
-version = '4.2.3.0'
+version = '4.3.0.0'
 
 homepage = 'http://www.broadinstitute.org/gatk/'
 description = """The Genome Analysis Toolkit or GATK is a software package developed at the Broad Institute
@@ -31,6 +32,10 @@ sources = [SOURCE_ZIP]
 
 dependencies = [
     ('java', '12'),
+]
+
+postinstallcmds = [
+    'sed -i "s/env python/env python3/" %(installdir)s/gatk',
 ]
 
 modextrapaths = {
