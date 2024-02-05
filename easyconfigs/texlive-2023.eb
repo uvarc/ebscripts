@@ -31,7 +31,7 @@ install_cmd = """
     mv %%(installdir)s/%%(version)s/* %%(installdir)s
     rmdir %%(installdir)s/%%(version)s
     %%(installdir)s/bin/x86_64-linux/tlmgr update --all --self
-    %%(installdir)s/bin/x86_64-linux/tlmgr install type1cm tcolorbox environ ucs adjustbox collectbox titling enumitem rsfs
+    %%(installdir)s/bin/x86_64-linux/tlmgr install type1cm tcolorbox environ ucs adjustbox collectbox titling enumitem rsfs hypdoc pdfcol
 """ % sources[0]
 
 sanity_check_paths = {
