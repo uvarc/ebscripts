@@ -43,7 +43,7 @@ if [ $# -eq 0 ]; then
     exit 1
 fi
 
-if [ $# -eq 2 ]; then
+if [ $# -ge 2 ]; then
     # dry run
     echo "DRY RUN - no changes will be made in $HERE"
     RSYNCFLAG=-na
@@ -64,7 +64,6 @@ case $1 in
         EBVER=4.7.1
         APPSDIR="/sfs/applications/${YMp}_build"
         PYTHON=/usr/bin/python3
-        BRANCH=main
         ;;
     d)
         if [ ! $(git branch --show-current) = "derp" ]; then
@@ -122,10 +121,10 @@ echo $DIVIDER
 
 cd $HERE
 DATE=$(date -Iseconds)
-if [ $# -ne 2 ]; then
-    git add -A
+if [ $# -eq 1 ]; then
     if [ ! -z "$(git status -s)" ]; then
         echo "Pushing to GitHub... "
+        git add -A
         git commit -m $DATE
         git push
     else
