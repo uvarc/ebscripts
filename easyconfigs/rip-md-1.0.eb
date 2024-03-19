@@ -1,0 +1,59 @@
+# Ruoshi Sun
+# 2024-02-29 RIV-13579
+
+easyblock = 'Mamba'
+
+name = 'rip-md'
+version = '1.0'
+
+homepage = 'http://dlab.cl/ripmd/'
+
+description = "RIP-MD allows to apply Residue Interaction Networks (RINs) to the analysis of molecular dynamics simulations of protein. "
+
+toolchain = SYSTEM
+
+source_urls = ['http://146.83.236.3/ripmd/files/']
+sources = ['RIP-MD-%(version)s.tar.gz']
+
+extract_sources = True
+
+dependencies = [
+    ('mamba', '22.11.1-4'),
+]
+
+channels = ['conda-forge']
+requirements = 'python=2.7 pip'
+
+postinstallcmds = [
+    'mv %(builddir)s/RIP-MD-%(version)s/RIP-MD* %(installdir)s',
+    '%(installdir)s/bin/pip install --no-cache-dir networkx==2.0 biopython==1.70 matplotlib==2.1.0 mmtf-python==1.1.2 MDAnalysis==0.16.2',
+]
+
+#exts_defaultclass = 'PythonPackage'
+#exts_list = [
+#    #('numpy','1.16.6', {'use_pip_for_deps': True, 'modulename': 'numpy', 'source_urls':['https://github.com/numpy/numpy/releases/download/v1.16.6/']}),
+#    #('scipy','1.0.0', {'use_pip_for_deps': True, 'modulename': 'scipy', 'source_urls':['https://files.pythonhosted.org/packages/d0/73/76fc6ea21818eed0de8dd38e1e958672557886    4169a2b31acdeffb9131c8/']}),
+#    ('networkx','2.0', {'use_pip_for_deps': True, 'modulename': 'networkx', 'source_urls':['https://github.com/networkx/networkx/archive/refs/tags/']}),
+#    ('biopython','1.70',{'use_pip_for_deps': True, 'modulename': 'Bio', 'source_urls':['https://files.pythonhosted.org/packages/72/04/73a4bb22fed40eed26c7e1a673ab51778c577afc3d5dd6f1256424a62c35/']}),
+#    ('matplotlib','2.1.0', {'use_pip_for_deps': True, 'modulename': 'matplotlib', 'source_urls':['https://files.pythonhosted.org/packages/6c/90/cf10bb2020d2811da811a49601f6eafcda022c6ccd296fd05aba093dee96/']}), 
+#    ('mmtf-python','1.1.2', {'use_pip_for_deps': True, 'modulename': 'mmtf', 'source_urls':['https://files.pythonhosted.org/packages/13/ea/c6a302ccdfdcc1ab200bd2b7561e574329055d2974b1fb7939a7aa374da3/']}),
+##    ('joblib','0.14.1', {'use_pip_for_deps': True, 'modulename': 'joblib', 'source_urls': ['https://files.pythonhosted.org/packages/28/5c/cf6a2b65a321c4a209efcdf64c2689efae2cb62661f8f6f4bb28547cf1bf/']}),
+##    ('GridDataFormats','0.6.0', {'use_pip_for_deps': True, 'modulename': 'numpy', 'source_urls':['https://files.pythonhosted.org/packages/78/e4/c8cd5f6a8814f33a2112325b062cd79e7748d7cacf89077365de9d7200b7/']}),
+#    ('MDAnalysis','0.16.2', {'use_pip_for_deps': False, 'modulename': 'MDAnalysis', 'source_urls':['https://files.pythonhosted.org/packages/ae/d5/07c38db64a6bd9bcec03caea8e07137bb2e571ce2bd145f9804727dfc2a5/']}),
+#]
+#exts_default_options = {'use_pip': True, 'req_py_majver': '2', 'download_dep_fail': True, 'req_py_minver': '7'}
+
+sanity_check_paths = {
+    'files': [],
+    'dirs': ['RIP-MD', 'RIP-MD_vmd'],
+}
+
+modextravars = {
+    'RIP_MD': '%(installdir)s/RIP-MD'
+}
+
+modloadmsg = """Run the follwing command to execute the RIP-MD main Python script:
+python $RIP_MD/main.py
+"""
+
+moduleclass = 'bio'

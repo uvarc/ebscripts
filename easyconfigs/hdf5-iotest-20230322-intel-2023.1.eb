@@ -1,0 +1,28 @@
+# Ruoshi Sun
+# 2024-03-15
+easyblock = 'ConfigureMake'
+
+name = 'hdf5-iotest'
+version = '20230322'
+hidden = True
+
+homepage = 'https://github.com/HDFGroup/hdf5-iotest'
+description = "HDF5 Performance Analysis Checklist"
+
+toolchain = {'name': 'intel', 'version': '2023.1'}
+
+source_urls = ['https://github.com/HDFGroup/hdf5-iotest/archive/refs/heads']
+sources = ['master.zip']
+
+dependencies = [
+    ('hdf5', '1.12.2')
+]
+
+preconfigopts = './autogen.sh && CC=h5pcc '
+
+sanity_check_paths = {
+    'files': ['bin/hdf5_iotest'],
+    'dirs': ['bin'],
+}
+
+moduleclass = 'devel'

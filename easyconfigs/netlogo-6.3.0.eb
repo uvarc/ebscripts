@@ -20,6 +20,11 @@ toolchain = SYSTEM
 source_urls = ['http://ccl.northwestern.edu/%(name)s/%(version)s/']
 sources = ['NetLogo-%(version)s-64.tgz']
 
+# disable wrapper script
+postinstallcmds = [
+    'chmod -x %(installdir)s/NetLogo %(installdir)s/NetLogo3D',
+]
+
 sanity_check_paths = {
     'files': ['NetLogo', 'NetLogo3D'],
     'dirs': ['bin'],

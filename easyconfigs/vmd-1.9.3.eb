@@ -1,4 +1,5 @@
 # Ruoshi Sun
+# 2024-02-19 RIP-MD plugin
 # 2021-07-23
 
 easyblock = 'ConfigureMake'
@@ -11,7 +12,14 @@ description = "VMD is a molecular visualization program for displaying, animatin
 
 toolchain = SYSTEM
 
-sources = ['%(name)s-%(version)s.bin.LINUXAMD64-CUDA8-OptiX4-OSPRay111p1.opengl.tar.gz']
+dependencies = [
+    ('rip-md', '1.0'),
+]
+
+sources = [
+    '%(name)s-%(version)s.bin.LINUXAMD64-CUDA8-OptiX4-OSPRay111p1.opengl.tar.gz',
+    'RIP-MD.zip',
+]
 
 preconfigopts = 'VMDINSTALLBINDIR=%(installdir)s/bin VMDINSTALLLIBRARYDIR=%(installdir)s/lib '
 configure_cmd = './configure LINUXAMD64 TK TCL CUDA LIBPNG'
@@ -21,6 +29,19 @@ prefix_opt = '#'
 skipsteps = ['build']
 
 preinstallopts = 'cd src && '
+
+# RIP-MD plugin https://dfzljdn9uc3pi.cloudfront.net/2018/5998/1/manual.pdf
+# If you want to install the VMD plugin version of RIP-MD, you need to move the "RIP-MD_vmd" folder into VMD plugin path
+# (by default in /usr/local/lib/vmd/plugin/noarch/tcl/ in Ubuntu/Debian),
+# and after moving it you need to rename it from RIP-MD_vmd to RIP-MD. After these steps you need to modify (as Root) the
+# .vmdrc file (usually located in /usr/local/lib/vmd/ in Ubuntu/Debian) and add the following text to the end of the file:
+#
+#vmd_install_extension ripmd ripmd_tk "Analysis/RIP-MD"
+ 
+postinstallcmds = [
+    'mv %(builddir)s/RIP-MD-master/RIP-MD_vmd %(installdir)s/lib/plugins/noarch/tcl/RIP-MD',
+    'echo vmd_install_extension ripmd ripmd_tk "Analysis/RIP-MD" >> %(installdir)s/lib/.vmdrc',
+]
 
 sanity_check_paths = {
     'files': ['bin/%(name)s'],
