@@ -1,4 +1,4 @@
 #!/bin/bash -e
 # for scrontab
-git checkout main && ./sync p
-git checkout derp && ./sync d
+git checkout main && ./sync.sh p
+git checkout derp && ./sync.sh d

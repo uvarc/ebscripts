@@ -3,6 +3,11 @@
 # to define the preferred settings without patching the original files
 #
 # Authors: Mark Olesen <Mark.Olesen@esi-group.com>
+#
+# ChangeLog:
+# - v2312 - activate METIS, KaHIP and readline support in etc/config.sh/setup
+#           author: Jiri Furst <jiri.furst@gmail.com> 
+#
 # -------------------------------------------------------------------------
 --- /dev/null	2020-12-14 09:05:45.272769166 +0100
 +++ OpenFOAM-v2012/etc/prefs.sh	2020-12-14 10:02:26.488430802 +0100
@@ -37,7 +42,16 @@
 +##Easybuild## settings -*- sh -*-
 +
 +METIS_VERSION="metis-$EBVERSIONMETIS"
-+[ -d "$METIS_ARCH_PATH" ] || METIS_ARCH_PATH="$METIS_ROOT"
++[ -d "$METIS_ARCH_PATH" ] || METIS_ARCH_PATH="$EBROOTMETIS"
++
++##Easybuild##
+--- /dev/null   2022-12-01 18:21:35.103878336 +0100
++++ OpenFOAM-v2206/etc/easybuild/config.sh/kahip       2022-12-12 20:24:07.538408981 +0100
+@@ -0,0 +1,6 @@
++##Easybuild## settings -*- sh -*-
++
++KAHIP_VERSION="kahip-$EBVERSIONKAHIP"
++export KAHIP_ARCH_PATH="$EBROOTKAHIP"
 +
 +##Easybuild##
 --- /dev/null	2020-12-14 09:05:45.272769166 +0100
@@ -148,3 +162,17 @@
 +unset pv_api pv_plugin_dir pvLibDir
 +
 +#------------------------------------------------------------------------------
+--- OpenFOAM-v2312/etc/config.sh/setup.orig    2024-01-11 09:49:24.823571481 +0100
++++ OpenFOAM-v2312/etc/config.sh/setup 2024-01-11 09:51:40.545969774 +0100
+@@ -207,7 +207,9 @@
+ _foamEtc -config  CGAL
+ _foamEtc -config  scotch
+ _foamEtc -config  FFTW
+-
++_foamEtc -config  metis
++_foamEtc -config  kahip
++_foamEtc -config  readline
+ 
+ # Finalize library paths
+ # ~~~~~~~~~~~~~~~~~~~~~~
+

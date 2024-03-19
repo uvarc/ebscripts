@@ -1,0 +1,48 @@
+easyblock = 'CMakeMake'
+
+name = 'jdftx'
+version = '1.7.0'
+
+toolchain = {'name': 'goolf', 'version': '11.4.0_4.1.4'}
+
+homepage = 'https://jdftx.org'
+description = "JDFTx is a plane-wave density-functional theory (DFT) code designed to be as easy to develop with as it is easy to use."
+
+source_urls = ['https://github.com/shankar1729/jdftx/archive/refs/tags']
+sources = ['v%(version)s.tar.gz']
+
+builddependencies = [
+    ('cmake', '3.28.1', '', SYSTEM),
+]
+
+dependencies = [
+    ('gsl', '2.7.1'),
+    ('CUDA', '12.2.2', '', SYSTEM),
+    ('libxc', '5.2.3'),
+]
+
+srcdir = '%(name)s'
+
+configopts = ' '.join([
+    '-DEnableCUDA=yes',
+    '-DFFTW3_ROOT=$EBROOTFFTW3',
+    '-DBLAS_ROOT=$EBROOTOPENBLAS',
+    '-DCUDA_ARCH=compute_80',
+    '-DCUDA_CODE=sm_80',
+    '-DEnableLibXC=yes',
+    '-DLIBXC_PATH=$EBROOTLIBXC/lib',
+    '-DLIBXC_INCLUDE_DIR=$EBROOTLIBXC/include',
+])
+
+sanity_check_paths = {
+    'files': ['bin/jdftx'],
+    'dirs': ['bin'],
+}
+
+modloadmsg = """Can only run on A100. In Slurm scripts:
+#SBATCH -p gpu
+#SBATCH --gres=gpu:a100:1
+"""
+
+modluafooter = 'add_property("arch","gpu")'
+moduleclass = 'phys'
