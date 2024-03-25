@@ -15,6 +15,7 @@ The sync script makes some assumptions:
 If these change, `sync.sh` should be updated accordingly.
 
 ### Syncing the software stack
+#### Manual
 Production:
 1. Make sure you're on the `main` branch
 1. Run
@@ -30,6 +31,21 @@ Derp:
     ```
 
 Add a second argument for dry run.
+
+#### scrontab
+
+We have enabled `scrontab` on derp. Run `scrontab -e` and append these lines:
+
+```bash
+DIR=/path/to/git/ebscripts
+#SCRON -p standard
+#SCRON -A hpc_build
+#SCRON -t 1:0:0
+#SCRON -J ebscripts
+@daily cd $DIR && ./scron.sh
+```
+
+The job runs automatically at midnight every day.
 
 ### Updating the sync script
 1. Make changes and push to the `main` branch:
