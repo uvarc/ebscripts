@@ -1,0 +1,33 @@
+# Author: Ed Hall, Ruoshi Sun
+# 2024-03-25 RIV-14056
+# 2022-03-09 RIV-8207 add static bcl2fast
+# 2020-11-23
+easyblock = 'Tarball'
+
+name = 'cellranger'
+version = '6.0.1'
+
+homepage = 'https://www.10xgenomics.com/'
+description = "A set of analysis piplines that perform sample demultiplexing, barcode processing, and single cell 3' gene counting."
+
+toolchain = SYSTEM
+
+sources = [{
+    'filename': SOURCE_TAR_GZ,
+    # symlink does not exist: libpython3.7m.a -> ../../libpython3.7m.a
+    'extract_cmd': 'tar xf %s && cd cellranger-6.0.1/external/anaconda/lib/python3.7/config-3.7m-x86_64-linux-gnu && rm libpython3.7m.a && ln -s ../../libpython3.7m.so libpython3.7m.so'
+}]
+checksums = ['b778ec353d1afc0f9567058e06a6cd42']
+
+dependencies = [
+    ('bcl2fastq2', '2.20.0'),
+]
+
+sanity_check_paths = {
+    'files': ['bin/%(name)s'],
+    'dirs': ['bin'],
+}
+
+sanity_check_commands = ['cellranger testrun --id=tiny']
+
+moduleclass = 'bio'
