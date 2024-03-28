@@ -33,6 +33,10 @@ source_urls = [
 ]
 sources = [SOURCE_TAR_GZ]
 
+dependencies = [
+    ('zlib', '1.2.13'),
+]
+
 files_to_copy = [(["pigz", "unpigz"], "bin")]
 
 sanity_check_paths = {

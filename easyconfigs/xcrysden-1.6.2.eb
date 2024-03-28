@@ -8,6 +8,10 @@ description = """XCrySDen is a crystalline and molecular structure visualisation
 
 toolchain = SYSTEM
 
+dependencies = [
+    ('togl', '2.0'),
+]
+
 source_urls = [
     'http://www.xcrysden.org/download/'
 ]
