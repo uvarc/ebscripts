@@ -1,0 +1,28 @@
+# Ruoshi Sun
+# 2024-03-27 RIV-14111
+easyblock = 'PackedBinary'
+
+name = 'togl'
+version = '2.0'
+
+homepage = 'https://togl.sourceforge.net'
+description = "Togl is a Tk widget for OpenGL rendering"
+
+toolchain = SYSTEM
+
+source_urls = ['https://sourceforge.net/projects/togl/files/Togl/%(version)s']
+sources = ['Togl%(version)s-8.4-Linux64.tar.gz']
+
+postinstallcmds = [
+    'ln -s %(installdir)s/lib/Togl%(version)s/libTogl%(version)s.so %(installdir)s/lib/libTogl.so.2'
+]
+
+sanity_check_paths = {
+    'files': ['lib/Togl%(version)s/libTogl%(version)s.so'],
+    'dirs': ['lib'],
+}
+
+modextrapaths = {
+    'LD_LIBRARY_PATH': 'lib/Togl%(version)s',
+}
+moduleclass = 'vis'
