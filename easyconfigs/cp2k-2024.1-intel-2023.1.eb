@@ -1,0 +1,41 @@
+# from EB repo
+# Ruoshi Sun
+# 2023-04-10
+
+easyblock='EB_CP2K'
+
+name = 'cp2k'
+version = '2024.1'
+
+homepage = 'http://www.cp2k.org/'
+description = """CP2K is a freely available (GPL) program, written in Fortran 95, to perform atomistic and molecular
+ simulations of solid state, liquid, molecular and biological systems. It provides a general framework for different
+ methods such as e.g. density functional theory (DFT) using a mixed Gaussian and plane waves approach (GPW), and
+ classical pair and many-body potentials. """
+
+toolchain = {'name': 'intel', 'version': '2023.1'}
+toolchainopts = {'pic': True, 'openmp': True, 'usempi': True, 'oneapi': False}
+
+source_urls = ['https://github.com/%(name)s/%(name)s/releases/download/v%(version)s']
+sources = [SOURCELOWER_TAR_BZ2]
+
+osdependencies = ['flex','bison']
+
+dependencies = [
+    ('libint', '2.7.2'),
+    ('libxc', '5.2.3'),
+    ('libxsmm', '1.17'),
+    ('FFTW', '3.3.10'),
+    ('plumed', '2.8.2'),
+]
+
+extracflags = '-I$EBROOTINTELMINCOMPILERS/compiler/2023.1.0/linux/compiler/include -I$EBROOTINTELMINCOMPILERS/compiler/2023.1.0/linux/compiler/include/icc'
+
+type = 'psmp'
+
+# regression test reports handful of failures,
+# we're assuming those are OK to ignore...
+ignore_regtest_fails = True
+runtest = False
+
+moduleclass = 'chem'

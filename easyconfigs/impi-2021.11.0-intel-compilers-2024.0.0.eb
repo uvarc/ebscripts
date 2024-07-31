@@ -16,7 +16,7 @@ sources = ['l_mpi_oneapi_p_%(version)s.49513_offline.sh']
 dependencies = [
     ('GCC', '11.4.0', '', SYSTEM),
     ('ucx', '1.15.0', '', ('GCC', '11.4.0')),
-    ('libfabric', '1.16.1', '', ('GCC', '11.4.0')),
+    #('libfabric', '1.16.1', '', ('GCC', '11.4.0')),
 ]
 
 # can't run mpi on build node

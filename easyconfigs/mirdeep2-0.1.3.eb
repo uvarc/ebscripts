@@ -36,6 +36,7 @@ install_cmd = """
     cp -rL * %(installdir)s
     rm -rf %(installdir)s/src
     sed -i "s@#!/usr/bin/perl@#!$EBROOTPERL/bin/perl@" %(installdir)s/bin/*.pl
+    touch %(installdir)s/install_successful
 """
 
 modextrapaths = {'PERL5LIB': 'perl5/lib/perl5'}

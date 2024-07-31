@@ -19,7 +19,7 @@ dependencies = [
     ('imkl', '%(toolchain_version)s', '', SYSTEM)
 ]
 
-buildopts = '-f Makefile.icc LAPACKLIBS_PATH=$MKLROOT ARCHFLAGS=-axCORE-AVX2,CORE-AVX512'
+buildopts = '-f Makefile.icc LAPACKLIBS_PATH=$MKLROOT ARCHFLAGS=-march=skylake-avx512'
 
 files_to_copy = ['./liblevmar.a', './%(name)s.h']
 

@@ -1,0 +1,28 @@
+# Ruoshi Sun
+# 2024-07-12
+# 2022-02-03 SUP-2033
+
+name = 'ScaLAPACK'
+version = '2.2.0'
+
+homepage = 'http://www.netlib.org/scalapack/'
+description = """The ScaLAPACK (or Scalable LAPACK) library includes a subset of LAPACK routines
+ redesigned for distributed memory MIMD parallel computers."""
+
+nvhpcver = '24.1'
+mpiver = '4.1.6'
+
+toolchain = {'name': 'nvompi', 'version': '%s_%s' % (nvhpcver, mpiver)}
+toolchainopts = {'pic': True, 'usempi': True}
+
+source_urls = [homepage]
+sources = [SOURCELOWER_TGZ]
+
+dependencies = [
+	('OpenBLAS', '0.3.21'),
+]
+
+# parallel build tends to fail, so disabling it
+parallel = 1
+
+moduleclass = 'numlib'

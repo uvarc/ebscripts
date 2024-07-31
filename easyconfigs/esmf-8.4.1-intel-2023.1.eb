@@ -13,7 +13,7 @@ source_urls = ['https://github.com/esmf-org/esmf/archive/refs/tags']
 sources = ['v%(version)s.tar.gz']
 patches = ['ESMF-6.1.1_libopts.patch']
 
-builddependencies = [('cmake', '3.23.3', '', SYSTEM)]
+builddependencies = [('cmake', '3.28.1', '', SYSTEM)]
 
 dependencies = [
     ('netcdf', '4.9.2'),

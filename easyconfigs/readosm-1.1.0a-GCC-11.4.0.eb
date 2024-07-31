@@ -1,0 +1,23 @@
+# Ruoshi Sun
+# 2023-04-11
+
+easyblock = 'ConfigureMake'
+
+name = 'readosm'
+version = '1.1.0a'
+
+homepage = 'https://www.gaia-gis.it/fossil/readosm/index'
+description = """ReadOSM is an open source library to extract valid data from within an Open Street Map input file."""
+
+toolchain = {'name': 'GCC', 'version': '11.4.0'}
+toolchainopts = {'pic': True}
+
+source_urls = ['https://www.gaia-gis.it/gaia-sins']
+sources = [SOURCELOWER_TAR_GZ]
+
+sanity_check_paths = {
+    'files': ['lib/libreadosm.so'],
+    'dirs': ['lib'],
+}
+
+moduleclass = 'lib'

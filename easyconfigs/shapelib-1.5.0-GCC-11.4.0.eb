@@ -1,0 +1,25 @@
+# Ruoshi Sun
+# 2020-04-23
+
+easyblock = 'CMakeMake'
+
+name = 'shapelib'
+version = '1.5.0'
+
+homepage = 'http://shapelib.maptools.org/'
+description = """The Shapefile C Library provides the ability to write simple C programs for reading, writing and updating (to a limited extent) ESRI Shapefiles, and the associated attribute file (.dbf)."""
+
+toolchain = {'name': 'GCC', 'version': '11.4.0'}
+toolchainopts = {'pic': True}
+
+source_urls = ['http://download.osgeo.org/shapelib']
+sources = [SOURCELOWER_TAR_GZ]
+
+builddependencies = [('cmake', '3.28.1', '', SYSTEM)]
+
+sanity_check_paths = {
+    'files': ['lib/libshp.so'],
+    'dirs': [''],
+}
+
+moduleclass = 'lib'

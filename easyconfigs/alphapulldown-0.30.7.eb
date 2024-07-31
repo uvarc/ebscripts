@@ -36,16 +36,7 @@ local_db = '%(installdir)s/alphafold_database'
 
 postinstallcmds = [
     'mkdir %s' % local_db,
-    'ln -s /project/apps_data/alphafold/bfd            %s' % local_db,
-    'ln -s /project/apps_data/alphafold/2.3/mgnify     %s' % local_db,
-    'ln -s /project/apps_data/alphafold/2.3/params     %s' % local_db,
-    'ln -s /project/apps_data/alphafold/pdb70          %s' % local_db,
-    'ln -s /project/apps_data/alphafold/2.3/pdb_mmcif  %s' % local_db,
-    'ln -s /project/apps_data/alphafold/2.3/pdb_seqres %s' % local_db,
-    'ln -s /project/apps_data/alphafold/small_bfd      %s' % local_db,
-    'ln -s /project/apps_data/alphafold/2.3/uniprot    %s' % local_db,
-    'ln -s /project/apps_data/alphafold/2.3/uniref30   %s' % local_db,
-    'ln -s /project/apps_data/alphafold/2.3/uniref90   %s' % local_db,
+    'ln -s /share/resources/data/alphafold/*            %s' % local_db,
 ]
 
 sanity_check_paths = {

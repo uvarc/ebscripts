@@ -10,7 +10,7 @@ homepage = 'http://www.boost.org/'
 description = "Boost provides free peer-reviewed portable C++ source libraries."
 
 toolchain = {'name': 'intel-compilers', 'version': '2023.1.0'}
-toolchainopts = {'pic': True, 'cstd': 'c++11'}
+toolchainopts = {'pic': True, 'cstd': 'c++11', 'oneapi': False}
 
 source_urls = [SOURCEFORGE_SOURCE]
 sources = ['%(name)s_1_79_0.tar.gz']
@@ -19,6 +19,8 @@ dependencies = [
     ('bzip2', '1.0.6', '', SYSTEM),
     ('zlib', '1.2.13'),
 ]
+
+#preconfigopts = """sed -i -e '199s/build.sh/build.sh --cxx=icpc/' -e '229s/build.sh"/build.sh" --cxx=icpc/' bootstrap.sh && """
 
 configopts = '--without-libraries=python'
 

@@ -1,0 +1,42 @@
+# updated: Denis Kristak (INUITS)
+#
+# updated: Lara Peeters (UGent)
+# 2024-05-02 RIV-14348
+easyblock = 'CMakeMake'
+
+name = 'RegTools'
+version = '1.0.0'
+
+homepage = 'https://regtools.readthedocs.org'
+description = """RegTools is a set of tools that integrate DNA-seq and RNA-seq data to help interpret mutations in a
+regulatory and splicing context."""
+
+toolchain = {'name': 'goolf', 'version': '11.4.0_4.1.4'}
+
+source_urls = ['https://github.com/griffithlab/%(namelower)s/archive']
+sources = ['%(version)s.tar.gz']
+checksums = ['ed2b9db6b71b943924002653caee18511a22ed7cc3c88f428e7e9e0c2e4f431b']
+
+builddependencies = [
+    ('cmake', '3.28.1', '', SYSTEM),
+]
+
+# required by included scripts
+dependencies = [
+    ('anaconda', '2023.07', '-py3.11', SYSTEM),
+    #('PyYAML', '6.0'),  # required by create_IGVsessions.py script
+    ('R', '4.3.1'),
+]
+
+# 'make install' is not supported...
+install_cmd = 'mkdir %(installdir)s/bin && cp -a regtools %(installdir)s/bin/ && '
+install_cmd += 'cp -a %(builddir)s/regtools-%(version)s/scripts %(installdir)s/'
+
+sanity_check_paths = {
+    'files': ['bin/regtools'],
+    'dirs': ['scripts'],
+}
+
+sanity_check_commands = ['regtools --help']
+
+moduleclass = 'bio'

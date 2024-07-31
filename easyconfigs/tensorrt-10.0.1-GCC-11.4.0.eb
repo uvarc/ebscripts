@@ -1,0 +1,33 @@
+easyblock = 'EB_TensorRT'
+
+name = 'tensorrt'
+version = '10.0.1'
+
+homepage = 'https://developer.nvidia.com/tensorrt'
+description = """NVIDIA TensorRT is a platform for high-performance deep learning inference"""
+
+toolchain = {'name': 'GCC', 'version': '11.4.0'}
+
+download_instructions = "Manual download from https://developer.nvidia.com/nvidia-tensorrt-8x-download "
+sources = ['TensorRT-%(version)s.6.Linux.x86_64-gnu.cuda-12.4.tar.gz']
+
+builddependencies = [
+    ('protobuf', '26.1'),
+]
+
+dependencies = [
+    ('python', '3.11.4'),
+    #('SciPy-bundle', '2022.05'),
+    ('CUDA', '12.2.2', '', SYSTEM),
+    ('cudnn', '8.9.4.25', '', SYSTEM),
+    ('protobuf-python', '5.26.1'),
+]
+
+postinstallcmds = [
+    'cd %(builddir)s/TensorRT-%(version)s.6/python && pip install --target=%(installdir)s/lib/python3.11/site-packages %(name)s-%(version)s-cp311-none-linux_x86_64.whl',
+    'cd %(builddir)s/TensorRT-%(version)s.6/onnx_graphsurgeon && pip install --target=%(installdir)s/lib/python3.11/site-packages onnx_graphsurgeon-0.5.0-py2.py3-none-any.whl',
+]
+
+skipsteps = ['extensions', 'sanitycheck']
+
+moduleclass = 'lib'

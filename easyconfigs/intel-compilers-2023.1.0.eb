@@ -37,9 +37,9 @@ sanity_check_commands = [
 modextrapaths = {
     'CPATH': [
         'compiler/%(version)s/linux/compiler/include/intel64',
-        'compiler/%(version)s/linux/compiler/include/icc',
+        #'compiler/%(version)s/linux/compiler/include/icc',
         'compiler/%(version)s/linux/compiler/include',
-    ]
+    ],
 }
 
 moduleclass = 'compiler'
