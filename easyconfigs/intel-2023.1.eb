@@ -10,7 +10,7 @@ toolchain = SYSTEM
 
 local_comp_ver = version + '.0'
 
-local_gccver = '11.4.0-intel'
+local_gccver = '11.4.0'
 dependencies = [
     ('GCC', local_gccver),
     ('binutils', '2.40', '', ('GCC', local_gccver)),

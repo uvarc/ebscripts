@@ -1,0 +1,80 @@
+# Ruoshi Sun
+# 2024-01-08 RIV-13096
+
+easyblock = 'ConfigureMake'
+name = 'quantumespresso'
+version = '7.2'
+
+homepage = 'https://www.quantum-espresso.org/'
+description = """ Quantum ESPRESSO is an integrated suite of Open-Source computer codes for electronic-structure calculations and materials modeling at the nanoscale. It is based on density-functional theory, plane waves, and pseudopotentials."""
+
+toolchain = {'name': 'nvompi', 'version': '24.1_4.1.6'}
+toolchainopts = {'usempi': True, 'openmp': True}
+
+local_thermopw_version = '1.8.1'
+sources = [
+    {
+        'filename': 'q-e-qe-%(version)s.tar.gz',
+        'extract_cmd': 'mkdir -p %(builddir)s/qe-%(version)s && tar xzvf %s --strip-components=1 -C $_',
+        'source_urls': ['https://gitlab.com/QEF/q-e/-/archive/qe-%(version)s'],
+    },
+    {
+        'filename': 'qe-gipaw-%(version)s.tar.gz',
+        'source_urls': ['https://github.com/dceresoli/qe-gipaw/releases/download/%(version)s/']
+    },
+    {
+        'filename': 'thermo_pw.%s.tar.gz' % local_thermopw_version,
+        'extract_cmd': 'tar xzvf %s -C %(builddir)s/qe-%(version)s',
+        'source_urls': ['https://github.com/dalcorso/thermo_pw/releases/download/%s' % local_thermopw_version]
+    },
+    {
+        'filename': 'wannier90-3.1.0.tar.gz', 'download_filename': 'v3.1.0.tar.gz',
+        'source_urls': ['https://github.com/wannier-developers/wannier90/archive/']
+    },
+]
+
+local_cuda = '$EBROOTNVHPC/Linux_x86_64/24.1/cuda/12.3'
+
+preconfigopts = ' && '.join([
+    'export NVHPC_CUDA_HOME=%s LD_LIBRARY_PATH=%s/targets/x86_64-linux/lib:$LD_LIBRARY_PATH' % (local_cuda, local_cuda),
+    '(cd thermo_pw',
+    'make join_qe)',
+    '',
+])
+
+local_fflags = '-fast -Mcache_align -Mpreprocess -Mlarge_arrays -Mfree'
+configopts = ' '.join([
+    "BLAS_LIBS=$EBROOTNVHPC/Linux_x86_64/24.1/compilers/lib/libblas.a",
+    "LAPACK_LIBS=$EBROOTNVHPC/Linux_x86_64/24.1/compilers/lib/liblapack.a",
+    "FFLAGS='%s'" % local_fflags,
+    "F90FLAGS='%s'" % local_fflags,
+    "FCFLAGS='%s'" % local_fflags,
+    "--with-cuda=$NVHPC_CUDA_HOME --with-cuda-cc=80 --with-cuda-runtime=12.3",
+    "--with-scalapack=no",
+    "--enable-openmp --enable-openacc --enable-parallel",
+])
+
+buildopts = 'all gwl xspectra couple epw gipaw w90; make thermo_pw || make thermo_pw || echo'
+
+sanity_check_paths = {
+    'files': ['bin/pw.x'],
+    'dirs': ['bin'],
+}
+
+modextrapaths = {
+    'NVHPC_CUDA_HOME': local_cuda,
+    'LD_LIBRARY_PATH': '%s/targets/x86_64-linux/lib' % local_cuda,
+}
+
+modloadmsg = """Compatible with A40, A6000, A100. To request whichever is available:
+#SBATCH -p gpu
+#SBATCH --gres=gpu:1
+#SBATCH -C "a40|a6000|a100"
+
+Otherwise (e.g. A100):
+#SBATCH -p gpu
+#SBATCH --gres=gpu:a100:1
+"""
+
+modluafooter = 'add_property("arch","gpu")'
+moduleclass = 'chem'

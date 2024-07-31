@@ -93,6 +93,7 @@ class EB_TensorRT(PythonPackage, Binary):
     def extensions_step(self):
         """Custom extensions procedure for TensorRT."""
 
+        return
         super(EB_TensorRT, self).extensions_step()
 
         pyver = ''.join(get_software_version('Python').split('.')[:2])

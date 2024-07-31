@@ -20,7 +20,7 @@ sources = [
 
 builddependencies = [
     ('mamba', '22.11.1-4', '', SYSTEM),
-    ('cmake', '3.23.3', '', SYSTEM),
+    ('cmake', '3.28.1', '', SYSTEM),
 ]
 
 install_cmd = """
@@ -39,7 +39,8 @@ install_cmd = """
     make -j20
     make install
     make install-python
-    pip install --upgrade git+https://gitlab.com/ase/ase.git@master
+    # 2022-09-02 SUP-2462
+    pip install git+https://gitlab.com/ase/ase.git@c7e726d132e41a420927d551a2ae7c9d37f0b763
 """
 
 modextrapaths = {

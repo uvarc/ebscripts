@@ -27,11 +27,11 @@ install_cmd = """
     export TEXLIVE_INSTALL_PREFIX=%%(installdir)s
     export TEXLIVE_INSTALL_TEXDIR=%%(installdir)s
     echo "selected_scheme scheme-small" > temp.profile
-    ./install-tl -profile temp.profile
+    ./install-tl -profile temp.profile -repository https://ftp.math.utah.edu/pub/tex/historic/systems/texlive/%%(version)s/tlnet-final/
     mv %%(installdir)s/%%(version)s/* %%(installdir)s
     rmdir %%(installdir)s/%%(version)s
     %%(installdir)s/bin/x86_64-linux/tlmgr update --all --self
-    %%(installdir)s/bin/x86_64-linux/tlmgr install type1cm tcolorbox environ ucs adjustbox collectbox titling enumitem rsfs
+    %%(installdir)s/bin/x86_64-linux/tlmgr install type1cm tcolorbox environ ucs adjustbox collectbox titling enumitem rsfs hypdoc pdfcol
 """ % sources[0]
 
 sanity_check_paths = {

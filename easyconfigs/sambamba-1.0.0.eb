@@ -12,11 +12,17 @@ toolchain = SYSTEM
 source_urls = ['https://github.com/biod/%(name)s/releases/download/v0.8.2']
 sources = ['sambamba-0.8.2-linux-amd64-static.gz']
 
-postinstallcmds = ['mv %(installdir)s/sambamba-0.8.2-linux-amd64-static %(installdir)s/%(name)s']
+postinstallcmds = [
+    'mv %(installdir)s/sambamba-0.8.2-linux-amd64-static %(installdir)s/%(name)s',
+    'chmod +x %(installdir)s/%(name)s',
+]
 
 sanity_check_paths = {
     'files': ['%(name)s'],
     'dirs': [],
 }
 
+modextrapaths = {
+    'PATH': '',
+}
 moduleclass = 'bio'

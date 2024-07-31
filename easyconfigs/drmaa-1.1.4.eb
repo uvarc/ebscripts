@@ -1,0 +1,30 @@
+# Ruoshi Sun
+# 2024-07-08 Slurm upgrade
+# 2022-05-19 https://uvarc.slack.com/archives/CHQKC6PC5/p1652985549309919
+
+easyblock = 'ConfigureMake'
+
+name = 'drmaa'
+version = '1.1.4'
+
+toolchain = SYSTEM
+
+homepage = 'https://github.com/natefoo/slurm-drmaa'
+description = """
+DRMAA for Slurm Workload Manager (Slurm) is an implementation of Open Grid Forum Distributed
+Resource Management Application API (DRMAA) version 1 for submission and control of jobs to
+Slurm. Using DRMAA, grid applications builders, portal developers and ISVs can use the same
+high-level API to link their software with different cluster/resource management systems.
+"""
+
+source_urls = ['https://github.com/natefoo/slurm-%(name)s/releases/download/%(version)s']
+sources = ['slurm-%(name)s-%(version)s.tar.gz']
+
+configopts = '--with-slurm-inc=/opt/slurm/current/include --with-slurm-lib=/opt/slurm/current/lib'
+
+sanity_check_paths = {
+    'files': ['bin/drmaa-run'],
+    'dirs': ['bin', 'include', 'lib'],
+}
+
+moduleclass = 'tools'

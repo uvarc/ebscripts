@@ -16,6 +16,10 @@ sources = ['ibm-%(name)s_%(version)s.265_linux.tar.gz']
 install_cmd = "tar xfvz ibm-%(namelower)s*.tar.gz && HOME=%(builddir)s ./ibm-%(namelower)s*.sh && "
 install_cmd += "cp -a %(builddir)s/.aspera/connect/* %(installdir)s"
 
+postinstallcmds = [
+    'ln -s /lib64/libssl.so %(installdir)s/lib/libssl.so.1.0.0',
+    'ln -s %(installdir)s/lib/libcrypto.so.1.1 %(installdir)s/lib/libcrypto.so.1.0.0',
+]
 sanity_check_paths = {
     'files': ['bin/%s' % x for x in ['ascp', 'asperaconnect', 'asperaconnect.bin', 'asperacrypt', 'asunprotect']],
     'dirs': ['lib'],

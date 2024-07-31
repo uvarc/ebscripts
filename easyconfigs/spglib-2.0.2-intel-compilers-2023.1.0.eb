@@ -14,7 +14,7 @@ source_urls = ['https://github.com/spglib/spglib/archive/refs/tags']
 sources = ['v%(version)s.tar.gz']
 
 builddependencies = [
-    ('cmake', '3.23.3', '', SYSTEM),
+    ('cmake', '3.28.1', '', SYSTEM),
 ]
 
 separate_build_dir = True

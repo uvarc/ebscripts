@@ -10,7 +10,7 @@ homepage = 'http://www.boost.org/'
 description = """Boost provides free peer-reviewed portable C++ source libraries."""
 
 toolchain = {'name': 'iimpi', 'version': '2023.1'}
-toolchainopts = {'pic': True, 'usempi': True}
+toolchainopts = {'pic': True, 'usempi': True, 'oneapi': False}
 
 source_urls = [SOURCEFORGE_SOURCE]
 sources = ['%%(namelower)s_%s.tar.gz' % '_'.join(version.split('.'))]

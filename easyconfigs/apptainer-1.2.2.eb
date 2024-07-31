@@ -38,7 +38,7 @@ preinstallopts = 'cd builddir &&'
 
 postinstallcmds = [
     # append bind paths
-    "patch -Nu %(installdir)s/etc/apptainer/apptainer.conf < $EASYBUILD_SOURCEPATH/a/%(name)s/apptainer.conf.patch",
+    #"patch -Nu %(installdir)s/etc/apptainer/apptainer.conf < $EASYBUILD_SOURCEPATH/a/%(name)s/apptainer.conf.patch",
 ]
 
 allow_prepend_abs_path = True

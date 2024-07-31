@@ -1,0 +1,53 @@
+# Ruoshi Sun
+# 2024-04-11 RIV-14111
+# 2023-08-31
+
+easyblock = 'EB_QuantumESPRESSO'
+
+name = 'quantumespresso'
+version = '6.4.1'
+
+homepage = 'https://www.quantum-espresso.org'
+description = """Quantum ESPRESSO  is an integrated suite of computer codes
+ for electronic-structure calculations and materials modeling at the nanoscale.
+ It is based on density-functional theory, plane waves, and pseudopotentials
+  (both norm-conserving and ultrasoft).
+"""
+
+toolchain = {'name': 'intel', 'version': '2023.1'}
+toolchainopts = {'usempi': True, 'openmp': True}
+
+source_urls = [
+    'https://github.com/QEF/q-e/releases/download/qe-%(version)s/',
+#'https://github.com/QEF/q-e/archive',
+    'https://github.com/wannier-developers/wannier90/archive/'
+]
+sources = [
+    'qe-%(version)s_release_pack.tgz',
+    #'qe-%(version)s.tar.gz',
+    {'filename': 'wannier90-3.0.0.tar.gz', 'download_filename': 'v3.0.0.tar.gz'},
+]
+
+dependencies = [
+    ('hdf5', '1.12.2'),
+    #('libxc', '4.3.4'),
+]
+
+cflags = '-axCORE-AVX2,CORE-AVX512'
+fortranflags ='-heap-arrays %s' % cflags
+preconfigopts = 'CFLAGS="$CFLAGS %s" FFLAGS="$FFLAGS %s" F90FLAGS="$F90FLAGS %s" && ' % (cflags, fortranflags, fortranflags)
+
+configopts = '--with-scalapack=intel'
+
+prebuildopts = 'sed -i "s/-\[\'fiopenmp\'\]//g" %(builddir)s/qe-%(version)s/make.inc && '
+
+# The third party packages should be installed separately and added as
+# dependencies.  The exception is w90, which is force built
+buildopts = 'all gwl xspectra couple epw w90'
+
+# parallel build tends to fail
+parallel = 1
+
+#preinstallopts = 'cd %(builddir)s/qe-%(version)s && mv q-e-qe-%(version)s .. && '
+
+moduleclass = 'chem'

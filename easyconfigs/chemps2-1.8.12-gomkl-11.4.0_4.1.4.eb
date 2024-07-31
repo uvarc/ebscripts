@@ -1,0 +1,40 @@
+# Ruoshi Sun
+# 2023-04-10
+
+easyblock = 'CMakeMake'
+
+name = 'chemps2'
+version = '1.8.12'
+
+homepage = 'https://github.com/SebWouters/CheMPS2'
+description = """CheMPS2 is a scientific library which contains a spin-adapted implementation of the
+density matrix renormalization group (DMRG) for ab initio quantum chemistry."""
+
+toolchain = {'name': 'gomkl', 'version': '11.4.0_4.1.4'}
+toolchainopts = {'usempi': True}
+
+source_urls = ['https://github.com/SebWouters/CheMPS2/archive/refs/tags']
+sources = ['v%(version)s.tar.gz']
+
+builddependencies = [
+    ('cmake', '3.28.1', '', SYSTEM),
+    ('binutils', '2.40'),
+]
+
+dependencies = [
+    ('hdf5', '1.12.2')
+]
+
+separate_build_dir = True
+
+preconfigopts = 'CXX=mpic++'
+configopts = '-DMKL=ON -DWITH_MPI=ON'
+
+runtest = 'test'
+
+sanity_check_paths = {
+    'files': ['bin/chemps2', 'lib64/libchemps2.%s' % SHLIB_EXT, 'lib64/libchemps2.a'],
+    'dirs': ['include/chemps2']
+}
+
+moduleclass = 'chem'

@@ -34,11 +34,17 @@ checksums = [
 ]
 
 #builddependencies = [('M4', '1.4.19')]
+
+
+preconfigopts = 'c=`echo $CFLAGS|sed "s/-avx512//"` && '
+preconfigopts += 'f=`echo $FFLAGS|sed "s/-avx512//"` && '
+preconfigopts += 'CFLAGS="$c" FFLAGS="$f -heap-arrays" F90FLAGS="$f -heap-arrays" && '
+
 prebuildopts = 'sed -i "s/-\[\'fiopenmp\'\]//g" %(builddir)s/qe-%(version)s/make.inc && '
 
 dependencies = [
     ('hdf5', '1.12.2'),
-    #('ELPA', '2022.05.001'),
+    #('elpa', '2023.05.001'),
     ('libxc', '6.1.0'),
 ]
 

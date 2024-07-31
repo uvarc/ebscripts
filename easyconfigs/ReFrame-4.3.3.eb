@@ -43,7 +43,7 @@ postinstallcmds = [
     "cp -a hpctestlib %(installdir)s/external",
     "mkdir -p %(installdir)s/share && cp -a share/completions %(installdir)s/share/completions",
     r"sed -i 's@/\(python[0-9.]*\)$@/\1 -S@g' %(installdir)s/bin/reframe",
-    'rsync -av $EASYBUILD_SOURCEPATH/r/reframe/rivanna-reframe4.py %(installdir)s',
+    'rsync -av $EASYBUILD_SOURCEPATH/r/reframe/rivanna-reframe4.py %(installdir)s/settings.py',
 ]
 
 sanity_check_paths = {
