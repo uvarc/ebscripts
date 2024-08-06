@@ -1,0 +1,22 @@
+# Ruoshi Sun
+# 2024-08-05
+easyblock = 'EB_ApptainerImage'
+
+name = 'rapidsai'
+version = '24.06'
+
+homepage = 'https://rapids.ai/'
+description = """
+The RAPIDS suite of open source software libraries and APIs gives you the ability to execute end-to-end data science and analytics pipelines entirely on GPUs. Licensed under Apache 2.0, RAPIDS is incubated by NVIDIA based on extensive hardware and data science science experience. RAPIDS utilizes NVIDIA CUDA primitives for low-level compute optimization, and exposes GPU parallelism and high-bandwidth memory speed through user-friendly Python interfaces.
+"""
+
+toolchain = {'name': 'apptainer', 'version': '1.2.2'}
+
+sources = ['%(name)s-%(version)s.sif']
+
+use_gpu = True
+
+skipsteps = ['sanitycheck']
+
+modluafooter = 'add_property("arch","gpu")'
+moduleclass = 'data'
