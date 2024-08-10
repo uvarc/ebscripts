@@ -1,0 +1,26 @@
+# Ruoshi Sun
+# 2024-08-09
+
+easyblock = 'EB_Doxygen'
+
+name = 'doxygen'
+version = '1.9.5'
+
+homepage = 'http://www.doxygen.org'
+description = """Doxygen is a documentation system for C++, C, Java, Objective-C, Python, 
+ IDL (Corba and Microsoft flavors), Fortran, VHDL, PHP, C#, and to some extent D."""
+
+toolchain = {'name': 'AOCC', 'version': '4.2.0'}
+
+source_urls = [SOURCEFORGE_SOURCE]
+sources = ['%(namelower)s-%(version)s.src.tar.gz']
+
+builddependencies = [
+    ('cmake', '3.28.1', '', SYSTEM),
+]
+
+osdependencies = [('bison',)]
+
+parallel = 1
+
+moduleclass = 'devel'

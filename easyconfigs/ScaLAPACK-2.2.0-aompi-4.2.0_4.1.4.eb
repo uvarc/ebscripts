@@ -1,0 +1,37 @@
+# Ruoshi Sun
+# 2024-08-09
+
+name = 'ScaLAPACK'
+version = '2.2.0'
+
+homepage = 'http://www.netlib.org/scalapack/'
+description = """The ScaLAPACK (or Scalable LAPACK) library includes a subset of LAPACK routines
+ redesigned for distributed memory MIMD parallel computers."""
+
+toolchain = {'name': 'aompi', 'version': '4.2.0_4.1.4'}
+toolchainopts = {'pic': True, 'usempi': True}
+
+source_urls = [homepage]
+sources = [SOURCELOWER_TGZ]
+
+builddependencies = [
+    ('cmake', '3.28.1', '', SYSTEM),
+]
+
+dependencies = [
+    ('OpenBLAS', '0.3.21'),
+]
+
+configopts = '-DBUILD_SHARED_LIBS=ON '
+configopts += '-DBLAS_LIBRARIES="$EBROOTOPENBLAS/lib/libopenblas.%s" ' % SHLIB_EXT
+configopts += '-DLAPACK_LIBRARIES="$EBROOTOPENBLAS/lib/libopenblas.%s" ' % SHLIB_EXT
+configopts += '-DCMAKE_C_COMPILER=mpicc '
+configopts += '-DCMAKE_Fortran_COMPILER=mpif90 '
+configopts += '-DCMAKE_Fortran_FLAGS="-lpthread -fopenmp $DCMAKE_Fortran_FLAGS" '
+
+sanity_check_paths = {
+    'files': ['lib/libscalapack.%s' % SHLIB_EXT, 'lib64/libscalapack.%s' % SHLIB_EXT],
+    'dirs': ["lib", "lib64"],
+}
+
+moduleclass = 'numlib'

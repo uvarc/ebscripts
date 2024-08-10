@@ -1,0 +1,36 @@
+# Ruoshi Sun
+# 2024-08-09
+name = 'OpenBLAS'
+version = '0.3.21'
+
+homepage = 'http://xianyi.github.com/OpenBLAS/'
+description = "OpenBLAS is an optimized BLAS library based on GotoBLAS2 1.13 BSD version."
+
+toolchain = {'name': 'AOCC', 'version': '4.2.0'}
+
+source_urls = [
+    'http://www.netlib.org/lapack/timing/',
+    'https://github.com/xianyi/OpenBLAS/archive/',
+]
+sources = ['v%(version)s.tar.gz']
+
+patches = [
+    ('large.tgz', '.'),
+    ('timing.tgz', '.'),
+    'OpenBLAS-0.3.15_workaround-gcc-miscompilation.patch',
+    'OpenBLAS-0.3.21_fix-order-vectorization.patch',
+    'OpenBLAS-0.3.21_disable-fma-in-cscal-zscal.patch',
+    'OpenBLAS-0.3.21_avoid-crash-in-zdot.patch',
+]
+
+#buildopts = 'TARGET=SANDYBRIDGE DYNAMIC_ARCH=1 BINARY=64 CC="$CC" FC="$F77" NO_AFFINITY=1'
+#installopts = 'PREFIX=%(installdir)s'
+
+#skipsteps = ['configure']
+
+sanity_check_paths = {
+    'files': ['include/cblas.h', 'include/f77blas.h', 'include/lapacke_config.h', 'include/lapacke.h', 'include/lapacke_mangling.h', 'include/lapacke_utils.h', 'include/openblas_config.h', 'lib/libopenblas.a', 'lib/libopenblas.so'],
+    'dirs': [],
+}
+
+moduleclass = 'numlib'
