@@ -9,8 +9,12 @@ versionsuffix = '-py3.11'
 
 hidden = True
 
-homepage = 'https://www.anaconda.com'
-description = """Built to complement the rich, open source Python community, the Anaconda platform provides an enterprise-ready data analytics platform that empowers companies to adopt a modern open data science analytics architecture.
+homepage = 'https://jupyter.org/'
+description = """
+JupyterLab is the latest web-based interactive development environment for notebooks, code, and data.
+Its flexible interface allows users to configure and arrange workflows in data science, scientific
+computing, computational journalism, and machine learning. A modular design invites extensions to
+expand and enrich functionality.
 """
 
 toolchain = SYSTEM
@@ -28,6 +32,7 @@ postinstallcmds = [
     '%(installdir)s/bin/pip install --no-cache-dir numba==0.57.1 jupyterlab-system-monitor==0.8.0 jupyterlab-nvdashboard==0.9.0 plotly==5.16.1 dash==2.12.1 voila==0.5.1',
     'mamba clean -ya',
     'chmod -R go-w %(installdir)s',
+    'export PATH=%(installdir)s/bin:$PATH LD_LIBRARY_PATH=%(installdir)s/lib:$LD_LIBRARY_PATH && jupyter lab build',
 ]
 
 modextravars = {
