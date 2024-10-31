@@ -25,7 +25,7 @@ TMP=$(mktemp -d)
 DIVIDER=$(printf %"$COLUMNS"s|tr ' ' '-')
 
 # determine YYYYMM for production and derp
-YMp=$(basename $(ssh login.hpc.virginia.edu realpath /apps))
+YMp=$(basename $(ssh -A login.hpc.virginia.edu realpath /apps))
 YMd=$(date -d "${YMp}01 + 6 month" +%Y%m)
 
 function sync() {
