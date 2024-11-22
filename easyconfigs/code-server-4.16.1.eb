@@ -13,7 +13,7 @@ source_urls = ['https://github.com/cdr/code-server/releases/download/v%(version)
 sources = ['code-server-%(version)s-linux-%(mapped_arch)s.tar.gz']
 
 dependencies = [
-    #('anaconda', '2020.11', '-py3.8'),
+    #('miniforge', '24.3.0', '-py3.11'),
     ('anaconda', '2023.07', '-py3.11'),
 ]
 

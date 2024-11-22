@@ -564,6 +564,8 @@ modextravars = {
 }
 
 modloadmsg = """To use your local R packages in RStudio, run:
-echo "R_LIBS_USER=~/R/%(toolchain_name)s/%(version_major_minor)s" > ~/.Renviron
+mkdir -p ~/R/{goolf,x86_64-pc-linux-gnu-library}
+cd ~/R/x86_64-pc-linux-gnu-library
+ln -s ../%(toolchain_name)s/%(version_major_minor)s
 """
 moduleclass = 'lang'

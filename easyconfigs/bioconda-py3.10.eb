@@ -3,7 +3,7 @@
 # 2021-03-30 py3.8.8
 # 2021-02-12 py3.8
 # 2020-08-14
-easyblock = 'Mamba'
+easyblock = 'Conda'
 
 name = 'bioconda'
 version = 'py3.10'
@@ -13,8 +13,10 @@ description = "Bioconda is a channel for the conda package manager specializing 
 
 toolchain = SYSTEM
 
+builddependencies = [
+    ('miniforge', '24.3.0', '-py3.11'),
+]
 dependencies = [
-    ('mamba', '22.11.1-4'),
     ('nseg', '1.0.0'),  # required for RepeatModeler
     #('perl', '5.24.0'),
 ]

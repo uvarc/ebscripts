@@ -15,7 +15,7 @@ toolchain = SYSTEM
 # compiler toolchain dependencies
 dependencies = [
     ('GCC', '11.4.0'),
-    ('mvapich2', '2.3.7', '', ('GCC', '11.4.0')),
+    ('MVAPICH2', '2.3.7', '', ('GCC', '11.4.0')),
 ]
 
 moduleclass = 'toolchain'

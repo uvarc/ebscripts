@@ -1,0 +1,39 @@
+# Ruoshi Sun
+# 2024-09-17 RIV-15702
+easyblock = 'MakeCp'
+
+name = 'bracken'
+version = '2.9'
+
+homepage = 'https://github.com/jenniferlu717/Bracken'
+description = "Bracken (Bayesian Reestimation of Abundance with KrakEN) is a highly accurate statistical method that computes the abundance of species in DNA sequences from a metagenomics sample."
+
+toolchain = SYSTEM
+
+source_urls = ['https://github.com/jenniferlu717/Bracken/archive/refs/tags']
+sources = ['v%(version)s.tar.gz']
+
+dependencies = [
+    ('kraken2', '2.1.3'),
+    ('miniforge', '24.3.0', '-py3.11'),
+]
+
+prebuildopts = 'cd src && '
+
+files_to_copy = [
+    (['bracken', 'bracken-build', 'src/kmer2read_distr'], 'bin'),
+    (['src/*.py'], 'bin/src'),
+    'analysis_scripts',
+    'sample_data',
+]
+
+sanity_check_paths = {
+    'files': ['bin/bracken'],
+    'dirs': ['bin'],
+}
+
+modextrapaths = {
+    'PATH': 'bin/src',
+}
+
+moduleclass = 'bio'

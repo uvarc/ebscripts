@@ -1,0 +1,46 @@
+# Ruoshi Sun
+# 2024-08-23 miniforge
+
+easyblock = 'Conda'
+
+name = 'deeptools'
+version = '3.5.5'
+
+homepage = 'https://github.com/deeptools/deepTools'
+description = "deepTools addresses the challenge of handling the large amounts of data that are now routinely generated from DNA sequencing centers. deepTools contains useful modules to process the mapped reads data for multiple quality checks, creating normalized coverage files in standard bedGraph and bigWig file formats, that allow comparison between different files (for example, treatment and control). Finally, using such normalized and standardized files, deepTools can create many publication-ready visualizations to identify enrichments and for functional annotations of the genome."
+
+toolchain = SYSTEM
+
+source_urls = ['https://github.com/deeptools/deepTools/archive']
+sources = ['%(version)s.tar.gz']
+
+dependencies = [
+    ('miniforge', '24.3.0', '-py3.11')
+]
+
+channels = [
+    'conda-forge',
+    'bioconda',
+]
+
+requirements = 'python=3.8 %(name)s=%(version)s '
+#requirements += 'matplotlib=3.4.0 '
+#requirements += 'pysam=0.16.0.1'
+#requirements += 'pybigwig=0.3.18'
+#requirements += 'plotly=4.14.3'
+
+postinstallcmds = [
+    'conda clean -ya'
+]
+
+sanity_check_paths = {
+    'files': ['bin/bamCompare', 'bin/bamCoverage', 'bin/bamPEFragmentSize', 'bin/computeGCBias', 'bin/computeMatrix',
+              'bin/correctGCBias', 'bin/multiBamSummary', 'bin/plotCorrelation', 'bin/plotCoverage',
+              'bin/plotHeatmap', 'bin/plotProfile'],
+    'dirs': ['bin', 'lib'],
+}
+
+modextrapaths = {
+    'LD_LIBRARY_PATH': 'lib',
+}
+moduleclass = 'bio'

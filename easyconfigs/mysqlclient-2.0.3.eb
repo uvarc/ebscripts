@@ -1,5 +1,3 @@
-# Built with EasyBuild version 4.7.1 on 2023-08-11_12-56-24
-# Built with EasyBuild version 4.5.1 on 2023-04-20_16-21-13
 # Ruoshi Sun
 # 2023-04-13
 
@@ -13,8 +11,8 @@ description = """Python interface to MySQL"""
 
 toolchain = SYSTEM
 
-dependencies = [
-    ('anaconda', '2023.07', '-py3.11')
+builddependencies = [
+    ('miniforge', '24.3.0', '-py3.11')
 ]
 
 channels = ['conda-forge']
@@ -30,87 +28,3 @@ sanity_check_paths = {
 }
 
 moduleclass = 'lib'
-
-# Build statistics
-buildstats = [{
-    "build_time": 3.72,
-    "command_line": ['--backup-modules', "--buildpath='/tmp/uvacse'", "--default-opt-level='opt'", '--disable-fixed-installdir-naming-scheme', '--force', "--hide-deps='automake,autoconf,binutils,bison,cairo-core,clibs,expat,flex,freetype-core,gcccore,glib,help2man,icc,ifort,iccifort,imkl,iompi,libassuan,libgcrypt,ibffi,libgtextutils,libiconv,libjpeg-turbo,libksba,libgpg-error,libpng,libreadline,libtiff,libtool,libxc,libxml2,m4,ncurses,netcdf-c,netcdf-cxx,netcdf-fortran,npth,pixman,pcre,protobuf,protobuf-python3,szip,tensorflowpkg3,x264,xz,zlib,X11'", "--hide-toolchains='gcccore,iompi'", "--hooks='/home/uvacse/ebhook/rivanna_hook.py'", "--installpath='/apps'", "--module-naming-scheme='RivannaHMNS'", '--module-only', "--moduleclasses='base,astro,bio,cae,chem,compiler,data,debugger,devel,geo,ide,lang,lib,math,mpi,numlib,perf,quantum,phys,system,toolchain,tools,vis,licensed,singularity,containersystem'", "--optarch='{\\'intel\\': \\'xavx -axCORE-AVX2,CORE-AVX512,MIC-AVX512\\', \\'gcc\\': \\'march=sandybridge\\', \\'pgi\\': \\'tp=px\\'}'", "--repositorypath='/apps/ebscripts/easybuild/easyconfigs'", "--robot-paths='/apps/ebscripts/easybuild/easyconfigs'", "--sourcepath='/share/resources/apps/source'", "--subdir-modules='modulefiles/standard'", "--subdir-software='software/standard'", "--suffix-modules-path=''", 'mysqlclient-2.0.3.eb'],
-    "core_count": 28,
-    "cpu_arch": "x86_64",
-    "cpu_arch_name": "UNKNOWN",
-    "cpu_model": "Intel(R) Xeon(R) CPU E5-2680 v4 @ 2.40GHz",
-    "cpu_speed": 2400.009,
-    "cpu_vendor": "Intel",
-    "easybuild-easyblocks_version": "4.5.1",
-    "easybuild-framework_version": "4.5.1",
-    "gcc_version": "Using built-in specs.; COLLECT_GCC=gcc; COLLECT_LTO_WRAPPER=/usr/libexec/gcc/x86_64-redhat-linux/8/lto-wrapper; OFFLOAD_TARGET_NAMES=nvptx-none; OFFLOAD_TARGET_DEFAULT=1; Target: x86_64-redhat-linux; Configured with: ../configure --enable-bootstrap --enable-languages=c,c++,fortran,lto --prefix=/usr --mandir=/usr/share/man --infodir=/usr/share/info --with-bugurl=https://bugs.rockylinux.org/ --enable-shared --enable-threads=posix --enable-checking=release --enable-multilib --with-system-zlib --enable-__cxa_atexit --disable-libunwind-exceptions --enable-gnu-unique-object --enable-linker-build-id --with-gcc-major-version-only --with-linker-hash-style=gnu --enable-plugin --enable-initfini-array --with-isl --disable-libmpx --enable-offload-targets=nvptx-none --without-cuda-driver --enable-gnu-indirect-function --enable-cet --with-tune=generic --with-arch_32=x86-64 --build=x86_64-redhat-linux; Thread model: posix; gcc version 8.5.0 20210514 (Red Hat 8.5.0-16) (GCC) ; ",
-    "glibc_version": "2.28",
-    "hostname": "udc-ba27-25",
-    "install_size": 372878033,
-    "modules_tool": ('Lmod', '/usr/share/lmod/lmod/libexec/lmod', '8.7.19'),
-    "os_name": "rocky linux",
-    "os_type": "Linux",
-    "os_version": "8.7",
-    "platform_name": "x86_64-unknown-linux",
-    "python_version": "3.6.8 (default, Nov  8 2022, 11:32:15) ; [GCC 8.5.0 20210514 (Red Hat 8.5.0-15)]",
-    "system_gcc_path": "/usr/bin/gcc",
-    "system_python_path": "/apps/software/standard/core/anaconda/2023.03-py3.10/bin/python",
-    "timestamp": 1682022072,
-    "total_memory": 257840,
-}]
-
-# Build statistics
-buildstats = [
-{
-    "build_time": 3.72,
-    "command_line": ['--backup-modules', "--buildpath='/tmp/uvacse'", "--default-opt-level='opt'", '--disable-fixed-installdir-naming-scheme', '--force', "--hide-deps='automake,autoconf,binutils,bison,cairo-core,clibs,expat,flex,freetype-core,gcccore,glib,help2man,icc,ifort,iccifort,imkl,iompi,libassuan,libgcrypt,ibffi,libgtextutils,libiconv,libjpeg-turbo,libksba,libgpg-error,libpng,libreadline,libtiff,libtool,libxc,libxml2,m4,ncurses,netcdf-c,netcdf-cxx,netcdf-fortran,npth,pixman,pcre,protobuf,protobuf-python3,szip,tensorflowpkg3,x264,xz,zlib,X11'", "--hide-toolchains='gcccore,iompi'", "--hooks='/home/uvacse/ebhook/rivanna_hook.py'", "--installpath='/apps'", "--module-naming-scheme='RivannaHMNS'", '--module-only', "--moduleclasses='base,astro,bio,cae,chem,compiler,data,debugger,devel,geo,ide,lang,lib,math,mpi,numlib,perf,quantum,phys,system,toolchain,tools,vis,licensed,singularity,containersystem'", "--optarch='{\\'intel\\': \\'xavx -axCORE-AVX2,CORE-AVX512,MIC-AVX512\\', \\'gcc\\': \\'march=sandybridge\\', \\'pgi\\': \\'tp=px\\'}'", "--repositorypath='/apps/ebscripts/easybuild/easyconfigs'", "--robot-paths='/apps/ebscripts/easybuild/easyconfigs'", "--sourcepath='/share/resources/apps/source'", "--subdir-modules='modulefiles/standard'", "--subdir-software='software/standard'", "--suffix-modules-path=''", 'mysqlclient-2.0.3.eb'],
-    "core_count": 28,
-    "cpu_arch": "x86_64",
-    "cpu_arch_name": "UNKNOWN",
-    "cpu_model": "Intel(R) Xeon(R) CPU E5-2680 v4 @ 2.40GHz",
-    "cpu_speed": 2400.009,
-    "cpu_vendor": "Intel",
-    "easybuild-easyblocks_version": "4.5.1",
-    "easybuild-framework_version": "4.5.1",
-    "gcc_version": "Using built-in specs.; COLLECT_GCC=gcc; COLLECT_LTO_WRAPPER=/usr/libexec/gcc/x86_64-redhat-linux/8/lto-wrapper; OFFLOAD_TARGET_NAMES=nvptx-none; OFFLOAD_TARGET_DEFAULT=1; Target: x86_64-redhat-linux; Configured with: ../configure --enable-bootstrap --enable-languages=c,c++,fortran,lto --prefix=/usr --mandir=/usr/share/man --infodir=/usr/share/info --with-bugurl=https://bugs.rockylinux.org/ --enable-shared --enable-threads=posix --enable-checking=release --enable-multilib --with-system-zlib --enable-__cxa_atexit --disable-libunwind-exceptions --enable-gnu-unique-object --enable-linker-build-id --with-gcc-major-version-only --with-linker-hash-style=gnu --enable-plugin --enable-initfini-array --with-isl --disable-libmpx --enable-offload-targets=nvptx-none --without-cuda-driver --enable-gnu-indirect-function --enable-cet --with-tune=generic --with-arch_32=x86-64 --build=x86_64-redhat-linux; Thread model: posix; gcc version 8.5.0 20210514 (Red Hat 8.5.0-16) (GCC) ; ",
-    "glibc_version": "2.28",
-    "hostname": "udc-ba27-25",
-    "install_size": 372878033,
-    "modules_tool": ('Lmod', '/usr/share/lmod/lmod/libexec/lmod', '8.7.19'),
-    "os_name": "rocky linux",
-    "os_type": "Linux",
-    "os_version": "8.7",
-    "platform_name": "x86_64-unknown-linux",
-    "python_version": "3.6.8 (default, Nov  8 2022, 11:32:15) ; [GCC 8.5.0 20210514 (Red Hat 8.5.0-15)]",
-    "system_gcc_path": "/usr/bin/gcc",
-    "system_python_path": "/apps/software/standard/core/anaconda/2023.03-py3.10/bin/python",
-    "timestamp": 1682022072,
-    "total_memory": 257840,
-},
-{
-    "build_time": 3.48,
-    "command_line": ['--backup-modules', "--buildpath='/tmp/uvacse'", "--default-opt-level='opt'", '--disable-fixed-installdir-naming-scheme', '--force', "--hide-deps='automake,autoconf,binutils,bison,cairo-core,clibs,expat,flex,freetype-core,gcccore,glib,help2man,icc,ifort,iccifort,imkl,iompi,libassuan,libgcrypt,ibffi,libgtextutils,libiconv,libjpeg-turbo,libksba,libgpg-error,libpng,libreadline,libtiff,libtool,libxc,libxml2,m4,ncurses,netcdf-c,netcdf-cxx,netcdf-fortran,npth,pixman,pcre,protobuf,protobuf-python3,szip,tensorflowpkg3,x264,xz,zlib,X11'", "--hide-toolchains='gcccore,iompi'", "--hooks='/home/uvacse/ebhook/rivanna_hook.py'", "--installpath='/apps'", "--module-naming-scheme='RivannaHMNS'", '--module-only', "--moduleclasses='base,ai,astro,bio,cae,chem,compiler,data,debugger,devel,geo,ide,lang,lib,math,mpi,numlib,perf,quantum,phys,system,toolchain,tools,vis,licensed,apptainer,containersystem'", "--optarch='{\\'Intel\\': \\'xavx -axCORE-AVX2,CORE-AVX512\\', \\'GCC\\': \\'march=sandybridge\\'}'", "--repositorypath='/apps/ebscripts/easybuild/easyconfigs'", "--robot-paths='/apps/ebscripts/easybuild/easyconfigs'", "--sourcepath='/share/resources/apps/source'", "--subdir-modules='modulefiles/standard'", "--subdir-software='software/standard'", "--suffix-modules-path=''", 'mysqlclient/mysqlclient-2.0.3.eb'],
-    "core_count": 20,
-    "cpu_arch": "x86_64",
-    "cpu_arch_name": "UNKNOWN",
-    "cpu_model": "Intel(R) Xeon(R) CPU E5-2670 v2 @ 2.50GHz",
-    "cpu_speed": 2501.0,
-    "cpu_vendor": "Intel",
-    "easybuild-easyblocks_version": "4.7.1",
-    "easybuild-framework_version": "4.7.1",
-    "gcc_version": "Using built-in specs.; COLLECT_GCC=gcc; COLLECT_LTO_WRAPPER=/usr/libexec/gcc/x86_64-redhat-linux/8/lto-wrapper; OFFLOAD_TARGET_NAMES=nvptx-none; OFFLOAD_TARGET_DEFAULT=1; Target: x86_64-redhat-linux; Configured with: ../configure --enable-bootstrap --enable-languages=c,c++,fortran,lto --prefix=/usr --mandir=/usr/share/man --infodir=/usr/share/info --with-bugurl=https://bugs.rockylinux.org/ --enable-shared --enable-threads=posix --enable-checking=release --enable-multilib --with-system-zlib --enable-__cxa_atexit --disable-libunwind-exceptions --enable-gnu-unique-object --enable-linker-build-id --with-gcc-major-version-only --with-linker-hash-style=gnu --enable-plugin --enable-initfini-array --with-isl --disable-libmpx --enable-offload-targets=nvptx-none --without-cuda-driver --enable-gnu-indirect-function --enable-cet --with-tune=generic --with-arch_32=x86-64 --build=x86_64-redhat-linux; Thread model: posix; gcc version 8.5.0 20210514 (Red Hat 8.5.0-18) (GCC) ; ",
-    "glibc_version": "2.28",
-    "hostname": "derp-build",
-    "install_size": 372946428,
-    "modules_tool": ('Lmod', '/usr/share/lmod/lmod/libexec/lmod', '8.7.30'),
-    "os_name": "Rocky Linux",
-    "os_type": "Linux",
-    "os_version": "8.7",
-    "platform_name": "x86_64-unknown-linux",
-    "python_version": "3.6.8 (default, Jun 22 2023, 05:10:43) ; [GCC 8.5.0 20210514 (Red Hat 8.5.0-18)]",
-    "system_gcc_path": "/usr/bin/gcc",
-    "system_python_path": "/apps/software/standard/core/anaconda/2023.07-py3.11/bin/python",
-    "timestamp": 1691772983,
-    "total_memory": 128798,
-},
-]

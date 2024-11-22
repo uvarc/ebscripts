@@ -19,7 +19,7 @@ sources = ['release-%(name)s%(version)s.tar.gz']
 
 dependencies = [
     #('python', '3.9.16'),
-    ('anaconda', '2023.07', '-py3.11', SYSTEM),
+    ('miniforge', '24.3.0', '-py3.11', SYSTEM),
 ]
 
 preconfigopts = 'FCFLAGS="$FCFLAGS -heap-arrays" F90FLAGS="$F90FLAGS -heap-arrays" && '

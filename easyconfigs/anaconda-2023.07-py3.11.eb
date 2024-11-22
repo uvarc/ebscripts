@@ -1,34 +1,23 @@
-# Author: Ruoshi Sun
-# 2023-08-07 py 3.11
-# 2021-03-30 py 3.8.8
-# 2021-02-04 py 3.8
-# 2020-01-15, 04-01
-easyblock = 'EB_Anaconda'
-
+easyblock = 'Bundle'
 name = 'anaconda'
 version = '2023.07'
 versionsuffix = '-py3.11'
 
-homepage = 'https://www.anaconda.com'
-description = """Built to complement the rich, open source Python community, the Anaconda platform provides an enterprise-ready data analytics platform that empowers companies to adopt a modern open data science analytics architecture.
+local_note = """
+- The conda/mamba executables are included.
+- The default channel is conda-forge.
+
+For details see https://www.rc.virginia.edu/2024/10/transition-from-anaconda-to-miniforge-october-15-2024/
 """
+
+homepage = 'https://github.com/conda-forge/miniforge'
+description = """This module points to Miniforge. %s""" % local_note
 
 toolchain = SYSTEM
 
-source_urls = ['https://repo.anaconda.com/archive']
-sources = [
-    'Anaconda3-%(version)s-1-Linux-%(arch)s.sh',
+dependencies = [
+    ('miniforge', '24.3.0', '-py3.11'),
 ]
 
-postinstallcmds = [
-    '%(installdir)s/bin/conda clean -ya',
-]
-
-modextravars = {
-    'PIP_DISABLE_PIP_VERSION_CHECK': '1',
-}
-
-modluafooter = """
-execute{cmd="source '"..pathJoin(root, "/etc/profile.d/conda."..myShellType()).."'", modeA={"load"}}
-"""
+modloadmsg = """Loaded Miniforge which replaces Anaconda. %s""" % local_note
 moduleclass = 'lang'

@@ -23,7 +23,7 @@ builddependencies = [
 
 # required by included scripts
 dependencies = [
-    ('anaconda', '2023.07', '-py3.11', SYSTEM),
+    ('miniforge', '24.3.0', '-py3.11', SYSTEM),
     #('PyYAML', '6.0'),  # required by create_IGVsessions.py script
     ('R', '4.3.1'),
 ]

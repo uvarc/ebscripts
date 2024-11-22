@@ -1,0 +1,26 @@
+# Paul Orndorff
+# 2024-09-11 SUP-5043
+
+easyblock = 'Tarball'
+
+name = 'libtorch'
+version = '2.4.1'
+versionsuffix = '-precxx11'
+
+homepage = 'https://pytorch.org'
+description = 'A binary distribution of all headers, libraries and CMake configuration files required to depend on PyTorch.'
+
+toolchain = {'name': 'GCC', 'version': '11.4.0'}
+
+source_urls = ['https://download.pytorch.org/libtorch/cu121']
+sources = ['%(name)s-shared-with-deps-%(version)s+cu124.zip']
+
+dependencies = [
+    ('CUDA', '12.4.1', '', SYSTEM),
+]
+
+sanity_check_paths = {
+    'files': ['lib/libtorch.so'],
+    'dirs': ['lib'],
+}
+moduleclass = 'data'

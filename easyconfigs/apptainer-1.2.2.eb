@@ -25,11 +25,16 @@ builddependencies = [
 ]
 
 osdependencies = [
+    ('fakeroot'),
     ('openssl-devel'),
     ('libuuid-devel'),
     ('libseccomp-devel'),
     ('squashfs-tools'),
     ('cryptsetup'),
+]
+
+dependencies = [
+    ('gocryptfs', '2.4.0'),
 ]
 
 configure_cmd = './mconfig'

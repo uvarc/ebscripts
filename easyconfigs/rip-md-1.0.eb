@@ -1,7 +1,7 @@
 # Ruoshi Sun
 # 2024-02-29 RIV-13579
 
-easyblock = 'Mamba'
+easyblock = 'Conda'
 
 name = 'rip-md'
 version = '1.0'
@@ -17,8 +17,8 @@ sources = ['RIP-MD-%(version)s.tar.gz']
 
 extract_sources = True
 
-dependencies = [
-    ('mamba', '22.11.1-4'),
+builddependencies = [
+    ('miniforge', '24.3.0', '-py3.11'),
 ]
 
 channels = ['conda-forge']

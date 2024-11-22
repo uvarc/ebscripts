@@ -1,0 +1,34 @@
+# Ruoshi Sun
+# 2024-10-17
+
+easyblock = 'EB_Boost'
+
+name = 'boost'
+version = '1.83.0'
+
+homepage = 'http://www.boost.org/'
+description = "Boost provides free peer-reviewed portable C++ source libraries."
+
+toolchain = {'name': 'GCC', 'version': '11.4.0'}
+toolchainopts = {'pic': True}
+
+source_urls = [SOURCEFORGE_SOURCE]
+sources = ['%(name)s_1_83_0.tar.gz']
+
+dependencies = [
+    ('bzip2', '1.0.6', '', True),
+]
+
+osdependencies = ['zlib']
+
+configopts = '--without-libraries=python'
+
+boost_multi_thread = True
+
+sanity_check_paths = {
+    'files': ['lib/libboost_thread.so'],
+    'dirs': ['lib'],
+}
+
+modextravars = {'BOOST_ROOT': '%(installdir)s'}
+moduleclass = 'devel'

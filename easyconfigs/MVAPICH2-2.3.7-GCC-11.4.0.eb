@@ -2,7 +2,7 @@
 # 2023-12-13 RIV-12939
 easyblock = 'ConfigureMake'
 
-name = 'mvapich2'
+name = 'MVAPICH2'
 version = '2.3.7'
 
 homepage = 'http://mvapich.cse.ohio-state.edu'
@@ -12,7 +12,7 @@ toolchain = {'name': 'GCC', 'version': '11.4.0'}
 toolchainopts = {'optarch': False, 'pic': True}
 
 source_urls = ['https://mvapich.cse.ohio-state.edu/download/mvapich/mv2']
-sources = ['%(name)s-%(version)s-1.tar.gz']
+sources = ['%(namelower)s-%(version)s-1.tar.gz']
 
 preconfigopts = 'unset F90 && unset F90FLAGS && export FCFLAGS="-O3 -fno-math-errno -fPIC -fallow-argument-mismatch" FFLAGS="-O3 -fno-math-errno -fPIC -fallow-argument-mismatch" && '
 
