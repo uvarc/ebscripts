@@ -13,7 +13,7 @@ source_urls = ['https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/']
 sources = ['google-cloud-sdk-%(version)s-linux-%(arch)s.tar.gz']
 
 dependencies = [
-    ('anaconda', '2023.07', '-py3.11'),
+    ('miniforge', '24.3.0', '-py3.11'),
     ('java', '8'),
 ]
 

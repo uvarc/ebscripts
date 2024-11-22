@@ -1,0 +1,61 @@
+# Ruoshi Sun
+# 2024-10-08
+easyblock = 'PackedBinary'
+
+name = 'lammps_flare'
+version = '29Aug2024u1_1.4.2'
+
+toolchain = {'name': 'gompi', 'version': '11.4.0_4.1.4-nofabric'}
+
+homepage = "https://github.com/mir-group/flare"
+description = "Custom LAMMPS-Flare module for Paolucci group"
+
+source_urls = [
+    #'https://github.com/mir-group/flare/archive/refs/tags',
+    'https://github.com/mir-group/flare/archive',
+    'https://github.com/lammps/lammps/archive/refs/tags',
+]
+sources = [
+    '94a5f554c08a38d56779365a6f79c6c8d58ef78f.zip',
+    #'cb57c6b28b522330f5f3f8a5c762c101a9525715.zip',
+    'stable_29Aug2024_update1.tar.gz',
+]
+
+builddependencies = [
+    ('miniforge', '24.3.0', '-py3.11', SYSTEM),
+    ('cmake', '3.28.1', '', SYSTEM),
+]
+
+# downgrade pillow to version around 2022-09 due to:
+#   File "/apps/software/standard/mpi/gcc/11.4.0/openmpi/4.1.4-nofabric/lammps_flare/20220623_1.3.0/lib/python3.8/site-packages/PIL/_typing.py", line 10, in <module>
+#   NumpyArray = npt.NDArray[Any]
+#AttributeError: module 'numpy.typing' has no attribute 'NDArray'
+install_cmd = """
+    mamba create -y -p %(installdir)s -c conda-forge python=3.8 setuptools=65.3.0 wheel=0.37.1 mkl mkl-include pillow=9.2.0 pytest=8.3.3
+    source activate %(installdir)s
+    export CPATH=%(installdir)s/include
+    cd %(builddir)s/flare-94a5f554c08a38d56779365a6f79c6c8d58ef78f
+    pip install .
+    cd lammps_plugins
+    ./install.sh %(builddir)s/lammps-stable_29Aug2024_update1
+    cd %(builddir)s/lammps-stable_29Aug2024_update1
+    mkdir build
+    cd build
+    cmake ../cmake -DCMAKE_INSTALL_PREFIX=%(installdir)s/lammps -DBUILD_SHARED_LIBS=yes -DPKG_MACHDYN=yes -DDOWNLOAD_EIGEN3=yes -DPKG_MANYBODY=yes
+    make -j20
+    make install
+    make install-python
+    # 2022-09-02 SUP-2462
+    pip install git+https://gitlab.com/ase/ase.git@c7e726d132e41a420927d551a2ae7c9d37f0b763
+"""
+
+sanity_check_paths = {
+    'files': ['bin/ase', 'bin/flare-otf', 'lammps/bin/lmp'],
+    'dirs': ['bin', 'lib'],
+}
+
+modextrapaths = {
+    'PATH': 'lammps/bin',
+    'LD_LIBRARY_PATH': 'lammps/lib64',
+}
+moduleclass = 'chem'

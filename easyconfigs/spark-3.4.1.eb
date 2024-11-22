@@ -23,7 +23,7 @@ sources = [
 
 dependencies = [
     ('java', '11'),
-    ('anaconda', '2023.07', '-py3.11'),
+    ('miniforge', '24.3.0', '-py3.11'),
 ]
 
 postinstallcmds = [

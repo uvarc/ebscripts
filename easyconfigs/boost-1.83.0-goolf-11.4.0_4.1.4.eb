@@ -1,0 +1,26 @@
+easyblock='EB_Boost'
+name = 'boost'
+version = '1.83.0'
+
+homepage = 'http://www.boost.org/'
+description = """Boost provides free peer-reviewed portable C++ source libraries."""
+
+toolchain = {'name': 'goolf', 'version': '11.4.0_4.1.4'}
+toolchainopts = {'pic': True, 'usempi': True}
+
+boost_mpi = True
+boost_multi_thread = True
+
+sources = ['%%(namelower)s_%s.tar.gz' % '_'.join(version.split('.'))]
+source_urls = [SOURCEFORGE_SOURCE]
+
+osdependencies=['zlib']
+
+dependencies = [
+    ('bzip2', '1.0.6', '', SYSTEM),
+]
+
+configopts='--without-libraries=python'
+
+modextravars = {'BOOST_ROOT': '%(installdir)s'}
+moduleclass = 'devel'

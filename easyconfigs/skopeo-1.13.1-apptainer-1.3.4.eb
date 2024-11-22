@@ -1,0 +1,19 @@
+easyblock = 'EB_ApptainerImage'
+
+name = 'skopeo'
+version = '1.13.1'
+
+homepage = 'https://github.com/containers/skopeo'
+description = """
+skopeo is a command line utility that performs various operations on container images and image repositories.
+"""
+
+toolchain = {'name': 'apptainer', 'version': '1.3.4'}
+
+sources = ['%(name)s-%(version)s.sif']
+
+use_gpu = False
+
+skipsteps = ['sanitycheck']
+
+moduleclass = 'tools'

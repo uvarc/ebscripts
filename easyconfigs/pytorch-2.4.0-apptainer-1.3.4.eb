@@ -1,0 +1,27 @@
+easyblock = 'EB_ApptainerImage'
+
+name = 'pytorch'
+version = '2.4.0'
+
+homepage = 'https://www.pytorch.org'
+description = """
+PyTorch is a deep learning framework that puts Python first. It provides Tensors and Dynamic neural networks in Python with strong GPU acceleration.
+"""
+
+toolchain = {'name': 'apptainer', 'version': '1.3.4'}
+
+sources = ['%(name)s-%(version)s.sif']
+
+use_gpu = True
+
+skipsteps = ['sanitycheck']
+
+local_ngc_maj = '24'
+local_ngc_min = '05'
+
+modloadmsg = """This container is based on NGC %s.%s
+https://docs.nvidia.com/deeplearning/frameworks/pytorch-release-notes/rel-%s-%s.html
+""" % (local_ngc_maj,local_ngc_min,local_ngc_maj,local_ngc_min)
+
+modluafooter = 'add_property("arch","gpu")'
+moduleclass = 'data'

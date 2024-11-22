@@ -1,0 +1,65 @@
+# Ruoshi Sun
+# 2024-10-18
+easyblock = 'ConfigureMake'
+
+name = 'apptainer'
+version = '1.3.4'
+
+homepage = 'https://apptainer.org'
+description = """Apptainer/Singularity is an application containerization solution for High-Performance Computing (HPC). The goal
+of Apptainer is to allow for "mobility of computing": an application containerized on one Linux system should
+be able to run on another system, as it is, and without the need to reconcile software dependencies and Linux
+version differences between the source and target systems."""
+
+toolchain = SYSTEM
+
+source_urls = ['https://github.com/%(name)s/%(name)s/releases/download/v%(version)s']
+sources = [SOURCELOWER_TAR_GZ]
+
+builddependencies = [
+    #('binutils', '2.38'),
+    ('go', '1.21.4'),
+    #('pkgconf', '1.8.0'),
+    #('Autotools', '20220317'),
+    ('zlib', '1.2.13'),
+]
+
+osdependencies = [
+    ('cryptsetup'),
+    ('fakeroot'),
+    ('fuse3-devel'),
+    ('libseccomp-devel'),
+    ('libuuid-devel'),
+    ('openssl-devel'),
+    ('squashfs-tools'),
+]
+
+configure_cmd = './mconfig'
+prebuildopts = 'cd builddir &&'
+preinstallopts = 'cd builddir &&'
+
+postinstallcmds = [
+    # append bind paths
+    #"patch -Nu %(installdir)s/etc/apptainer/apptainer.conf < $EASYBUILD_SOURCEPATH/a/%(name)s/apptainer.conf.patch",
+    "scripts/download-dependencies",
+    "scripts/compile-dependencies",
+    "scripts/install-dependencies",
+]
+
+allow_prepend_abs_path = True
+
+sanity_check_paths = {
+    'files': ['bin/apptainer'],
+    'dirs': [],
+}
+
+sanity_check_commands = [('apptainer', '--version')]
+
+modextrapaths = {
+    'MODULEPATH': ['/apps/modulefiles/standard/container/%(name)s/%(version)s']
+}
+modaliases = {
+    'apptainer': 'apptainer -s',
+    'singularity': 'singularity -s',
+}
+moduleclass = 'tools'
