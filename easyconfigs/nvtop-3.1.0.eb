@@ -1,0 +1,31 @@
+# Ruoshi Sun
+# 2024-10-30 RIV-16218
+
+easyblock = 'Binary'
+
+name = 'nvtop'
+version = '3.1.0'
+
+homepage = 'https://github.com/Syllo/nvtop'
+description = 'htop-like GPU usage monitor'
+
+toolchain = SYSTEM
+
+source_urls = ['https://github.com/Syllo/nvtop/releases/download/%(version)s']
+sources = ['%(name)s-x86_64.AppImage']
+
+separate_build_dir = True
+
+install_cmd = """
+    chmod go+x %s
+    mv %s %%(installdir)s/%%(name)s
+""" % (sources[0],sources[0])
+
+sanity_check_paths = {
+    'files': ['nvtop'],
+    'dirs': [],
+}
+
+sanity_check_commands = ["nvtop --help"]
+
+moduleclass = 'tools'

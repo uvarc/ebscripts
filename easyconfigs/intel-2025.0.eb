@@ -1,0 +1,26 @@
+easyblock = 'Toolchain'
+
+name = 'intel'
+version = '2025.0'
+
+homepage = 'https://easybuild.readthedocs.io/en/master/Common-toolchains.html#intel-toolchain'
+description = "Compiler toolchain including Intel compilers, Intel MPI and Intel Math Kernel Library (MKL)."
+
+toolchain = SYSTEM
+
+local_comp_ver = version + '.4'
+local_mkl_ver = version + '.1'
+
+local_gccver = '11.4.0'
+dependencies = [
+    ('GCC', local_gccver),
+    ('binutils', '2.40', '', ('GCC', local_gccver)),
+    ('intel-compilers', local_comp_ver),
+    ('impi', '2021.14.1', '', ('intel-compilers', local_comp_ver)),
+    ('imkl', local_mkl_ver, '', SYSTEM),
+    ('imkl-fftw', local_mkl_ver, '', ('iimpi', version)),
+    ('libfabric', '2.0.0', '', ('intel-compilers', local_comp_ver)),
+]
+ 
+modluafooter = 'add_property("state","experimental")'
+moduleclass = 'toolchain'

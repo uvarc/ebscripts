@@ -49,7 +49,7 @@ configopts = ' '.join([
     "FFLAGS='%s'" % local_fflags,
     "F90FLAGS='%s'" % local_fflags,
     "FCFLAGS='%s'" % local_fflags,
-    "--with-cuda=$CUDA_HOME --with-cuda-cc=80 --with-cuda-runtime=12.3",
+    "--with-cuda=$NVHPC_CUDA_HOME --with-cuda-cc=80 --with-cuda-runtime=12.3",
     "--with-scalapack=no",
     "--enable-openmp --enable-openacc --enable-parallel",
 ])
@@ -66,7 +66,12 @@ modextrapaths = {
     'LD_LIBRARY_PATH': '%s/targets/x86_64-linux/lib' % local_cuda,
 }
 
-modloadmsg = """Can only run on A100. In Slurm scripts:
+modloadmsg = """Compatible with A40, A6000, A100. To request whichever is available:
+#SBATCH -p gpu
+#SBATCH --gres=gpu:1
+#SBATCH -C "a40|a6000|a100"
+
+Otherwise (e.g. A100):
 #SBATCH -p gpu
 #SBATCH --gres=gpu:a100:1
 """

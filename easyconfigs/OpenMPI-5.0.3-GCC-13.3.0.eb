@@ -43,4 +43,7 @@ modextravars = {
     'UCX_WARN_UNUSED_ENV_VARS': 'n',
 }
 
+modluafooter = 'add_property("state","experimental")'
+modloadmsg = """%(name)s %(version)s is experimental. For regular production jobs load:
+gcc/11.4.0 openmpi/4.1.4"""
 moduleclass = 'mpi'

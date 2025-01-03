@@ -1,0 +1,22 @@
+name = 'impi'
+version = '2021.14.1'
+
+homepage = 'https://software.intel.com/content/www/us/en/develop/tools/mpi-library.html'
+description = "Intel MPI Library, compatible with MPICH ABI"
+
+toolchain = {'name': 'intel-compilers', 'version': '2025.0.4'}
+
+# see https://software.intel.com/content/www/us/en/develop/articles/oneapi-standalone-components.html
+sources = ['intel-mpi-%(version)s.7_offline.sh']
+
+accept_eula = True
+
+dependencies = [
+    #('UCX', '1.16.0'),
+    #('libfabric', '1.16.1', '', ('GCC', '11.4.0')),
+]
+
+# can't run mpi on build node
+skipsteps = ['sanitycheck']
+
+moduleclass = 'mpi'

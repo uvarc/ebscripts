@@ -58,4 +58,7 @@ osdependencies = [
     OS_PKG_OPENSSL_DEV,
 ]
 
+local_dir = '/project/xalt'
+configopts = '--with-etcDir=%s --with-xaltFilePrefix=%s' % (local_dir, local_dir)
+
 moduleclass = 'lib'

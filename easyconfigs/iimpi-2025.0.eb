@@ -1,0 +1,19 @@
+easyblock = 'Toolchain'
+
+name = 'iimpi'
+version = '2025.0'
+
+homepage = 'https://software.intel.com/parallel-studio-xe'
+description = """Intel C/C++ and Fortran compilers, alongside Intel MPI."""
+
+toolchain = SYSTEM
+
+local_comp_ver = version + '.4'
+dependencies = [
+    ('intel-compilers', local_comp_ver),
+    ('impi', '2021.14.1', '', ('intel-compilers', local_comp_ver)),
+# for some reason need to load libfabric last; can't list as a dependency for impi
+    ('libfabric', '2.0.0', '', ('intel-compilers', local_comp_ver)),
+]
+
+moduleclass = 'toolchain'

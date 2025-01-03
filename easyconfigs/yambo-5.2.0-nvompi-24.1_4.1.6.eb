@@ -33,7 +33,12 @@ modextrapaths = {
     'LD_LIBRARY_PATH': '%s/targets/x86_64-linux/lib' % local_cuda,
 }
 
-modloadmsg = """Can only run on A100. In Slurm scripts:
+modloadmsg = """Compatible with A40, A6000, A100. To request whichever is available:
+#SBATCH -p gpu
+#SBATCH --gres=gpu:1
+#SBATCH -C "a40|a6000|a100"
+
+Otherwise (e.g. A100):
 #SBATCH -p gpu
 #SBATCH --gres=gpu:a100:1
 """
