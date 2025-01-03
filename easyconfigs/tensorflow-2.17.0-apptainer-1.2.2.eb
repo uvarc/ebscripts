@@ -1,0 +1,23 @@
+easyblock = 'EB_ApptainerImage'
+
+name = 'tensorflow'
+version = '2.17.0'
+
+homepage = 'https://www.tensorflow.org'
+description = """
+TensorFlow is an open-source software library for Machine Intelligence.
+"""
+
+toolchain = {'name': 'apptainer', 'version': '1.2.2'}
+
+sources = ['%(name)s-%(version)s.sif']
+
+use_gpu = True
+
+skipsteps = ['sanitycheck']
+
+modloadmsg = """This container is based on NGC 24.11
+https://docs.nvidia.com/deeplearning/frameworks/tensorflow-release-notes/rel-24-11.html#rel-24-11
+"""
+modluafooter = 'add_property("arch","gpu")'
+moduleclass = 'data'

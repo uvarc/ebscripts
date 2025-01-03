@@ -1,0 +1,21 @@
+# Ruoshi Sun
+# 2024-12-10
+easyblock = 'Toolchain'
+
+name = 'gmvapich2'
+version = '13.3.0_4.0rc'
+
+homepage = '(none)'
+description = """GNU Compiler Collection (GCC) based compiler toolchain,
+ including MVAPICH2 for MPI support."""
+
+toolchain = SYSTEM
+
+# compiler toolchain dependencies
+local_comp = ('GCC', '13.3.0')
+dependencies = [
+    local_comp,
+    ('MVAPICH2', '4.0rc', '', local_comp),
+]
+
+moduleclass = 'toolchain'

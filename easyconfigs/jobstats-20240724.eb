@@ -1,0 +1,38 @@
+# Ruoshi Sun
+# 2024-10-23
+
+easyblock = 'Conda'
+name = 'jobstats'
+version = '20240724'
+
+homepage = 'https://github.com/PrincetonUniversity/jobstats'
+description = """Jobstats is a job monitoring platform composed of data exporters, Prometheus, Grafana and the Slurm database whereas jobstats is a command that operates on the Jobstats platform."""
+
+toolchain = SYSTEM
+
+source_urls = ['https://github.com/PrincetonUniversity/jobstats/archive']
+sources = ['8ece44814ada16959f0e0667882126ff0bb3c8b2.zip']
+
+builddependencies = [
+    ('miniforge', '24.3.0', '-py3.11'),
+]
+
+channels = ['conda-forge']
+requirements = 'python=3.11 requests=2.32.3 blessed=1.19.1'
+
+postinstallcmds = [
+    ' && '.join([
+        'unzip %s' % sources[0],
+        'cd jobstats-8ece44814ada16959f0e0667882126ff0bb3c8b2',
+        'chmod +x jobstats',
+        'mv * %(installdir)s',
+    ]),
+    'ln -s /sfs/applications/resources/data/jobstats/config.py -t %(installdir)s',
+]
+
+modextrapaths = {
+    'PATH': '',
+    'LD_LIBRARY_PATH': 'lib',
+}
+
+moduleclass = 'tools'

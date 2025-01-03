@@ -1,0 +1,30 @@
+# Ruoshi Sun
+# 2024-12-12
+
+easyblock = 'Tarball'
+
+name = 'dotnet-sdk'
+version = '8.0.404'
+
+homepage = 'https://www.microsoft.com/net/'
+description = """.NET is a free, cross-platform, open source developer platform for building many different types
+ of applications."""
+
+toolchain = SYSTEM
+
+source_urls = ['https://download.visualstudio.microsoft.com/download/pr/' +
+               '4e3b04aa-c015-4e06-a42e-05f9f3c54ed2/74d1bb68e330eea13ecfc47f7cf9aeb7']
+sources = ['%(name)s-%(version)s-linux-x64.tar.gz']
+
+sanity_check_paths = {
+    'files': ['dotnet'],
+    'dirs': ['shared/Microsoft.NETCore.App', 'shared/Microsoft.AspNetCore.App'],
+}
+
+modextrapaths = {
+    'PATH': [''],
+    'LD_LIBRARY_PATH': ['shared/Microsoft.NETCore.App/3.1.32'],
+    'DOTNET_ROOT': [''],
+}
+
+moduleclass = 'lang'

@@ -1,0 +1,14 @@
+easyblock = 'Bundle'
+name = 'MVAPICH2'
+version = '4.0rc'
+
+homepage = 'http://mvapich.cse.ohio-state.edu'
+description = "The MVAPICH software, based on MPI 4.1 standard, delivers the best performance, scalability and fault tolerance for high-end computing systems and servers."
+
+toolchain = {'name': 'GCC', 'version': '13.3.0'}
+
+dependencies = [
+    ('mvapich', '4.0rc'),
+]
+
+moduleclass = 'lang'
