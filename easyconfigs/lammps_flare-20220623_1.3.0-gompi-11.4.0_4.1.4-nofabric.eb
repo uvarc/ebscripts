@@ -43,6 +43,11 @@ install_cmd = """
     pip install git+https://gitlab.com/ase/ase.git@c7e726d132e41a420927d551a2ae7c9d37f0b763
 """
 
+sanity_check_paths = {
+    'files': ['bin/ase', 'bin/flare-otf', 'lammps/bin/lmp'],
+    'dirs': ['bin', 'lib'],
+}
+
 modextrapaths = {
     'PATH': 'lammps/bin',
     'LD_LIBRARY_PATH': 'lammps/lib64',

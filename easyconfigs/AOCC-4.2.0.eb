@@ -1,5 +1,3 @@
-easyblock = 'MakeCp'
-
 name = 'AOCC'
 version = '4.2.0'
 
@@ -14,8 +12,15 @@ toolchain = SYSTEM
 
 sources = ['aocc-compiler-%(version)s.tar']
 
-build_cmd = './install.sh'
+clangversion = '16'
 
-files_to_copy = ['./*']
+local_gccver = '11.4.0'
+dependencies = [
+    ('GCC', local_gccver),
+    #('binutils', '2.40', '', ('GCC', local_gccver)),
+    ('ncurses', '6.3', '', ('GCC', local_gccver)),
+    ('zlib', '1.2.13', '', ('GCC', local_gccver)),
+    ('libxml2', '2.10.3', '', ('GCC', local_gccver)),
+]
 
 moduleclass = 'compiler'

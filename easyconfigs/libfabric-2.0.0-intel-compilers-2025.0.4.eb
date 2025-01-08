@@ -1,0 +1,35 @@
+easyblock = 'ConfigureMake'
+
+name = 'libfabric'
+version = '2.0.0'
+
+homepage = 'https://ofiwg.github.io/libfabric/'
+description = """
+Libfabric is a core component of OFI. It is the library that defines and exports
+the user-space API of OFI, and is typically the only software that applications
+deal with directly. It works in conjunction with provider libraries, which are
+often integrated directly into libfabric.
+"""
+
+toolchain = {'name': 'intel-compilers', 'version': '2025.0.4'}
+toolchainopts = {'pic': True}
+
+source_urls = ['https://github.com/ofiwg/%(name)s/archive/refs/tags/v%(version)s']
+sources = ['v%(version)s.tar.gz']
+
+# Regenerate build files to pick up psm3-axv-config patch
+preconfigopts = "./autogen.sh &&"
+
+# Disable deprecated "sockets" provider
+configopts = "--disable-sockets"
+configopts += "--disable-usnic "
+
+sanity_check_paths = {
+    'files': ['bin/fi_info', 'bin/fi_pingpong', 'bin/fi_strerror'] +
+             ['lib/libfabric.%s' % x for x in ['a', SHLIB_EXT]],
+    'dirs': ['include/rdma', 'lib/pkgconfig', 'share']
+}
+
+sanity_check_commands = ['fi_info']
+
+moduleclass = 'lib'

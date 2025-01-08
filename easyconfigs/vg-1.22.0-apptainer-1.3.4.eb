@@ -1,0 +1,20 @@
+# Author: Ruoshi Sun
+# central container dir Wed Mar 24 09:40:22 EDT 2021
+# 2020-04-02
+
+easyblock = 'EB_ApptainerImage'
+
+name = 'vg'
+version = '1.22.0'
+
+homepage = 'https://github.com/vgteam/vg'
+description = """Variation graphs provide a succinct encoding of the sequences of many genomes."""
+
+toolchain = {'name': 'apptainer', 'version': '1.3.4'}
+
+sources = [
+    '%(name)s-%(version)s.sif'
+]
+
+skipsteps = ["sanitycheck"]
+moduleclass = 'bio'

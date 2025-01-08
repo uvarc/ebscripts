@@ -1,0 +1,30 @@
+easyblock = 'EB_ApptainerImage'
+
+name = 'maestro'
+version = '1.5.1'
+
+homepage = 'https://github.com/liulab-dfci/MAESTRO'
+description = """
+MAESTRO(Model-based AnalysEs of Single-cell Transcriptome and RegulOme) is a comprehensive single-cell RNA-seq and ATAC-seq analysis suit built using snakemake. MAESTRO combines several dozen tools and packages to create an integrative pipeline, which enables scRNA-seq and scATAC-seq analysis from raw sequencing data (fastq files) all the way through alignment, quality control, cell filtering, normalization, unsupervised clustering, differential expression and peak calling, celltype annotation and transcription regulation analysis.
+"""
+
+toolchain = {'name': 'apptainer', 'version': '1.3.4'}
+
+sources = [
+    '%(name)s-%(version)s.sif',
+]
+
+use_gpu = False
+
+skipsteps = ["sanitycheck"]
+
+modloadmsg = """Or, simply:
+MAESTRO
+"""
+
+modaliases = {
+    'MAESTRO': '$CONTAINERDIR/%(name)s-%(version)s.sif',
+    'giggle': 'apptainer exec $CONTAINERDIR/%(name)s-%(version)s.sif giggle',
+    'lisa': 'apptainer exec $CONTAINERDIR/%(name)s-%(version)s.sif lisa',
+}
+moduleclass = 'bio'

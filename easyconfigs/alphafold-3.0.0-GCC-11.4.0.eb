@@ -29,6 +29,7 @@ postinstallcmds = [
     'tar xf %%(builddir)s/%s --strip-components=1 -C %%(installdir)s/app/alphafold' % sources[0],
     '%(installdir)s/bin/pip install --no-cache-dir -r %(installdir)s/app/alphafold/dev-requirements.txt',
     '%(installdir)s/bin/pip install --no-cache-dir --no-deps %(installdir)s/app/alphafold',
+    '%(installdir)s/bin/build_data',
 ]
 
 modextravars = {

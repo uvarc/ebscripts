@@ -1,0 +1,19 @@
+easyblock = 'EB_ApptainerImage'
+
+name = 'qgis'
+version = '3.28.10'
+
+homepage = 'https://www.qgis.org'
+description = "A Free and Open Source Geographic Information System"
+
+toolchain = {'name': 'apptainer', 'version': '1.3.4'}
+
+sources = [
+    '%(name)s-%(version)s.sif',
+]
+
+use_gpu = False
+
+skipsteps = ['sanitycheck']
+
+moduleclass = 'geo'

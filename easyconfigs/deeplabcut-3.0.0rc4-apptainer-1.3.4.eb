@@ -1,0 +1,23 @@
+# Ruoshi Sun
+# 2024-09-05
+
+easyblock = 'EB_ApptainerImage'
+
+name = 'deeplabcut'
+version = '3.0.0rc4'
+
+homepage = 'https://github.com/DeepLabCut/DeepLabCut'
+description = """
+DeepLabCut is a toolbox for markerless pose estimation of animals performing various tasks.
+"""
+
+toolchain = {'name': 'apptainer', 'version': '1.3.4'}
+
+sources = ['%(name)s-%(version)s.sif']
+
+use_gpu = True
+
+skipsteps = ['sanitycheck']
+
+modluafooter = 'add_property("arch","gpu")'
+moduleclass = 'bio'

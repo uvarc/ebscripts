@@ -38,7 +38,7 @@ sanity_check_paths = {
 
 modextravars = {
     'SLURM_CPU_BIND_TYPE': 'cores',
-    'SLURM_MPI_TYPE': 'pmix',
+    #'SLURM_MPI_TYPE': 'pmi2',
     'OMPI_MCA_btl': '^openib',
     'UCX_WARN_UNUSED_ENV_VARS': 'n',
 }

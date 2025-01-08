@@ -14,7 +14,7 @@ description = """bcl2fastq Conversion Software both demultiplexes data and conve
 skipsteps = ['fetch', 'source', 'patch']
 
 dependencies = [
-    ('apptainer', '1.2.2'),
+    ('apptainer', '1.3.4'),
 ]
 
 postinstallcmds = [

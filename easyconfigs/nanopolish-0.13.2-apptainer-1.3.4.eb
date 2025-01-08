@@ -1,0 +1,36 @@
+# Author: Ruoshi Sun
+# central container dir Wed Mar 24 09:50:48 EDT 2021
+# 2020-10-07
+
+easyblock = 'EB_ApptainerImage'
+
+name = 'nanopolish'
+version = '0.13.2'
+
+homepage = 'https://github.com/jts/nanopolish'
+description = "Software package for signal-level analysis of Oxford Nanopore sequencing data."
+
+toolchain = {'name': 'apptainer', 'version': '1.3.4'}
+
+imgfile = '%(name)s-%(version)s.sif'
+
+sources = [
+    imgfile,
+    'nanopolish', # alias to launch container
+]
+
+
+modextrapaths = {'PATH': ''}
+
+modloadmsg = """Or, simply:
+nanopolish [arguments]
+
+In SLURM scripts, write:
+#!/bin/bash
+#SBATCH ...
+module load apptainer nanopolish/0.13.2
+nanopolish [arguments]
+"""
+
+skipsteps = ["sanitycheck"]
+moduleclass = 'bio'
