@@ -1,0 +1,30 @@
+# Ruoshi Sun
+# 2025-03-17
+
+easyblock = 'Conda'
+
+name = 'multiqc'
+version = '1.27.1'
+
+homepage = 'https://multiqc.info/'
+description = "MultiQC searches a given directory for analysis logs and compiles a HTML report. It's a general use tool, perfect for summarising the output from numerous bioinformatics tools."
+
+toolchain = SYSTEM
+
+builddependencies = [
+    ('miniforge', '24.3.0', '-py3.11'),
+]
+
+channels = ['bioconda', 'conda-forge']
+requirements = '%(name)s=%(version)s'
+
+postinstallcmds = [
+    'conda clean -ya'
+]
+
+sanity_check_paths = {
+    'files': ['bin/multiqc'],
+    'dirs': ['bin'],
+}
+
+moduleclass = 'bio'

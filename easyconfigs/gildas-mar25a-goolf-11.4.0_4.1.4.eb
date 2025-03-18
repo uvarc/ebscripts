@@ -1,0 +1,41 @@
+easyblock = 'MakeCp'
+
+name = 'gildas'
+version = 'mar25a'
+
+homepage = 'https://www.iram.fr/IRAMFR/GILDAS/gildasli2.html'
+description = """
+GILDAS is a collection of state-of-the-art software oriented toward (sub-)millimeter
+radioastronomical applications (either single-dish or interferometer). It is daily
+used to reduce all data acquired with the IRAM 30M telescope and the NOrthern Extended
+Millimeter Array NOEMA (except VLBI observations)."""
+
+toolchain = {'name': 'goolf', 'version': '11.4.0_4.1.4'}
+
+source_urls = ['https://www.iram.fr/~gildas/dist/']
+sources = ['%(name)s-src-%(version)s.tar.xz']
+
+dependencies = [
+    ('python', '3.11.4'),
+]
+
+prebuildopts = "source admin/gildas-env.sh -o openmp && "
+buildopts = " && make install" # this goes into %(builddir)s/gildas-exe-version
+
+files_to_copy = [
+    '%(builddir)s/gildas-exe-%(version)s/*',
+]
+
+sanity_check_paths = {
+    'files': ['etc/bash_profile'],
+    'dirs': ['etc']
+}
+
+modextravars = {
+    'GAG_ROOT_DIR': '%(installdir)s',
+    'GAG_EXEC_SYSTEM': 'x86_64-rocky8.9-gfortran-openmp',
+}
+modluafooter = """
+execute{cmd="source '"..pathJoin(root, "/etc/bash_profile").."'", modeA={"load"}}
+"""
+moduleclass = 'astro'

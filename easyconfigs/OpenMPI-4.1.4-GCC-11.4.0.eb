@@ -19,9 +19,8 @@ patches = [
 dependencies = [
     ('zlib', '1.2.13'),
     ('hwloc', '2.8.0'),
-    ('libevent', '2.1.12'),
+    ('libevent', '2.1.12'),    
     ('ucx', '1.15.0'),
-    ('libfabric', '1.16.1'),
     ('pmix', '4.2.6'),
     ('ucc', '1.2.0'),
 ]
@@ -40,7 +39,7 @@ preconfigopts = ' && '.join([
     ''
 ])
 
-configopts = "--with-ucx --enable-shared --with-verbs --enable-mpirun-prefix-by-default --with-slurm --with-pmi=/opt/slurm/current --with-pmi-libdir=/opt/slurm/current/lib"
+configopts = "--with-ucx --enable-shared --without-verbs --enable-mpirun-prefix-by-default --with-slurm --with-pmi=/opt/slurm/current --with-pmi-libdir=/opt/slurm/current/lib"
 # CUDA related patches and custom configure option can be removed if CUDA support isn't wanted.
 configopts += ' --with-cuda=internal '
 
