@@ -13,7 +13,7 @@ toolchain = SYSTEM
 source_urls = ['https://github.com/rclone/rclone/archive']
 sources = ['v%(version)s.tar.gz']
 
-dependencies = [
+builddependencies = [
     ('go', '1.21.4')
 ]
 

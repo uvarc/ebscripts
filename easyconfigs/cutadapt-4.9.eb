@@ -1,10 +1,10 @@
 # Ruoshi Sun
-# 2021-03-31 py3.8.8
+# 2025-03-19
 
 easyblock = 'Conda'
 
 name = 'cutadapt'
-version = '3.4'
+version = '4.9'
 
 homepage = 'https://cutadapt.readthedocs.io/en/stable/index.html'
 description = """Cutadapt finds and removes adapter sequences, primers, poly-A tails and other types of unwanted sequence from your high-throughput sequencing reads."""
@@ -14,13 +14,9 @@ toolchain = SYSTEM
 builddependencies = [('miniforge', '24.3.0', '-py3.11')]
 
 channels = ['conda-forge', 'bioconda']
-requirements = 'python=3.8.8 %(namelower)s=%(version)s '
-requirements += 'xopen=1.1.0 '
-requirements += 'dnaio=0.5.0 '
-
-postinstallcmds = [
-    'conda clean -ya'
-]
+requirements = '%(namelower)s=%(version)s '
+requirements += 'xopen=1.7 '
+requirements += 'dnaio=1.2 '
 
 sanity_check_paths = {
     'files': ['bin/cutadapt'],
