@@ -1,6 +1,6 @@
 # Ruoshi Sun
-# 2025-03-20
-easyblock = 'Binary'
+# 2025-03-21 built by kah3f
+easyblock = 'Tarball'
 
 name = 'mvapich'
 version = '4.0'
@@ -9,18 +9,8 @@ homepage = 'http://mvapich.cse.ohio-state.edu'
 description = "The MVAPICH software, based on MPI 4.1 standard, delivers the best performance, scalability and fault tolerance for high-end computing systems and servers."
 
 toolchain = {'name': 'GCC', 'version': '14.2.0'}
-toolchainopts = {'optarch': False, 'pic': True}
 
-source_urls = ['https://mvapich.cse.ohio-state.edu/download/mvapich/plus/%(version)s/cpu/OFI-Standard/mofed5.0']
-sources = ['%(namelower)s-plus-4.0-nogpu.rhel8.ofed24.10.ofi.gcc13.2.0.slurm-4.0-1.x86_64.rpm']
-
-install_cmd = """
-    rpm2cpio %s | cpio -id
-    mv opt/mvapich/plus/4.0/.ofi/slurm/gcc13.2.0/* %%(installdir)s
-    cd %%(installdir)s
-    for i in $(grep -RIl '/opt/mvapich/plus'); do sed -i 's|/opt/mvapich/plus/4.0/.ofi/slurm/gcc13.2.0|%%(installdir)s|g' $i; done
-""" % sources[0]
-#mpicc mpicxx mpif77 mpif90 mpifort
+sources = ['%(namelower)s-%(version)s-kah3f.tar.gz']
 
 sanity_check_paths = {
     'files': ['lib/libmpich.so'],
