@@ -12,6 +12,10 @@ toolchain = {'name': 'GCC', 'version': '14.2.0'}
 
 sources = ['%(namelower)s-%(version)s-kah3f.tar.gz']
 
+postinstallcmds = [
+    "cd %(installdir)s && for i in $(grep -RIl '/home/kah3f/mvapich'); do sed -i 's|/home/kah3f/mvapich|%(installdir)s|g' $i; done"
+]
+
 sanity_check_paths = {
     'files': ['lib/libmpich.so'],
     'dirs': [],
