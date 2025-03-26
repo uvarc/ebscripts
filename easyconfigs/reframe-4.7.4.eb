@@ -1,0 +1,52 @@
+# Ruoshi Sun
+# 2025-03-25
+easyblock = 'Tarball'
+
+name = 'reframe'
+version = '4.7.4'
+
+homepage = 'https://github.com/reframe-hpc/reframe'
+description = '''ReFrame is a framework for writing regression tests for HPC systems.'''
+
+toolchain = SYSTEM
+
+source_urls = ['https://github.com/reframe-hpc/reframe/archive/']
+sources = ['v%(version)s.tar.gz']
+
+builddependencies = [
+    #('binutils', '2.42'),
+    ('curl', '8.4.0'),  # Used by ReFrame to download pip in the bootstrap
+]
+
+# Note that for ReFrame's CPU autodetect to work
+# the system also needs to provide (new enough versions of) these dependencies
+dependencies = [
+    ('miniforge', '24.3.0', '-py3.11'),
+    #('libxslt', '1.1.42'),  # Required by lxml, which is installed by ReFrame's bootstrap installer
+    #('libxml2', '2.12.7'),  # Required by lxml, which is installed by ReFrame's bootstrap installer
+]
+
+postinstallcmds = [
+    'export PATH=%(installdir)s/bin:$PATH',
+    './bootstrap.sh +docs +pygelf',
+    'cp -r external %(installdir)s',
+    'cp -a tools examples %(installdir)s',
+    'mkdir -p %(installdir)s/share && cp -a share/completions %(installdir)s/share/completions',
+    r"sed -i 's@/\(python[0-9.]*\)$@/\1 -S@g' %(installdir)s/bin/reframe",
+]
+
+sanity_check_paths = {
+    'files': ['bin/reframe',
+              'share/completions/reframe.bash',
+              'share/completions/reframe.fish',
+              'share/completions/reframe.tcsh'],
+    'dirs': ['external', 'tools', 'examples']
+}
+
+sanity_check_commands = ['reframe -V']
+
+modextravars = {
+    'RFM_CONFIG_PATH': '/sfs/applications/resources/data/reframe',
+}
+
+moduleclass = 'devel'
