@@ -1,16 +1,16 @@
 # Ruoshi Sun
-# 2024-03-26 RIV-14056
+# 2025-03-25
 easyblock = 'Tarball'
 
-name = 'cellranger'
-version = '8.0.0'
+name = 'spaceranger'
+version = '3.1.3'
 
 homepage = 'https://www.10xgenomics.com/'
 description = "A set of analysis piplines that perform sample demultiplexing, barcode processing, and single cell 3' gene counting."
 
 toolchain = SYSTEM
 
-sources = [SOURCE_TAR_GZ]
+sources = [SOURCE_TAR_XZ]
 
 dependencies = [
     ('bcl2fastq2', '2.20.0'),
@@ -21,6 +21,6 @@ sanity_check_paths = {
     'dirs': ['bin'],
 }
 
-sanity_check_commands = ['cellranger testrun --id=tiny']
+sanity_check_commands = ['spaceranger testrun --id=tiny']
 
 moduleclass = 'bio'
