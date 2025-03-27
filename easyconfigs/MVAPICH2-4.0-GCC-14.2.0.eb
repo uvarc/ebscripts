@@ -2,7 +2,7 @@
 # 2025-03-21 built by kah3f
 easyblock = 'Tarball'
 
-name = 'mvapich'
+name = 'MVAPICH2'
 version = '4.0'
 
 homepage = 'http://mvapich.cse.ohio-state.edu'
@@ -10,7 +10,7 @@ description = "The MVAPICH software, based on MPI 4.1 standard, delivers the bes
 
 toolchain = {'name': 'GCC', 'version': '14.2.0'}
 
-sources = ['%(namelower)s-%(version)s-kah3f.tar.gz']
+sources = ['mvapich-%(version)s-kah3f.tar.gz']
 
 postinstallcmds = [
     "cd %(installdir)s && for i in $(grep -RIl '/home/kah3f/mvapich'); do sed -i 's|/home/kah3f/mvapich|%(installdir)s|g' $i; done"
