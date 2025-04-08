@@ -22,11 +22,11 @@ local_comp = ('GCC', '11.4.0')
 
 dependencies = [
     ('zlib', '1.2.13', '', local_comp),
-    ('hwloc', '2.8.0', '', local_comp),
-    ('libevent', '2.1.12', '', local_comp),
+    #('hwloc', '2.8.0', '', local_comp),
+    #('libevent', '2.1.12', '', local_comp),
     ('ucx', '1.15.0', '', local_comp),
-    ('libfabric', '1.16.1', '', local_comp),
-    ('pmix', '4.2.6', '', local_comp),
+    #('libfabric', '1.16.1', '', local_comp),
+    #('pmix', '4.2.6', '', local_comp),
     ('ucc', '1.2.0', '', local_comp),
 ]
 
@@ -44,13 +44,13 @@ preconfigopts = ' && '.join([
     ''
 ])
 
-configopts = "--with-ucx --enable-shared --with-verbs --enable-mpirun-prefix-by-default --with-slurm --with-pmi=/opt/slurm/current --with-pmi-libdir=/opt/slurm/current/lib"
+configopts = "--with-ucx --enable-shared --with-verbs --enable-mpirun-prefix-by-default --with-slurm --with-pmix=/opt/pmix --with-hwloc=/usr --with-libevent=/usr --without-hcoll"
 # CUDA related patches and custom configure option can be removed if CUDA support isn't wanted.
 configopts += ' --with-cuda=internal '
 
 modextravars = {
     'SLURM_CPU_BIND_TYPE': 'cores',
-    'SLURM_MPI_TYPE': 'pmi2',
+    'SLURM_MPI_TYPE': 'pmix',
     'OMPI_MCA_btl': '^openib',
     'UCX_WARN_UNUSED_ENV_VARS': 'n',
 }

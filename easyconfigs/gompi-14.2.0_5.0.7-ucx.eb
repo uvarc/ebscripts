@@ -1,0 +1,23 @@
+# Ruoshi Sun
+# 2025-04-07
+easyblock = 'Toolchain'
+
+name = 'gompi'
+local_comp_version = '14.2.0'
+local_mpi_version = '5.0.7'
+version = '%s_%s-ucx' % (local_comp_version, local_mpi_version)
+
+homepage = '(none)'
+description = """GNU Compiler Collection (GCC) based compiler toolchain,
+ including MVAPICH for MPI support."""
+
+toolchain = SYSTEM
+
+# compiler toolchain dependencies
+local_comp = ('GCC', local_comp_version)
+dependencies = [
+    local_comp,
+    ('OpenMPI', local_mpi_version, '-ucx', local_comp),
+]
+
+moduleclass = 'toolchain'
