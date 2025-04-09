@@ -1,9 +1,9 @@
 # Ruoshi Sun
-# 2023-04-03 depend on openssl/1.1.1s instead of system
+# 2025-04-08
 
 easyblock = 'EB_CMake'
 name = 'cmake'
-version = '3.24.3'
+version = '4.0.0'
 
 homepage = 'https://www.cmake.org'
 
@@ -12,11 +12,10 @@ description = """
  tools designed to build, test and package software.
 """
 
-toolchain = {'name': 'GCC', 'version': '11.4.0'}
+toolchain = SYSTEM
 
 source_urls = ['https://www.cmake.org/files/v%(version_major_minor)s']
 sources = [SOURCELOWER_TAR_GZ]
-checksums = ['b53aa10fa82bff84ccdb59065927b72d3bee49f4d86261249fc0984b3b367291']
 
 builddependencies = [
     #('binutils', '2.39'),
@@ -24,8 +23,8 @@ builddependencies = [
 
 dependencies = [
     #('ncurses', '6.3'),
-    ('zlib', '1.2.13'),
-    ('bzip2', '1.0.6', '', SYSTEM),
+    #('zlib', '1.2.13'),
+    ('bzip2', '1.0.6'),
     ('curl', '8.4.0'),
     #('libarchive', '3.6.1'),
     #('openssl', '1.1.1s'),
