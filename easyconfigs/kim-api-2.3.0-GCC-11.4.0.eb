@@ -27,7 +27,7 @@ checksums = ['93673bb8fbc0625791f2ee67915d1672793366d10cabc63e373196862c14f991']
 #builddependencies = [('binutils', '2.37')]
 
 dependencies = [
-    ('cmake', '3.23.3', '', SYSTEM),  # Also needed to install models, thus not just a builddependency.
+    ('cmake', '3.28.1', '', SYSTEM),  # Also needed to install models, thus not just a builddependency.
 ]
 
 parallel = 1

@@ -1,12 +1,10 @@
 # Ruoshi Sun
-# 2023-08-16
-# 2021-05-26 install user packages for jupyter pdf conversion
-# 2020-06-26
+# 2025-04-09
 
-easyblock = 'Binary'
+easyblock = 'PackedBinary'
 
 name = 'texlive'
-version = '2023'
+version = '2025'
 
 toolchain = SYSTEM
 
@@ -22,17 +20,15 @@ source_urls = ['https://mirror.ctan.org/systems/texlive/tlnet']
 sources = ['install-tl-unx.tar.gz']
 
 install_cmd = """
-    tar xf %s
-    cd install-tl-20230816
-    export TEXLIVE_INSTALL_PREFIX=%%(installdir)s
-    export TEXLIVE_INSTALL_TEXDIR=%%(installdir)s
-    echo "selected_scheme scheme-small" > temp.profile
-    ./install-tl -profile temp.profile -repository https://ftp.math.utah.edu/pub/tex/historic/systems/texlive/%%(version)s/tlnet-final/
-    mv %%(installdir)s/%%(version)s/* %%(installdir)s
-    rmdir %%(installdir)s/%%(version)s
-    %%(installdir)s/bin/x86_64-linux/tlmgr update --all --self
-    %%(installdir)s/bin/x86_64-linux/tlmgr install type1cm tcolorbox environ ucs adjustbox collectbox titling enumitem rsfs hypdoc pdfcol
-""" % sources[0]
+    cd install-tl-%(version)s0409
+    export TEXLIVE_INSTALL_PREFIX=%(installdir)s
+    export TEXLIVE_INSTALL_TEXDIR=%(installdir)s
+    ./install-tl --no-interaction
+    mv %(installdir)s/%(version)s/* %(installdir)s
+    rmdir %(installdir)s/%(version)s
+    %(installdir)s/bin/x86_64-linux/tlmgr update --all --self
+    %(installdir)s/bin/x86_64-linux/tlmgr install type1cm tcolorbox environ ucs adjustbox collectbox titling enumitem rsfs hypdoc pdfcol
+"""
 
 sanity_check_paths = {
     'files': ['bin/x86_64-linux/tlmgr'],
