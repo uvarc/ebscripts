@@ -54,8 +54,11 @@ preconfigopts = ' && '.join([
 
 # CUDA related patches and custom configure option can be removed if CUDA support isn't wanted.
 #local_include = "-I$EBROOTCUDA/targets/x86_64-linux/include/cuda/std/detail/libcxx/include -I$EBROOTCUDA/nvvm/include -I$EBROOTCUDA/extras/CUPTI/include -I$EBROOTCUDA/include -I$EBROOTGCC/lib/gcc/x86_64-pc-linux-gnu/11.4.0/include"
-configopts = '--with-ucx --enable-shared --without-verbs --enable-mpirun-prefix-by-default --with-slurm --with-pmix=/opt/pmix --with-hwloc=/usr --with-libevent=/usr --without-hcoll --with-cuda=internal'
+configopts = '--with-ucx --enable-shared --without-verbs --enable-mpirun-prefix-by-default --with-slurm --with-pmix --with-pmix-libdir=/opt/pmix/5.0.7/lib --with-hwloc=/usr --with-libevent=/usr --without-hcoll --with-cuda=internal'
 
+modextrapaths = {
+    'LD_LIBRARY_PATH': '/opt/pmix/5.0.7/lib'
+}
 modextravars = {
     'SLURM_CPU_BIND_TYPE': 'cores',
     'SLURM_MPI_TYPE': 'pmix',

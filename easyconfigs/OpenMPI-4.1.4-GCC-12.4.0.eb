@@ -45,6 +45,9 @@ configopts = "--with-ucx --enable-shared --without-verbs --enable-mpirun-prefix-
 # CUDA related patches and custom configure option can be removed if CUDA support isn't wanted.
 configopts += ' --with-cuda=internal '
 
+modextrapaths = {
+    'LD_LIBRARY_PATH': '/opt/pmix/5.0.7/lib',
+}
 modextravars = {
     'SLURM_CPU_BIND_TYPE': 'cores',
     'SLURM_MPI_TYPE': 'pmix',

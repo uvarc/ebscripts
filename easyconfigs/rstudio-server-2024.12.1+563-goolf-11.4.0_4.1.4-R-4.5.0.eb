@@ -1,0 +1,112 @@
+# Ruoshi Sun
+# 2025-04-17
+easyblock = 'CMakeNinja'
+
+name = 'rstudio-server'
+local_major='2024'
+local_minor='12'
+local_patch='1'
+local_suffix='+563'
+version = '%s.%s.%s%s' % (local_major, local_minor, local_patch, local_suffix)
+versionsuffix = '-R-%(rver)s'
+
+homepage = 'https://www.rstudio.com/'
+description = """RStudio is an integrated development environment (IDE) for the R programming language."""
+
+toolchain = {'name': 'goolf', 'version': '11.4.0_4.1.4'}
+
+source_urls = ['https://github.com/rstudio/rstudio/archive/refs/tags']
+sources = ['v%(version)s.tar.gz']
+
+builddependencies = [
+    ('ant', '1.10.1', '', SYSTEM),
+    ('cmake', '4.0.0', '', SYSTEM),
+    ('ninja', '1.11.1', '-py3.11'),
+    #('pkgconf', '1.8.0'),
+    ('nodejs', '18.12.1'),
+]
+
+dependencies = [
+    ('boost', '1.83.0'),
+    ('java', '11', '', SYSTEM),
+    ('R', '4.5.0'),
+    ('soci', '4.0.3', '-boost-1.83'),
+    ('yaml-cpp', '0.7.0'),
+# common dependencies for user packages
+    ('hdf5', '1.12.2'),
+    ('gdal', '3.6.3'),
+    ('gsl', '2.7.1'),
+    ('gmp', '6.2.0'),
+    ('mpfr', '4.1.0'),
+    ('proj', '9.2.0'),
+]
+
+osdependencies = [
+    ('pam-devel', 'libpam0g-dev')
+]
+
+# Required until https://github.com/easybuilders/easybuild-framework/pull/4035
+local_start_dir = "%(builddir)s/rstudio-" + version.replace("+", "-")
+
+preconfigopts = " && ".join([
+    # Install dependencies via scripts. Done in subshell to preserve PWD
+    "(export RSTUDIO_TOOLS_ROOT='%(builddir)s'",
+    "cd '%s/dependencies/common'" % local_start_dir,
+    "./install-cef",
+    "./install-dictionaries",
+    "./install-mathjax",
+    "./install-pandoc",
+    "./install-panmirror",
+    #"./install-packages",
+    "./install-npm-dependencies)",
+# Set PATCH and SUFFIX manually outside of subshell; see https://github.com/rstudio/rstudio/issues/1736
+    "export RSTUDIO_VERSION_MAJOR='%s'" % local_major,
+    "export RSTUDIO_VERSION_MINOR='%s'" % local_minor,
+    "export RSTUDIO_VERSION_PATCH='%s'" % local_patch,
+    "export RSTUDIO_VERSION_SUFFIX='%s'" % local_suffix,
+    ""
+])
+
+configopts = " ".join([
+    "-DRSTUDIO_TOOLS_ROOT='%(builddir)s'",
+    "-DRSTUDIO_TARGET=Server",
+    "-DRSTUDIO_USE_SYSTEM_BOOST=ON",
+    "-DRSTUDIO_USE_SYSTEM_SOCI=ON",
+    "-DRSTUDIO_USE_SYSTEM_YAML_CPP=ON",
+    "-DQUARTO_ENABLED=OFF",  # Not available on all archs, use pandoc fallback
+    #"-DRSTUDIO_GIT_REVISION_HASH=" + local_git_rev
+])
+
+# panmirror network timeout
+prebuildopts = 'sed -i "145s/240000/1000000/" %s/src/gwt/build.xml && ' % local_start_dir
+
+sanity_check_commands = [
+    # RSession requires environment variables R_HOME and R_DOC_DIR
+    'R_HOME="$EBROOTR/lib64/R" R_DOC_DIR="$R_HOME/doc" rsession --verify-installation=1',
+    # RServer requires a db conf (this may also be needed for live use)
+    # Also create and set a soem dirs so it doesn't try to use $HOME
+    'MYTMP=`mktemp -d`'
+    ' && export RSTUDIO_CONFIG_DIR="$MYTMP"'
+    ' && export XDG_DATA_HOME="$MYTMP/.data"'
+    ' && export XDG_CACHE_HOME="$MYTMP/.cache"'
+    ' && mkdir "$XDG_DATA_HOME" "$XDG_CACHE_HOME"'
+    ' && export RS_LOG_DIR="$MYTMP/log"'
+    ' && echo -e "provider=sqlite\\ndirectory=$MYTMP/db" >> "$MYTMP/db.conf"'
+    ' && rserver ' + ' '.join([
+        '--verify-installation=1',
+        '--server-user="$USER"',
+        '--database-config-file="$MYTMP/db.conf"',
+        '--server-data-dir="$MYTMP/sdd"',
+        '--secure-cookie-key-file="$MYTMP/secure-cookie-key"',
+    ]),
+]
+
+sanity_check_paths = {
+    'files': ['bin/rstudio-server'],
+    'dirs': ['bin', 'extras', 'resources', 'www', 'www-symbolmaps', 'R'],
+}
+
+modextravars = {
+    'R_LIBS_USER': '~/R/%(toolchain_name)s/4.4'
+}
+moduleclass = 'lang'

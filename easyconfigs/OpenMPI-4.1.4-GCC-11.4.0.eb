@@ -53,6 +53,7 @@ modextravars = {
 allow_prepend_abs_path = True
 modextrapaths = {
     'CPATH': '$EBROOTGCC/lib/gcc/x86_64-pc-linux-gnu/11.4.0/include',
+    'LD_LIBRARY_PATH': '/opt/pmix/5.0.7/lib',
 }
 
 moduleclass = 'mpi'
