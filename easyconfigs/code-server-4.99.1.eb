@@ -1,0 +1,19 @@
+# Ruoshi Sun
+# 2025-04-11 SUP-5856
+
+name = 'code-server'
+version = '4.99.1'
+
+homepage = 'https://github.com/cdr/code-server'
+description = """Run VS Code on any machine anywhere and access it in the browser."""
+
+toolchain = SYSTEM
+
+source_urls = ['https://github.com/cdr/code-server/releases/download/v%(version)s/']
+sources = ['code-server-%(version)s-linux-%(mapped_arch)s.tar.gz']
+
+dependencies = [
+    ('miniforge', '24.3.0', '-py3.11'),
+]
+
+moduleclass = 'tools'

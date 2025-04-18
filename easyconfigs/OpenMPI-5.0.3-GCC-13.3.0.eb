@@ -19,17 +19,17 @@ dependencies = [
     ('zlib', '1.2.13'),
     ('hwloc', '2.10.0'),
     ('libevent', '2.1.12'),
-    ('ucx', '1.16.0'),
+    #('ucx', '1.16.0'),
     ('libfabric', '1.21.0'),
     ('pmix', '5.0.2'),
     ('prrte', '3.0.5'),
-    ('ucc', '1.3.0'),
+    #('ucc', '1.3.0'),
 ]
 
 # CUDA related patches and custom configure option can be removed if CUDA support isn't wanted.
 preconfigopts = 'gcc -Iopal/mca/cuda/include -shared opal/mca/cuda/lib/cuda.c -o opal/mca/cuda/lib/libcuda.so && '
 configopts = '--with-cuda=%(start_dir)s/opal/mca/cuda --with-show-load-errors=no '
-configopts += '--with-slurm'
+configopts += '--without-hcoll '
 
 sanity_check_paths = {
     'files': ['bin/mpirun'],
@@ -38,7 +38,7 @@ sanity_check_paths = {
 
 modextravars = {
     'SLURM_CPU_BIND_TYPE': 'cores',
-    #'SLURM_MPI_TYPE': 'pmi2',
+    'SLURM_MPI_TYPE': 'pmix',
     'OMPI_MCA_btl': '^openib',
     'UCX_WARN_UNUSED_ENV_VARS': 'n',
 }
