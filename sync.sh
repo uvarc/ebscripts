@@ -71,7 +71,7 @@ case $1 in
             exit 1
         fi
         EBVER=4.7.1
-        APPSDIR="/sfs/applications/${YMd}_build"
+        APPSDIR="/sfs/weka/applications/${YMd}_build"
         PYTHON=/usr/bin/python3
         ;;
     *)
