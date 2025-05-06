@@ -1,0 +1,48 @@
+# Ruoshi Sun
+# 2023-08-16
+# 2021-05-26 install user packages for jupyter pdf conversion
+# 2020-06-26
+
+easyblock = 'Binary'
+
+name = 'texlive'
+version = '2023'
+
+toolchain = SYSTEM
+
+homepage = 'https://www.tug.org/texlive/'
+description = """
+TeX Live is intended to be a straightforward way to get up and running with the TeX document production system.
+It provides a comprehensive TeX system with binaries for most flavors of Unix, including GNU/Linux, macOS, and
+also Windows. It includes all the major TeX-related programs, macro packages, and fonts that are free software,
+including support for many languages around the world.
+"""
+
+source_urls = ['https://mirror.ctan.org/systems/texlive/tlnet']
+sources = ['install-tl-unx.tar.gz']
+
+install_cmd = """
+    tar xf %s
+    cd install-tl-20230816
+    export TEXLIVE_INSTALL_PREFIX=%%(installdir)s
+    export TEXLIVE_INSTALL_TEXDIR=%%(installdir)s
+    echo "selected_scheme scheme-small" > temp.profile
+    ./install-tl -profile temp.profile -repository https://ftp.math.utah.edu/pub/tex/historic/systems/texlive/%%(version)s/tlnet-final/
+    mv %%(installdir)s/%%(version)s/* %%(installdir)s
+    rmdir %%(installdir)s/%%(version)s
+    %%(installdir)s/bin/x86_64-linux/tlmgr update --all --self
+    %%(installdir)s/bin/x86_64-linux/tlmgr install type1cm tcolorbox environ ucs adjustbox collectbox titling enumitem rsfs hypdoc pdfcol
+""" % sources[0]
+
+sanity_check_paths = {
+    'files': ['bin/x86_64-linux/tlmgr'],
+    'dirs': ['bin'],
+}
+
+modextrapaths = {
+    'PATH': 'bin/x86_64-linux',
+    'MANPATH': 'texmf-dist/doc/man',
+    'INFOPATH': 'texmf-dist/doc/info',
+}
+
+moduleclass = 'tools'

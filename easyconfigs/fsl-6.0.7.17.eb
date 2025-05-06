@@ -1,0 +1,34 @@
+# Ruoshi Sun
+# 2025-04-21
+easyblock = 'Binary'
+
+name = 'fsl'
+version = '6.0.7.17'
+
+homepage = 'http://www.fmrib.ox.ac.uk/fsl/'
+description = """FSL is a comprehensive library of analysis tools for FMRI, MRI and DTI brain imaging data."""
+
+toolchain = SYSTEM
+
+source_urls = ['https://fsl.fmrib.ox.ac.uk/fsldownloads/fslconda/releases']
+sources = ['fslinstaller.py']
+
+osdependencies = [
+    ('freeglut', ),
+    ('expat', ),
+    ('libX11', ),
+    ('zlib', ),
+]
+
+dontcreateinstalldir = True
+install_cmd = """
+     python3 %s -d %%(installdir)s -V %%(version)s
+""" % sources[0]
+
+modextravars = {
+    'FSLDIR': '%(installdir)s',
+    'FSLOUTPUTTYPE': 'NIFTI_GZ',
+}
+
+modluafooter = 'execute{cmd="source $FSLDIR/etc/fslconf/fsl.sh",modeA={"load"}}'
+moduleclass = 'bio'

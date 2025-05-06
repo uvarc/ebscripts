@@ -14,10 +14,12 @@ source_urls = ['https://github.com/conda-forge/miniforge/releases/download/%(ver
 local_arch = {'arm64': 'aarch64'}.get(ARCH, ARCH)
 sources = ['Miniforge3-%%(version)s-0-Linux-%s.sh' % local_arch]
 
-# add useful packages - same version as anaconda 2023.10
+# add useful packages - same version as anaconda 2023.07
+#dask=2023.6.0 
+#numba=0.57.0
 postinstallcmds = [
-    """%(installdir)s/bin/mamba install python=3.11 dask=2023.6.0 h5py=3.7.0 matplotlib=3.7.1 numpy=1.24.3 pandas=1.5.3 pillow=9.4.0 \
-        scikit-image=0.20.0 scikit-learn=1.2.2 scipy=1.10.1 seaborn=0.12.2 six=1.16.0 numba=0.57.0""",
+    """%(installdir)s/bin/mamba install python=3.11 h5py=3.7.0 matplotlib=3.7.1 numpy=1.24.3 pandas=1.5.3 pillow=9.4.0 \
+        scikit-image=0.20.0 scikit-learn=1.2.2 scipy=1.10.1 seaborn=0.12.2 six=1.16.0""",
     '%(installdir)s/bin/mamba clean -ya',
 ]
 

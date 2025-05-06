@@ -16,7 +16,7 @@ osdependencies = [
 
 dependencies = [
     ('java', '8', '', SYSTEM),
-    ('perl', '5.36.0'),
+    ('Perl', '5.40.2'),
     ('gnuplot', '5.4.6'),
 ]
 

@@ -15,7 +15,7 @@ description = """Bioperl is the product of a community effort to produce Perl co
 toolchain = {'name': 'GCC', 'version': '11.4.0'}
 
 dependencies = [
-    ('perl', '5.36.0'),
+    ('Perl', '5.40.2'),
     ('xml-libxml', '2.0207'),
     ('db_file', '1.858'),
 ]

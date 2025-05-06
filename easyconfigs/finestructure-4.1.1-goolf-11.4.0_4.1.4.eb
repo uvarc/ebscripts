@@ -16,7 +16,7 @@ sources = [
 
 dependencies = [
     ('R', '4.3.1'),
-    ('perl', '5.36.0'),
+    ('Perl', '5.40.2'),
 ]
 
 postinstallcmds = [

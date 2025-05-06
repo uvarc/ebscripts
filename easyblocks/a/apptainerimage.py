@@ -45,7 +45,6 @@ from easybuild.easyblocks.generic.binary import Binary
 
 container_dir = os.getenv('CONTAINERDIR')
 
-
 class EB_ApptainerImage(Binary):
     """
     Support for installing software that comes in binary form.
@@ -58,7 +57,7 @@ class EB_ApptainerImage(Binary):
         extra_vars = Binary.extra_options(extra_vars)
         extra_vars.update({
             'deffile': [None, "Definition (spec) file used to build the container.", CUSTOM],
-            'use_gpu': [False, "Use GPU for running container applications.", CUSTOM],
+            'use_gpu': [False, "Use GPU for running container applications.", CUSTOM], 
         })
         return extra_vars
 
@@ -67,25 +66,26 @@ class EB_ApptainerImage(Binary):
         super(EB_ApptainerImage, self).__init__(*args, **kwargs)
 
         #self.actual_installdir = None
-        # if self.cfg['staged_install']:
+        #if self.cfg['staged_install']:
         #    self.actual_installdir = self.installdir
         #    self.installdir = os.path.join(self.builddir, 'staged')
         #    mkdir(self.installdir, parents=True)
         #    self.log.info("Performing staged installation via %s" % self.installdir)
-
-        container_run_cmd = 'apptainer run'
+        
+        container_run_cmd ='apptainer run'
         if self.cfg['use_gpu']:
             container_run_cmd = 'apptainer run --nv'
         for srcfile in self.cfg['sources']:
             if srcfile.endswith('.sif') or srcfile.endswith('.simg') or srcfile.endswith('.img'):
-                containerfile = srcfile
+                containerfile = srcfile 
                 break
-        msg = "To execute the default application inside the container, run:\n"
-        msg += "%s $CONTAINERDIR/%s\n\n" % (container_run_cmd, containerfile)
+        msg= "To execute the default application inside the container, run:\n"
+        msg+= "%s $CONTAINERDIR/%s\n\n" % (container_run_cmd,containerfile)
         if self.cfg['modloadmsg']:
             msg += self.cfg['modloadmsg']
         self.cfg['modloadmsg'] = msg
         self.log.debug(self.cfg['modloadmsg'])
+        
 
     def post_install_step(self):
         """Copy installation to actual installation directory in case of a staged installation."""
@@ -98,35 +98,32 @@ class EB_ApptainerImage(Binary):
                     remove_dir(self.installdir)
                 shutil.copytree(staged_installdir, self.installdir)
             except OSError as err:
-                raise EasyBuildError(
-                    "Failed to move staged install from %s to %s: %s", staged_installdir, self.installdir, err)
+                raise EasyBuildError("Failed to move staged install from %s to %s: %s",
+                                     staged_installdir, self.installdir, err)
 
         for srcfile in self.cfg['sources']:
             if srcfile.endswith('.sif') or srcfile.endswith('.simg') or srcfile.endswith('.img'):
-                containerfile = srcfile
+                containerfile = srcfile 
                 break
-        os.system('mv -f %s/%s %s' %
-                  (self.installdir, containerfile, container_dir))
+        os.system('mv -f %s/%s %s' % (self.installdir, containerfile, container_dir))
 
         deffile = self.cfg['deffile']
         if deffile is not None:
             easybuilddir = os.path.join(self.installdir, 'easybuild')
             try:
                 os.makedirs(easybuilddir)
-                shutil.copy(os.path.join(
-                    self.cfg['start_dir'], deffile), easybuilddir)
+                shutil.copy(os.path.join(self.cfg['start_dir'], deffile), easybuilddir)
             except OSError as err:
-                raise EasyBuildError(
-                    "Failed to copy %s to %s: %s", self.cfg['deffile'], easybuilddir, err)
+                raise EasyBuildError("Failed to copy %s to %s: %s", self.cfg['deffile'], easybuilddir, err)
 
         super(Binary, self).post_install_step()
+
 
     def make_module_extra(self):
         """Add the install directory to the PATH."""
         txt = super(EB_ApptainerImage, self).make_module_extra()
         #txt += self.module_generator.set_environment("CONTAINERDIR", self.installdir)
-        txt += self.module_generator.set_environment(
-            "CONTAINERDIR", container_dir)
+        txt += self.module_generator.set_environment("CONTAINERDIR", container_dir)
         self.log.debug("make_module_extra added this: %s" % txt)
         self.log.debug(self.cfg)
         return txt

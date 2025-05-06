@@ -25,7 +25,7 @@ osdependencies = [
 
 dependencies = [
     ('zlib', '1.2.13'),
-    ('perl', '5.36.0'),
+    ('Perl', '5.40.2'),
     ('R', '4.3.1'),
     ('hisat2', '2.2.1'),
     ('star', '2.7.9a', '', SYSTEM),
