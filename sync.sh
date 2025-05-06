@@ -70,7 +70,7 @@ case $1 in
             echo "Error: trying to sync derp into a branch other than derp"
             exit 1
         fi
-        EBVER=4.7.1
+        EBVER=5.0.0
         APPSDIR="/sfs/weka/applications/${YMd}_build"
         PYTHON=/usr/bin/python3
         ;;
