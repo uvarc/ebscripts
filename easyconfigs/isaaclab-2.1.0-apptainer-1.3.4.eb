@@ -1,0 +1,25 @@
+# Ruoshi Sun
+# 2025-04-29
+easyblock = 'EB_ApptainerImage'
+
+name = 'isaaclab'
+version = '2.1.0'
+
+homepage = 'https://developer.nvidia.com/isaac/lab'
+description = """ Isaac Lab is a GPU-accelerated, open-source framework designed to unify and simplify
+robotics research workflows, such as reinforcement learning, imitation learning,
+and motion planning. Built on NVIDIA Isaac Sim, it combines fast and accurate
+physics and sensor simulation, making it an ideal choice for sim-to-real transfer
+in robotics.
+"""
+
+toolchain = {'name': 'apptainer', 'version': '1.3.4'}
+
+sources = ['%(name)s-%(version)s.sif']
+
+use_gpu = True
+
+skipsteps = ['sanitycheck']
+
+modluafooter = 'add_property("arch","gpu")'
+moduleclass = 'data'
