@@ -1,0 +1,54 @@
+# Ruoshi Sun
+# 2025-05-07
+
+easyblock = 'CMakeMake'
+
+name = 'relion'
+version = '5.0.0'
+
+homepage = 'http://www3.mrc-lmb.cam.ac.uk/relion/index.php/Main_Page'
+description = """RELION (for REgularised LIkelihood OptimisatioN, pronounce rely-on) is a stand-alone computer
+ program that employs an empirical Bayesian approach to refinement of (multiple) 3D reconstructions or 2D class
+ averages in electron cryo-microscopy (cryo-EM)."""
+
+toolchain = {'name': 'intel', 'version': '2023.1'} 
+toolchainopts = {'opt': True, 'usempi': True}
+
+source_urls = ['https://github.com/3dem/relion/archive/refs/tags']
+sources = ['%(version)s.tar.gz']
+
+builddependencies = [
+    ('cmake', '3.28.1', '', SYSTEM),
+    ('miniforge', '24.3.0', '-py3.11', SYSTEM),
+]
+
+dependencies = [
+    ('fltk', '1.4.3', '', ('GCC', '11.4.0')),
+]
+
+preconfigopts = ' && '.join([
+    'export SETUPTOOLS_SCM_PRETEND_VERSION_FOR_RELION=%(version)s',
+    'mamba env create -f %(builddir)s/%(name)s-%(version)s/environment.yml -p %(installdir)s/env',
+    '',
+])
+
+configopts = '-DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DPYTHON_EXE_PATH=%(installdir)s/env/bin/python '
+configopts += '-DCUDA=OFF -DCudaTexture=OFF '
+configopts += '-DALTCPU=ON -DMKLFFT=ON -DFORCE_OWN_TBB=OFF '
+
+prebuildopts = 'ml -miniforge && '
+
+preinstallopts = 'export PATH=$EBROOTCMAKE/bin:$PATH && '
+
+postinstallcmds = [
+    'mkdir %(installdir)s/lib',
+    'ln -s /lib64/libtiff.so %(installdir)s/lib/libtiff.so.6',
+    'ln -s /lib64/libjpeg.so %(installdir)s/lib/libjpeg.so.8',
+]
+
+sanity_check_paths = {
+    'files': ['bin/relion'],
+    'dirs': []
+}
+
+moduleclass = 'bio'

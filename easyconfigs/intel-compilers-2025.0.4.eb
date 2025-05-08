@@ -1,6 +1,8 @@
 name = 'intel-compilers'
 version = '2025.0.4'
 
+accept_eula = True
+
 homepage = 'https://software.intel.com/content/www/us/en/develop/tools/oneapi/hpc-toolkit.html'
 description = "Intel C, C++ & Fortran compilers"
 
