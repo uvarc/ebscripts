@@ -1,0 +1,69 @@
+# Ruoshi Sun
+# 2025-05-14
+
+easyblock = 'CMakeMake'
+
+name = 'relion'
+version = '5.0.0'
+versionsuffix = '-gpu'
+
+homepage = 'http://www3.mrc-lmb.cam.ac.uk/relion/index.php/Main_Page'
+description = """RELION (for REgularised LIkelihood OptimisatioN, pronounce rely-on) is a stand-alone computer
+ program that employs an empirical Bayesian approach to refinement of (multiple) 3D reconstructions or 2D class
+ averages in electron cryo-microscopy (cryo-EM)."""
+
+toolchain = {'name': 'intel', 'version': '2023.1'} 
+toolchainopts = {'opt': True, 'usempi': True}
+
+source_urls = ['https://github.com/3dem/relion/archive/refs/tags']
+sources = ['%(version)s.tar.gz']
+
+builddependencies = [
+    ('cmake', '3.28.1', '', SYSTEM),
+    ('miniforge', '24.3.0', '-py3.11', SYSTEM),
+]
+
+local_comp = ('GCC', '11.4.0')
+dependencies = [
+    ('CUDA', '12.4.1', '', SYSTEM),
+    ('ucx-cuda', '1.15.0', '-CUDA-12.4.1', local_comp),
+    ('fltk', '1.4.3', '', local_comp),
+    ('libjpeg-turbo', '3.0.1', '', local_comp),
+    ('libtiff', '4.7.0', '', local_comp),
+    ('wxwidgets', '3.2.6', '', local_comp),
+    ('ctffind', '4.1.14', '', local_comp),
+]
+
+preconfigopts = ' && '.join([
+    'export SETUPTOOLS_SCM_PRETEND_VERSION_FOR_RELION=%(version)s',
+    'mamba env create -f %(builddir)s/%(name)s-%(version)s/environment.yml -p %(installdir)s/env',
+    '',
+])
+
+configopts = ' '.join([
+    '-DCMAKE_POLICY_VERSION_MINIMUM=3.5',
+    '-DPYTHON_EXE_PATH=%(installdir)s/env/bin/python',
+    '-DCUDA=ON -DCUDA_ARCH=80',
+    '-DCUDA_NVCC_FLAGS=-allow-unsupported-compiler',
+    '-DMKLFFT=ON -DFORCE_OWN_TBB=OFF',
+])
+
+prebuildopts = 'ml -miniforge && '
+
+# move conda env elsewhere temporarily or else it will be removed
+buildopts = '&& mv %(installdir)s/env %(builddir)s'
+
+preinstallopts = 'export PATH=$EBROOTCMAKE/bin:$PATH && '
+
+postinstallcmds = [
+    'mkdir %(installdir)s/lib',
+    'for i in relion_python_classranker relion_python_blush relion_python_modelangelo; do sed -i "s/uvacse/\$USER/g" %(installdir)s/bin/$i; done',
+    'mv %(builddir)s/env %(installdir)s',
+]
+
+sanity_check_paths = {
+    'files': ['bin/relion'],
+    'dirs': ['env']
+}
+
+moduleclass = 'bio'
