@@ -40,6 +40,7 @@ preconfigopts = ' && '.join([
     '',
 ])
 
+cuda_compute_capabilities = ['80']
 configopts = ' '.join([
     '-DCMAKE_POLICY_VERSION_MINIMUM=3.5',
     '-DPYTHON_EXE_PATH=%(installdir)s/env/bin/python',
@@ -48,7 +49,7 @@ configopts = ' '.join([
     '-DMKLFFT=ON -DFORCE_OWN_TBB=OFF',
 ])
 
-prebuildopts = 'ml -miniforge && '
+prebuildopts = 'module unload miniforge && '
 
 # move conda env elsewhere temporarily or else it will be removed
 buildopts = '&& mv %(installdir)s/env %(builddir)s'
@@ -66,4 +67,8 @@ sanity_check_paths = {
     'dirs': ['env']
 }
 
+modluafooter = 'add_property("arch","gpu")'
+modloadmsg = """Incompatible with V100 nodes. To exclude:
+#SBATCH -x udc-an33-37,udc-an33-38
+"""
 moduleclass = 'bio'
