@@ -1,10 +1,10 @@
 # Ruoshi Sun
-# 2023-04-13
+# 2025-05-15
 
 easyblock = 'Conda'
 
 name = 'globus_cli'
-version = '3.11.0'
+version = '3.34.0'
 
 homepage = 'https://docs.globus.org/cli/'
 description = """Globus CLI is a standalone application that can be installed on the user’s machine and used to access the Globus file transfer service."""

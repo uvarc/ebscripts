@@ -53,4 +53,7 @@ sanity_check_paths = {
 }
 
 modluafooter = 'add_property("arch","gpu")'
+modloadmsg = """Incompatible with V100 nodes. To exclude:
+#SBATCH -x udc-an33-37,udc-an33-38
+"""
 moduleclass = 'bio'
