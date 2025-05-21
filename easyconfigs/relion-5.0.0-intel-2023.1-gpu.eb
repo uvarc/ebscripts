@@ -20,11 +20,11 @@ sources = ['%(version)s.tar.gz']
 
 builddependencies = [
     ('cmake', '3.28.1', '', SYSTEM),
-    ('miniforge', '24.3.0', '-py3.11', SYSTEM),
 ]
 
 local_comp = ('GCC', '11.4.0')
 dependencies = [
+    ('relion-env', version, '', SYSTEM),
     ('CUDA', '12.4.1', '', SYSTEM),
     ('ucx-cuda', '1.15.0', '-CUDA-12.4.1', local_comp),
     ('fltk', '1.4.3', '', local_comp),
@@ -34,37 +34,33 @@ dependencies = [
     ('ctffind', '4.1.14', '', local_comp),
 ]
 
-preconfigopts = ' && '.join([
-    'export SETUPTOOLS_SCM_PRETEND_VERSION_FOR_RELION=%(version)s',
-    'mamba env create -f %(builddir)s/%(name)s-%(version)s/environment.yml -p %(installdir)s/env',
-    '',
-])
-
 cuda_compute_capabilities = ['80']
+
+local_torch = '/share/resources/data/%(name)s/torch'
+
+preconfigopts = 'mkdir -p %s && ' % local_torch
 configopts = ' '.join([
     '-DCMAKE_POLICY_VERSION_MINIMUM=3.5',
-    '-DPYTHON_EXE_PATH=%(installdir)s/env/bin/python',
+    '-DPYTHON_EXE_PATH=$EBROOTRELIONMINENV/bin/python',
+    '-DTORCH_HOME_PATH=%s' % local_torch,
     '-DCUDA=ON -DCUDA_ARCH=80',
     '-DCUDA_NVCC_FLAGS=-allow-unsupported-compiler',
     '-DMKLFFT=ON -DFORCE_OWN_TBB=OFF',
 ])
 
-prebuildopts = 'module unload miniforge && '
-
-# move conda env elsewhere temporarily or else it will be removed
-buildopts = '&& mv %(installdir)s/env %(builddir)s'
-
-preinstallopts = 'export PATH=$EBROOTCMAKE/bin:$PATH && '
-
+# move torch elsewhere or it will be removed during install
+buildopts = ' && mv %(installdir)s/torch %(builddir)s'
 postinstallcmds = [
-    'mkdir %(installdir)s/lib',
     'for i in relion_python_classranker relion_python_blush relion_python_modelangelo; do sed -i "s/uvacse/\$USER/g" %(installdir)s/bin/$i; done',
-    'mv %(builddir)s/env %(installdir)s',
 ]
 
 sanity_check_paths = {
     'files': ['bin/relion'],
-    'dirs': ['env']
+    'dirs': []
+}
+
+modextravars = {
+    'TORCH_HOME': local_torch,
 }
 
 modluafooter = 'add_property("arch","gpu")'
