@@ -1,0 +1,31 @@
+# Ruoshi Sun
+# 2025-05-20
+
+easyblock = 'ConfigureMake'
+
+name = 'vmd'
+version = '2.0.0a5'
+
+homepage = 'https://www.ks.uiuc.edu/Research/vmd/'
+description = "VMD is a molecular visualization program for displaying, animating, and analyzing large biomolecular systems using 3-D graphics and built-in scripting."
+
+toolchain = SYSTEM
+
+source_urls = ['https://www.ks.uiuc.edu/Research/vmd/alpha']
+sources = ['%(name)s-%(version)s.bin.LINUXAMD64.tar.gz']
+
+preconfigopts = 'VMDINSTALLBINDIR=%(installdir)s/bin VMDINSTALLLIBRARYDIR=%(installdir)s/lib '
+configure_cmd = './configure LINUXAMD64 TK TCL CUDA LIBPNG ZLIB'
+# ignore prefix - not supported
+prefix_opt = '#'
+
+skipsteps = ['build']
+
+preinstallopts = 'cd src && '
+
+sanity_check_paths = {
+    'files': ['bin/%(name)s'],
+    'dirs': [],
+}
+
+moduleclass = 'chem'
