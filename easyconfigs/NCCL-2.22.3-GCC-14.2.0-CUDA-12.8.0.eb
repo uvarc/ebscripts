@@ -17,7 +17,7 @@ builddependencies = [('binutils', '2.42')]
 
 dependencies = [
     ('CUDA', '12.8.0', '', SYSTEM),
-    ('UCX-CUDA', '1.18.0', versionsuffix),
+    ('ucx-cuda', '1.18.0', versionsuffix),
 ]
 
 # default CUDA compute capabilities to use (override via --cuda-compute-capabilities)

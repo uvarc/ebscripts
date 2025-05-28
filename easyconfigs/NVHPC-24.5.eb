@@ -13,10 +13,10 @@ accept_eula = True
 source_urls = ['https://developer.download.nvidia.com/hpc-sdk/%(version)s/']
 sources = [local_tarball_tmpl % '%(arch)s']
 
-local_gccver = '13.3.0'
+local_gccver = '11.4.0'
 dependencies = [
     ('GCC', local_gccver),
-    ('binutils', '2.42', '', ('GCC', local_gccver)),
+    ('binutils', '2.40', '', ('GCC', local_gccver)),
     # This is necessary to avoid cases where just libnuma.so.1 is present in the system and -lnuma fails
     #('numactl', '2.0.16', '', ('GCCcore', local_gccver)),
     ('CUDA', '12.4.1', '', SYSTEM),
@@ -47,7 +47,7 @@ default_cuda_version = '%(cudaver)s'
 #    If not set, it will be deduced from the CUDA module (via $EBVERSIONCUDA)
 #
 # Define a NVHPC-default Compute Capability
-cuda_compute_capabilities = "8.0"
+cuda_compute_capabilities = "7.0"
 # Can also be specified on the EasyBuild command line via --cuda-compute-capabilities=8.0
 # Only single values supported, not lists of values!
 #

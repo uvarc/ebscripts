@@ -1,0 +1,44 @@
+# Ruoshi Sun
+# 2025-04-09
+
+easyblock = 'PackedBinary'
+
+name = 'texlive'
+version = '2025'
+
+toolchain = SYSTEM
+
+homepage = 'https://www.tug.org/texlive/'
+description = """
+TeX Live is intended to be a straightforward way to get up and running with the TeX document production system.
+It provides a comprehensive TeX system with binaries for most flavors of Unix, including GNU/Linux, macOS, and
+also Windows. It includes all the major TeX-related programs, macro packages, and fonts that are free software,
+including support for many languages around the world.
+"""
+
+source_urls = ['https://mirror.ctan.org/systems/texlive/tlnet']
+sources = ['install-tl-unx.tar.gz']
+
+install_cmd = """
+    cd install-tl-%(version)s0409
+    export TEXLIVE_INSTALL_PREFIX=%(installdir)s
+    export TEXLIVE_INSTALL_TEXDIR=%(installdir)s
+    ./install-tl --no-interaction
+    mv %(installdir)s/%(version)s/* %(installdir)s
+    rmdir %(installdir)s/%(version)s
+    %(installdir)s/bin/x86_64-linux/tlmgr update --all --self
+    %(installdir)s/bin/x86_64-linux/tlmgr install type1cm tcolorbox environ ucs adjustbox collectbox titling enumitem rsfs hypdoc pdfcol
+"""
+
+sanity_check_paths = {
+    'files': ['bin/x86_64-linux/tlmgr'],
+    'dirs': ['bin'],
+}
+
+modextrapaths = {
+    'PATH': 'bin/x86_64-linux',
+    'MANPATH': 'texmf-dist/doc/man',
+    'INFOPATH': 'texmf-dist/doc/info',
+}
+
+moduleclass = 'tools'

@@ -6,18 +6,15 @@ version = '2.0'
 homepage = 'https://github.com/dullemond/radmc3d-2.0'
 description = "RADMC-3D is a tool for astrophysical research. It computes the observational appearance of an astrophysical object on the sky of the observer. It solves the non-local radiative transfer problem of dusty media, including thermal radiative transport and scattering."
 
-#toolchain = {'name': 'GCC', 'version': '11.4.0'}
 toolchain = SYSTEM
 
+source_urls = ['https://github.com/dullemond/radmc3d-2.0/archive/refs/heads']
 sources = ['master.zip']
 
 # Ensure make runs inside src/
-builddir = 'radmc3d-2.0-master/src'
+start_dir = 'src'
 
-prebuildopts = 'cd src && make clean || true'
 buildopts = 'FC=gfortran -j 1'
-build_cmd = 'cd src && make'
-
 
 files_to_copy = [ (['src/radmc3d'], 'bin') ]
 

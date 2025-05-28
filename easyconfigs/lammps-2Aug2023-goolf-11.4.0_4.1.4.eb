@@ -17,7 +17,7 @@ sources = [
 ]
 
 builddependencies = [
-    ('cmake', '3.24.3'),
+    ('cmake', '3.28.1', '', SYSTEM),
     #('pkg-config', '0.29.2'),
     ('archspec', '0.1.4'),
 ]

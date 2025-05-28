@@ -1,0 +1,25 @@
+# Ruoshi Sun
+# 2025-03-21 built by kah3f
+easyblock = 'Tarball'
+
+name = 'mvapich'
+version = '4.0'
+
+homepage = 'http://mvapich.cse.ohio-state.edu'
+description = "The MVAPICH software, based on MPI 4.1 standard, delivers the best performance, scalability and fault tolerance for high-end computing systems and servers."
+
+toolchain = {'name': 'GCC', 'version': '14.2.0'}
+
+sources = ['%(namelower)s-%(version)s-kah3f.tar.gz']
+
+postinstallcmds = [
+    "cd %(installdir)s && for i in $(grep -RIl '/home/kah3f/mvapich'); do sed -i 's|/home/kah3f/mvapich|%(installdir)s|g' $i; done"
+]
+
+sanity_check_paths = {
+    'files': ['lib/libmpich.so'],
+    'dirs': [],
+}
+
+modluafooter = 'add_property("state","experimental")'
+moduleclass = 'mpi'

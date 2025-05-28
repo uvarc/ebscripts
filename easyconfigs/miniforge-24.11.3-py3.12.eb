@@ -1,0 +1,29 @@
+# Ruoshi Sun
+# 2025-04-17
+easyblock = 'EB_Mamba'
+
+name = 'miniforge'
+version = '24.11.3'
+versionsuffix = '-py3.12'
+
+homepage = 'https://github.com/conda-forge/miniforge'
+description = """Miniforge is a free minimal installer for conda and Mamba specific
+ to conda-forge."""
+
+toolchain = SYSTEM
+
+source_urls = ['https://github.com/conda-forge/%(name)s/releases/download/%(version)s-2']
+local_arch = {'arm64': 'aarch64'}.get(ARCH, ARCH)
+sources = ['Miniforge3-%%(version)s-2-Linux-%s.sh' % local_arch]
+
+# add useful packages
+postinstallcmds = [
+    """%(installdir)s/bin/mamba install dask=2025.3.0 h5py=3.13.0 matplotlib=3.10.1 numpy=2.2.4 pandas=2.2.3 pillow=11.1.0 \
+        scikit-image=0.25.2 scikit-learn=1.6.1 scipy=1.15.2 seaborn=0.13.2 six=1.17.0 numba=0.61.2""",
+    '%(installdir)s/bin/mamba clean -ya',
+]
+
+modluafooter = """
+execute{cmd="source '"..pathJoin(root, "/etc/profile.d/conda."..myShellType()).."'", modeA={"load"}}
+"""
+moduleclass = 'lang'

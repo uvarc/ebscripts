@@ -1,0 +1,26 @@
+# Ruoshi Sun
+# 2025-03-25
+easyblock = 'Tarball'
+
+name = 'cellranger'
+version = '9.0.1'
+
+homepage = 'https://www.10xgenomics.com/'
+description = "A set of analysis piplines that perform sample demultiplexing, barcode processing, and single cell 3' gene counting."
+
+toolchain = SYSTEM
+
+sources = [SOURCE_TAR_XZ]
+
+dependencies = [
+    ('bcl2fastq2', '2.20.0'),
+]
+
+sanity_check_paths = {
+    'files': ['bin/%(name)s'],
+    'dirs': ['bin'],
+}
+
+sanity_check_commands = ['cellranger testrun --id=tiny']
+
+moduleclass = 'bio'

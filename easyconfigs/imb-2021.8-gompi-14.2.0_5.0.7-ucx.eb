@@ -1,0 +1,38 @@
+# Ruoshi Sun
+# 2025-04-07
+easyblock = 'MakeCp'
+
+name = 'imb'
+version = '2021.8'
+
+homepage = 'https://software.intel.com/en-us/articles/intel-mpi-benchmarks'
+description = """The Intel MPI Benchmarks perform a set of MPI performance measurements for point-to-point and
+ global communication operations for a range of message sizes"""
+
+docurls = ['https://software.intel.com/en-us/imb-user-guide']
+
+toolchain = {'name': 'gompi', 'version': '14.2.0_5.0.7-ucx'}
+toolchainopts = {'usempi': True}
+
+source_urls = ['https://github.com/intel/mpi-benchmarks/archive/']
+sources = ['IMB-v%(version)s.tar.gz']
+
+prebuildopts = """
+    for i in src_cpp/Makefile src_c/P2P/Makefile; do
+        sed -i 's/-Werror//g' $i
+    done && 
+"""
+
+buildopts = "CC=mpicc CXX=mpicxx"
+
+maxparallel = 1
+
+files_to_copy = [(['IMB-*'], 'bin')]
+
+sanity_check_paths = {
+    'files': ['bin/IMB-EXT', 'bin/IMB-IO', 'bin/IMB-MPI1', 'bin/IMB-MT',
+              'bin/IMB-NBC', 'bin/IMB-P2P', 'bin/IMB-RMA'],
+    'dirs': [],
+}
+
+moduleclass = 'perf'

@@ -1,0 +1,26 @@
+# Ruoshi Sun
+# 2025-03-19
+
+easyblock = 'Conda'
+
+name = 'cutadapt'
+version = '4.9'
+
+homepage = 'https://cutadapt.readthedocs.io/en/stable/index.html'
+description = """Cutadapt finds and removes adapter sequences, primers, poly-A tails and other types of unwanted sequence from your high-throughput sequencing reads."""
+
+toolchain = SYSTEM
+
+builddependencies = [('miniforge', '24.3.0', '-py3.11')]
+
+channels = ['conda-forge', 'bioconda']
+requirements = '%(namelower)s=%(version)s '
+requirements += 'xopen=1.7 '
+requirements += 'dnaio=1.2 '
+
+sanity_check_paths = {
+    'files': ['bin/cutadapt'],
+    'dirs': ['lib', 'bin']
+}
+
+moduleclass = 'bio'
