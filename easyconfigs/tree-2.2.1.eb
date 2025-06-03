@@ -1,0 +1,24 @@
+# Ruoshi Sun
+# 2025-05-01
+
+easyblock = 'MakeCp'
+
+name = 'tree'
+version = '2.2.1'
+
+homepage = 'https://github.com/Old-Man-Programmer/tree'
+description = """ Tree is a recursive directory listing command that produces a depth indented listing of files, which is colorized ala dircolors if the LS_COLORS environment variable is set and output is to tty."""
+
+toolchain = SYSTEM
+
+source_urls = ['https://github.com/Old-Man-Programmer/tree/archive/refs/tags']
+sources = ['%(version)s.tar.gz']
+
+files_to_copy = [(['%(name)s'], 'bin')]
+
+sanity_check_paths = {
+    'files': ['bin/%(name)s'],
+    'dirs': [],
+}
+
+moduleclass = 'tools'

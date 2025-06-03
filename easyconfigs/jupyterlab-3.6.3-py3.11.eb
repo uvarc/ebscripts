@@ -7,8 +7,6 @@ name = 'jupyterlab'
 version = '3.6.3'
 versionsuffix = '-py3.11'
 
-hidden = True
-
 homepage = 'https://jupyter.org/'
 description = """
 JupyterLab is the latest web-based interactive development environment for notebooks, code, and data.
@@ -22,7 +20,7 @@ toolchain = SYSTEM
 sources = []
 
 skipsteps = [
-    'fetch', 'ready', 'source', 'patch', 'prepare'
+    'fetch', 'ready', 'extract', 'patch', 'prepare'
 ]
 
 builddependencies = [('miniforge', '24.3.0', '-py3.11')]

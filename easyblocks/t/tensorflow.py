@@ -1,5 +1,5 @@
 ##
-# Copyright 2017-2023 Ghent University
+# Copyright 2017-2025 Ghent University
 #
 # This file is part of EasyBuild,
 # originally created by the HPC team of Ghent University (http://ugent.be/hpc/en),
@@ -35,20 +35,23 @@ import os
 import re
 import stat
 import tempfile
+from contextlib import contextmanager
+from itertools import chain
 
 import easybuild.tools.environment as env
 import easybuild.tools.toolchain as toolchain
 from easybuild.easyblocks.generic.pythonpackage import PythonPackage, det_python_version
 from easybuild.easyblocks.python import EXTS_FILTER_PYTHON_PACKAGES
 from easybuild.framework.easyconfig import CUSTOM
-from easybuild.tools import run, LooseVersion
+from easybuild.tools import LooseVersion
 from easybuild.tools.build_log import EasyBuildError, print_warning
-from easybuild.tools.config import build_option, IGNORE
+from easybuild.tools.config import build_option, IGNORE, WARN, ERROR
 from easybuild.tools.filetools import adjust_permissions, apply_regex_substitutions, copy_file, mkdir, resolve_path
-from easybuild.tools.filetools import is_readable, read_file, which, write_file, remove_file
+from easybuild.tools.filetools import is_readable, read_file, symlink, which, write_file, remove_file
 from easybuild.tools.modules import get_software_root, get_software_version, get_software_libdir
-from easybuild.tools.run import run_cmd
-from easybuild.tools.systemtools import X86_64, get_cpu_architecture, get_os_name, get_os_version
+from easybuild.tools.run import run_shell_cmd
+from easybuild.tools.systemtools import AARCH64, X86_64, get_cpu_architecture, get_os_name, get_os_version
+from easybuild.tools.toolchain.toolchain import RPATH_WRAPPERS_SUBDIR
 
 
 CPU_DEVICE = 'cpu'
@@ -75,6 +78,8 @@ export PATH=$(echo $PATH | tr ':' '\n' | grep -v "^%(wrapper_dir)s$" | tr '\n' '
 
 %(compiler_path)s "$@"
 """
+
+KNOWN_BINUTILS = ('ar', 'as', 'dwp', 'ld', 'ld.bfd', 'ld.gold', 'nm', 'objcopy', 'objdump', 'strip')
 
 
 def split_tf_libs_txt(valid_libs_txt):
@@ -146,7 +151,7 @@ def get_system_libs_for_version(tf_version, as_valid_libs=False):
         ('libjpeg-turbo', '2.2.0:'): 'libjpeg_turbo',
         ('libpng', '2.0.0:2.1.0'): 'png_archive',
         ('libpng', '2.1.0:'): 'png',
-        ('LMDB', '2.0.0:'): 'lmdb',
+        ('LMDB', '2.0.0:2.13.0'): 'lmdb',
         ('NASM', '2.0.0:'): 'nasm',
         ('nsync', '2.0.0:'): 'nsync',
         ('PCRE', '2.0.0:2.6.0'): 'pcre',
@@ -161,11 +166,11 @@ def get_system_libs_for_version(tf_version, as_valid_libs=False):
     # Software recognized by TF but which is always disabled (usually because no EC is known)
     # Format: <TF name>: <version range>
     unused_system_libs = {
-        'boringssl': '2.0.0:',
+        'boringssl': '2.0.0:',  # Implied by cURL and existence of OpenSSL anywhere in the dependency chain
         'com_github_googleapis_googleapis': '2.0.0:2.5.0',
         'com_github_googlecloudplatform_google_cloud_cpp': '2.0.0:',  # Not used due to $TF_NEED_GCP=0
         'com_github_grpc_grpc': '2.2.0:',
-        'com_googlesource_code_re2': '2.0.0:',
+        'com_googlesource_code_re2': '2.0.0:',  # Requires the RE2 version with Abseil (or 2023-06-01+)
         'grpc': '2.0.0:2.2.0',
     }
     # Python packages installed as extensions or in the Python module
@@ -183,7 +188,7 @@ def get_system_libs_for_version(tf_version, as_valid_libs=False):
         ('gast', '2.0.0:'): 'gast_archive',
         ('google.protobuf', '2.0.0:'): 'com_google_protobuf',
         ('keras_applications', '2.0.0:2.2.0'): 'keras_applications_archive',
-        ('opt_einsum', '2.0.0:'): 'opt_einsum_archive',
+        ('opt_einsum', '2.0.0:2.15.0'): 'opt_einsum_archive',
         ('pasta', '2.0.0:'): 'pasta',
         ('six', '2.0.0:'): 'six_archive',  # Part of Python EC
         ('tblib', '2.4.0:'): 'tblib_archive',
@@ -251,8 +256,6 @@ class EB_TensorFlow(PythonPackage):
         with self.cfg.disable_templating():
             self.cfg['exts_defaultclass'] = 'PythonPackage'
 
-            self.cfg['exts_default_options']['download_dep_fail'] = True
-            self.cfg['exts_default_options']['use_pip'] = True
             self.cfg['exts_filter'] = EXTS_FILTER_PYTHON_PACKAGES
 
         self.system_libs_info = None
@@ -271,9 +274,9 @@ class EB_TensorFlow(PythonPackage):
     def python_pkg_exists(self, name):
         """Check if the given python package exists/can be imported"""
         cmd = self.python_cmd + " -c 'import %s'" % name
-        out, ec = run_cmd(cmd, log_ok=False)
-        self.log.debug('Existence check for %s returned %s with output: %s', name, ec, out)
-        return ec == 0
+        res = run_shell_cmd(cmd, fail_on_error=False)
+        self.log.debug('Existence check for %s returned %s with output: %s', name, res.exit_code, res.output)
+        return res.exit_code == 0
 
     def handle_jemalloc(self):
         """Figure out whether jemalloc support should be enabled or not."""
@@ -299,7 +302,7 @@ class EB_TensorFlow(PythonPackage):
     def write_wrapper(self, wrapper_dir, compiler, i_mpi_root):
         """Helper function to write a compiler wrapper."""
         wrapper_txt = INTEL_COMPILER_WRAPPER % {
-            'compiler_path': which(compiler),
+            'compiler_path': which(compiler, on_error=IGNORE if self.dry_run else ERROR),
             'intel_mpi_root': i_mpi_root,
             'cpath': os.getenv('CPATH'),
             'intel_license_file': os.getenv('INTEL_LICENSE_FILE', os.getenv('LM_LICENSE_FILE')),
@@ -335,12 +338,12 @@ class EB_TensorFlow(PythonPackage):
                 msg = 'Values for $TF_SYSTEM_LIBS in the TensorFlow EasyBlock are incomplete.\n'
                 if missing_libs:
                     # Libs available according to TF sources but not listed in this EasyBlock
-                    msg += 'Missing entries for $TF_SYSTEM_LIBS: %s\n' % missing_libs
+                    msg += 'Missing entries for $TF_SYSTEM_LIBS: %s\n' % sorted(missing_libs)
                 if unknown_libs:
                     # Libs listed in this EasyBlock but not present in the TF sources -> Removed?
-                    msg += 'Unrecognized entries for $TF_SYSTEM_LIBS: %s\n' % unknown_libs
+                    msg += 'Unrecognized entries for $TF_SYSTEM_LIBS: %s\n' % sorted(unknown_libs)
                 msg += 'The EasyBlock needs to be updated to fully work with TensorFlow version %s' % self.version
-            if build_option('strict') == run.ERROR:
+            if build_option('strict') == ERROR:
                 raise EasyBuildError(msg)
             else:
                 print_warning(msg)
@@ -416,7 +419,7 @@ class EB_TensorFlow(PythonPackage):
             incpath = os.path.join(openssl_root, 'include')
             if os.path.exists(incpath):
                 cpaths.append(incpath)
-            libpath = get_software_libdir(dep_name)
+            libpath = get_software_libdir('OpenSSL')
             if libpath:
                 libpaths.append(os.path.join(openssl_root, libpath))
 
@@ -445,9 +448,24 @@ class EB_TensorFlow(PythonPackage):
         self.output_user_root_dir = os.path.join(parent_dir, 'bazel-root')
         # Folder where wrapper binaries can be placed, where required. TODO: Replace by --action_env cmds
         self.wrapper_dir = os.path.join(parent_dir, 'wrapper_bin')
+        mkdir(self.wrapper_dir)
+
+    @contextmanager
+    def set_tmp_dir(self):
+        # TF uses the temporary folder, which becomes quite large (~2 GB) so use the build folder explicitely.
+        old_tmpdir = os.environ['TMPDIR']
+        tmpdir = os.path.join(self.builddir, 'tmpdir')
+        mkdir(tmpdir)
+        os.environ['TMPDIR'] = tmpdir
+        try:
+            yield tmpdir
+        finally:
+            os.environ['TMPDIR'] = old_tmpdir
 
     def configure_step(self):
         """Custom configuration procedure for TensorFlow."""
+
+        self.setup_build_dirs()
 
         # Bazel seems to not be able to handle a large amount of parallel jobs, e.g. 176 on some Power machines,
         # and will hang forever building the TensorFlow package.
@@ -455,12 +473,38 @@ class EB_TensorFlow(PythonPackage):
         if self.cfg['maxparallel'] is None:
             # Seemingly Bazel around 3.x got better, so double the max there
             bazel_max = 64 if get_bazel_version() < '3.0.0' else 128
-            self.cfg['parallel'] = min(self.cfg['parallel'], bazel_max)
+            self.cfg.parallel = min(self.cfg.parallel, bazel_max)
 
-        binutils_root = get_software_root('binutils')
-        if not binutils_root:
-            raise EasyBuildError("Failed to determine installation prefix for binutils")
-        self.binutils_bin_path = os.path.join(binutils_root, 'bin')
+        # determine location where binutils' ld command is installed
+        # note that this may be an RPATH wrapper script (when EasyBuild is configured with --rpath)
+        ld_path = which('ld', on_error=ERROR)
+        self.binutils_bin_path = os.path.dirname(ld_path)
+        if self.toolchain.is_rpath_wrapper(ld_path):
+            # TF expects all binutils binaries in a single path but newer EB puts each in its own subfolder
+            # This new layout is: <prefix>/RPATH_WRAPPERS_SUBDIR/<util>_folder/<util>
+            rpath_wrapper_root = os.path.dirname(os.path.dirname(ld_path))
+            if os.path.basename(rpath_wrapper_root) == RPATH_WRAPPERS_SUBDIR:
+                # Add symlinks to each binutils binary into a single folder
+                new_rpath_wrapper_dir = os.path.join(self.wrapper_dir, RPATH_WRAPPERS_SUBDIR)
+                binutils_root = get_software_root('binutils')
+                if binutils_root:
+                    self.log.debug("Using binutils dependency at %s to gather binutils files.", binutils_root)
+                    binutils_files = next(os.walk(os.path.join(binutils_root, 'bin')))[2]
+                else:
+                    # binutils might be filtered (--filter-deps), so recursively gather files in the rpath wrapper dir
+                    binutils_files = {f for (_, _, files) in os.walk(rpath_wrapper_root) for f in files}
+                    # And add known ones
+                    binutils_files.update(KNOWN_BINUTILS)
+                self.log.info("Found %s to be an rpath wrapper. Adding symlinks for binutils (%s) to %s.",
+                              ld_path, ', '.join(binutils_files), new_rpath_wrapper_dir)
+                mkdir(new_rpath_wrapper_dir)
+                for file in binutils_files:
+                    # use `which` to take rpath wrappers where available
+                    # Ignore missing ones if binutils was filtered (in which case we used a heuristic)
+                    path = which(file, on_error=ERROR if binutils_root else WARN)
+                    if path:
+                        symlink(path, os.path.join(new_rpath_wrapper_dir, file))
+                self.binutils_bin_path = new_rpath_wrapper_dir
 
         # filter out paths from CPATH and LIBRARY_PATH. This is needed since bazel will pull some dependencies that
         # might conflict with dependencies on the system and/or installed with EB. For example: protobuf
@@ -472,8 +516,6 @@ class EB_TensorFlow(PythonPackage):
                 self.log.info("$%s old value was %s" % (var, path))
                 filtered_path = os.pathsep.join([p for fil in path_filter for p in path if fil not in p])
                 env.setvar(var, filtered_path)
-
-        self.setup_build_dirs()
 
         use_wrapper = False
         if self.toolchain.comp_family() == toolchain.INTELCOMP:
@@ -564,6 +606,13 @@ class EB_TensorFlow(PythonPackage):
         # SYCL support removed in 2.4
         if LooseVersion(self.version) < LooseVersion('2.4'):
             config_env_vars['TF_NEED_OPENCL_SYCL'] = '0'
+        # Clang toggle since 2.14.0
+        if LooseVersion(self.version) > LooseVersion('2.13'):
+            config_env_vars['TF_NEED_CLANG'] = '0'
+        # Hermietic python version since 2.14.0
+        if LooseVersion(self.version) > LooseVersion('2.13'):
+            pyver = det_python_version(self.python_cmd)
+            config_env_vars['TF_PYTHON_VERSION'] = '.'.join(pyver.split('.')[:2])
 
         if self._with_cuda:
             cuda_version = get_software_version('CUDA')
@@ -571,9 +620,9 @@ class EB_TensorFlow(PythonPackage):
 
             # $GCC_HOST_COMPILER_PATH should be set to path of the actual compiler (not the MPI compiler wrapper)
             if use_mpi:
-                compiler_path = which(os.getenv('CC_SEQ'))
+                compiler_path = which(os.getenv('CC_SEQ'), on_error=ERROR)
             else:
-                compiler_path = which(os.getenv('CC'))
+                compiler_path = which(os.getenv('CC'), on_error=ERROR)
 
             # list of CUDA compute capabilities to use can be specifed in two ways (where (2) overrules (1)):
             # (1) in the easyconfig file, via the custom cuda_compute_capabilities;
@@ -673,7 +722,7 @@ class EB_TensorFlow(PythonPackage):
         configure_py_contents = read_file('configure.py')
         for key, val in sorted(config_env_vars.items()):
             if key.startswith('TF_') and key not in configure_py_contents:
-                self.log.warn('Did not find %s option in configure.py. Setting might not have any effect', key)
+                self.log.warning('Did not find %s option in configure.py. Setting might not have any effect', key)
             env.setvar(key, val)
 
         # configure.py (called by configure script) already calls bazel to determine the bazel version
@@ -685,7 +734,20 @@ class EB_TensorFlow(PythonPackage):
             apply_regex_substitutions('configure.py', regex_subs)
 
         cmd = self.cfg['preconfigopts'] + './configure ' + self.cfg['configopts']
-        run_cmd(cmd, log_all=True, simple=True)
+        run_shell_cmd(cmd)
+
+        # when building on Arm 64-bit we can't just use --copt=-mcpu=native (or likewise for any -mcpu=...),
+        # because it breaks the build of XNNPACK;
+        # see also https://github.com/easybuilders/easybuild-easyconfigs/issues/18899
+        if get_cpu_architecture() == AARCH64:
+            tf_conf_bazelrc = os.path.join(self.start_dir, '.tf_configure.bazelrc')
+            regex_subs = [
+                # use --per_file_copt instead of --copt to selectively use -mcpu=native (not for XNNPACK),
+                # the leading '-' ensures that -mcpu=native is *not* used when building XNNPACK;
+                # see https://github.com/google/XNNPACK/issues/5566 + https://bazel.build/docs/user-manual#per-file-copt
+                ('--copt=-mcpu=', '--per_file_copt=-.*XNNPACK/.*@-mcpu='),
+            ]
+            apply_regex_substitutions(tf_conf_bazelrc, regex_subs)
 
     def patch_crosstool_files(self):
         """Patches the CROSSTOOL files to include EasyBuild provided compiler paths"""
@@ -736,12 +798,11 @@ class EB_TensorFlow(PythonPackage):
             (r'(cxx_builtin_include_directory:).*', ''),
             (r'^toolchain {', 'toolchain {\n' + '\n'.join(cxx_inc_dirs)),
         ]
-        for tool in ['ar', 'cpp', 'dwp', 'gcc', 'gcov', 'ld', 'nm', 'objcopy', 'objdump', 'strip']:
-            path = which(tool)
+        required_tools = {'ar', 'cpp', 'dwp', 'gcc', 'gcov', 'ld', 'nm', 'objcopy', 'objdump', 'strip'}
+        for tool in set(chain(required_tools, KNOWN_BINUTILS)):
+            path = which(tool, on_error=ERROR if tool in required_tools else WARN)
             if path:
                 regex_subs.append((os.path.join('/usr', 'bin', tool), path))
-            else:
-                raise EasyBuildError("Failed to determine path to '%s'", tool)
 
         # -fPIE/-pie and -fPIC are not compatible, so patch out hardcoded occurences of -fPIE/-pie if -fPIC is used
         if self.toolchain.options.get('pic', None):
@@ -806,7 +867,7 @@ class EB_TensorFlow(PythonPackage):
         # https://docs.bazel.build/versions/master/user-manual.html#flag--verbose_failures
         self.target_opts.extend(['--subcommands', '--verbose_failures'])
 
-        self.target_opts.append('--jobs=%s' % self.cfg['parallel'])
+        self.target_opts.append(f'--jobs={self.cfg.parallel}')
 
         if self.toolchain.options.get('pic', None):
             self.target_opts.append('--copt="-fPIC"')
@@ -816,7 +877,14 @@ class EB_TensorFlow(PythonPackage):
         # this is required to make sure that Python packages included as extensions are found at build time;
         # see also https://github.com/tensorflow/tensorflow/issues/22395
         pythonpath = os.getenv('PYTHONPATH', '')
-        env.setvar('PYTHONPATH', os.pathsep.join([os.path.join(self.installdir, self.pylibdir), pythonpath]))
+        action_pythonpath = [os.path.join(self.installdir, self.pylibdir), pythonpath]
+        if LooseVersion(self.version) >= LooseVersion('2.14') and 'EBPYTHONPREFIXES' in os.environ:
+            # Since TF 2.14 the build uses hermetic python, which ignores sitecustomize.py from EB python;
+            # explicity include our site-packages here to respect EBPYTHONPREFIXERS, if that's prefered.
+            pyshortver = '.'.join(get_software_version('Python').split('.')[:2])
+            eb_pythonpath = os.path.join(os.getenv('EBROOTPYTHON'), 'lib', 'python' + pyshortver, 'site-packages')
+            action_pythonpath.append(eb_pythonpath)
+        env.setvar('PYTHONPATH', os.pathsep.join(action_pythonpath))
 
         # Make TF find our modules. LD_LIBRARY_PATH gets automatically added by configure.py
         cpaths, libpaths = self.system_libs_info[1:]
@@ -897,11 +965,12 @@ class EB_TensorFlow(PythonPackage):
             + ['//tensorflow/tools/pip_package:build_pip_package']
         )
 
-        run_cmd(' '.join(cmd), log_all=True, simple=True, log_ok=True)
+        with self.set_tmp_dir():
+            run_shell_cmd(' '.join(cmd))
 
-        # run generated 'build_pip_package' script to build the .whl
-        cmd = "bazel-bin/tensorflow/tools/pip_package/build_pip_package %s" % self.builddir
-        run_cmd(cmd, log_all=True, simple=True, log_ok=True)
+            # run generated 'build_pip_package' script to build the .whl
+            cmd = "bazel-bin/tensorflow/tools/pip_package/build_pip_package %s" % self.builddir
+            run_shell_cmd(cmd)
 
     def test_step(self):
         """Run TensorFlow unit tests"""
@@ -920,7 +989,7 @@ class EB_TensorFlow(PythonPackage):
         test_opts.append('--build_tests_only')  # Don't build tests which won't be executed
 
         # determine number of cores/GPUs to use for tests
-        max_num_test_jobs = int(self.cfg['test_max_parallel'] or self.cfg['parallel'])
+        max_num_test_jobs = self.cfg['test_max_parallel'] or self.cfg.parallel
         if self._with_cuda:
             if not which('nvidia-smi', on_error=IGNORE):
                 print_warning('Could not find nvidia-smi. Assuming a system without GPUs and skipping GPU tests!')
@@ -930,14 +999,15 @@ class EB_TensorFlow(PythonPackage):
                 num_gpus_to_use = 0
             else:
                 # determine number of available GPUs via nvidia-smi command, fall back to just 1 GPU
-                # Note: Disable logging to also disable the error handling in run_cmd and do it explicitly below
-                (out, ec) = run_cmd("nvidia-smi --list-gpus", log_ok=False, log_all=False, regexp=False)
+                # Note: Disable checking exit code in run_shell_cmd, and do it explicitly below
+                res = run_shell_cmd("nvidia-smi --list-gpus", fail_on_error=False)
                 try:
-                    if ec != 0:
-                        raise RuntimeError("nvidia-smi returned exit code %s with output:\n%s" % (ec, out))
+                    if res.exit_code != 0:
+                        raise RuntimeError("nvidia-smi returned exit code %s with output:\n%s" % (res.exit_code,
+                                                                                                  res.output))
                     else:
-                        self.log.info('nvidia-smi succeeded with output:\n%s' % out)
-                        gpu_ct = sum(line.startswith('GPU ') for line in out.strip().split('\n'))
+                        self.log.info('nvidia-smi succeeded with output:\n%s' % res.output)
+                        gpu_ct = sum(line.startswith('GPU ') for line in res.output.strip().split('\n'))
                 except (RuntimeError, ValueError) as err:
                     self.log.warning("Failed to get the number of GPUs on this system: %s", err)
                     gpu_ct = 0
@@ -1024,16 +1094,17 @@ class EB_TensorFlow(PythonPackage):
                 + test_targets
             )
 
-            stdouterr, ec = run_cmd(cmd, log_ok=False, simple=False)
-            if ec:
+            with self.set_tmp_dir():
+                res = run_shell_cmd(cmd, fail_on_error=False)
+            if res.exit_code:
                 fail_msg = 'Tests on %s (cmd: %s) failed with exit code %s and output:\n%s' % (
-                    device, cmd, ec, stdouterr)
+                    device, cmd, res.exit_code, res.output)
                 self.log.warning(fail_msg)
                 # Try to enhance error message
                 failed_tests = []
                 failed_test_logs = dict()
                 # Bazel outputs failed tests like "//tensorflow/c:kernels_test   FAILED in[...]"
-                for match in re.finditer(r'^(//[a-zA-Z_/:]+)\s+FAILED', stdouterr, re.MULTILINE):
+                for match in re.finditer(r'^(//[a-zA-Z_/:]+)\s+FAILED', res.output, re.MULTILINE):
                     test_name = match.group(1)
                     failed_tests.append(test_name)
                     # Logs are in a folder named after the test, e.g. tensorflow/c/kernels_test
@@ -1042,7 +1113,7 @@ class EB_TensorFlow(PythonPackage):
                     # <prefix>/k8-opt/testlogs/tensorflow/c/kernels_test/test.log
                     # <prefix>/k8-opt/testlogs/tensorflow/c/kernels_test/shard_1_of_4/test_attempts/attempt_1.log
                     test_log_re = re.compile(r'.*\n(.*\n)?\s*(/.*/testlogs/%s/(/[^/]*)?test.log)' % test_folder)
-                    log_match = test_log_re.match(stdouterr, match.end())
+                    log_match = test_log_re.match(res.output, match.end())
                     if log_match:
                         failed_test_logs[test_name] = log_match.group(2)
                 # When TF logs are found enhance the below error by additionally logging the details about failed tests
@@ -1056,12 +1127,12 @@ class EB_TensorFlow(PythonPackage):
                         len(failed_tests), device, ', '.join(failed_tests))
                 self.report_test_failure(fail_msg)
             else:
-                self.log.info('Tests on %s succeeded with output:\n%s', device, stdouterr)
+                self.log.info('Tests on %s succeeded with output:\n%s', device, res.output)
 
     def install_step(self):
         """Custom install procedure for TensorFlow."""
         # find .whl file that was built, and install it using 'pip install'
-        if ("-rc" in self.version):
+        if "-rc" in self.version:
             whl_version = self.version.replace("-rc", "rc")
         else:
             whl_version = self.version
@@ -1078,7 +1149,7 @@ class EB_TensorFlow(PythonPackage):
             if self.cfg['exts_list']:
                 cmd += ' --no-deps'
 
-            run_cmd(cmd, log_all=True, simple=True, log_ok=True)
+            run_shell_cmd(cmd)
         else:
             raise EasyBuildError("Failed to isolate built .whl in %s: %s", whl_paths, self.builddir)
 
@@ -1145,7 +1216,7 @@ class EB_TensorFlow(PythonPackage):
                 logdir = tempfile.mkdtemp(suffix='-tf-%s-logs' % os.path.splitext(mnist_py)[0])
                 mnist_py = os.path.join(self.start_dir, 'tensorflow', 'examples', 'tutorials', 'mnist', mnist_py)
                 cmd = "%s %s --data_dir %s --log_dir %s" % (self.python_cmd, mnist_py, datadir, logdir)
-                run_cmd(cmd, log_all=True, simple=True, log_ok=True)
+                run_shell_cmd(cmd)
 
             # run test script (if any)
             if self.test_script:
@@ -1154,6 +1225,6 @@ class EB_TensorFlow(PythonPackage):
                 test_script = os.path.join(self.builddir, os.path.basename(self.test_script))
                 copy_file(self.test_script, test_script)
 
-                run_cmd("python %s" % test_script, log_all=True, simple=True, log_ok=True)
+                run_shell_cmd("python %s" % test_script)
 
         return res
