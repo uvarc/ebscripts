@@ -61,8 +61,8 @@ case $1 in
             echo "Error: trying to sync production into a branch other than main"
             exit 1
         fi
-        EBVER=4.7.1
-        APPSDIR="/sfs/applications/${YMp}_build"
+        EBVER=5.0.0
+        APPSDIR="/sfs/gpfs/tardis/applications/${YMp}_build"
         PYTHON=/usr/bin/python3
         ;;
     d)
