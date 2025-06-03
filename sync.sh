@@ -62,7 +62,7 @@ case $1 in
             exit 1
         fi
         EBVER=5.0.0
-        APPSDIR="/sfs/gpfs/tardis/applications/${YMp}_build"
+        APPSDIR="/sfs/weka/applications/${YMp}_build"
         PYTHON=/usr/bin/python3
         ;;
     d)
