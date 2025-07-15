@@ -5,6 +5,8 @@ easyblock = 'CMakeMake'
 
 name = 'relion'
 version = '5.0.0'
+versionsuffix = '-skylake'
+hidden = True
 
 homepage = 'http://www3.mrc-lmb.cam.ac.uk/relion/index.php/Main_Page'
 description = """RELION (for REgularised LIkelihood OptimisatioN, pronounce rely-on) is a stand-alone computer
