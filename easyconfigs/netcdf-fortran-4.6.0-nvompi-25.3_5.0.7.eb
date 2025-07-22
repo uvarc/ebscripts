@@ -1,0 +1,25 @@
+easyblock = 'EB_netCDF_minus_Fortran'
+
+name = 'netcdf-fortran'
+version = '4.6.0'
+
+hidden = True
+
+homepage = 'http://www.unidata.ucar.edu/software/netcdf/'
+description = """NetCDF (network Common Data Form) is a set of software libraries 
+and machine-independent data formats that support the creation, access, and sharing of array-oriented 
+scientific data."""
+
+toolchain = {'name': 'nvompi', 'version': '25.3_5.0.7'}
+toolchainopts = {'pic': True, 'usempi': True}
+
+source_urls = ['https://downloads.unidata.ucar.edu/%(name)s/%(version)s']
+sources = [SOURCELOWER_TAR_GZ]
+
+parallel = 1
+
+dependencies = [
+    ('netcdf-c', '4.9.2')
+]
+
+moduleclass = 'data'
