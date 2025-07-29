@@ -10,10 +10,10 @@ easyblock = 'Tarball'
 name = 'igvtools'
 version = '2.12.0'
 
-homepage = 'https://software.broadinstitute.org/software/igv/%(namelower)s'
+homepage = 'https://igv.org/'
 description = """ This package contains command line utilities for preprocessing, 
  computing feature count density (coverage),  sorting, and indexing data files.
- See also http://www.broadinstitute.org/software/igv/igvtools_commandline. """
+"""
 
 toolchain = SYSTEM
 

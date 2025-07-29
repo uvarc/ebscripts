@@ -7,7 +7,7 @@ easyblock = 'ConfigureMake'
 name = 'icu'
 version = '73.2'
 
-homepage = 'https://site.icu-project.org/home'
+homepage = 'https://icu.unicode.org/'
 description = """ICU is a mature, widely used set of C/C++ and Java libraries providing Unicode and Globalization
  support for software applications."""
 

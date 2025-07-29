@@ -6,7 +6,7 @@ easyblock = 'PackedBinary'
 name = 'decontaminer'
 version = '1.4'
 
-homepage = 'http://www-labgtp.na.icar.cnr.it/decontaminer/'
+homepage = 'https://github.com/amarinderthind/decontaminer'
 description = """decontaMiner, a tool for detecting contaminating organisms in human unmapped sequences."""
 
 toolchain = SYSTEM

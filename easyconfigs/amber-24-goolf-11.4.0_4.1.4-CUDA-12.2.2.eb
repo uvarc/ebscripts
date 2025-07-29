@@ -8,7 +8,7 @@ local_ambertools_ver = 24
 version = 24
 versionsuffix = '-CUDA-%(cudaver)s'
 
-homepage = 'https://ambermd.org/amber.html'
+homepage = 'https://ambermd.org'
 description = """Amber (originally Assisted Model Building with Energy Refinement) is software for performing
  molecular dynamics and structure prediction."""
 

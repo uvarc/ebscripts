@@ -7,7 +7,7 @@ easyblock = 'Conda'
 name = 'bart'
 version = '2.0'
 
-homepage = 'http://faculty.virginia.edu/zanglab/bart/index.htm'
+homepage = 'https://zanglab.github.io/bart/'
 description = "BART (Binding Analysis for Regulation of Transcription) is a bioinformatics tool for predicting functional transcription factors (TFs) that bind at genomic cis-regulatory regions to regulate gene expression in the human or mouse genomes, given a query gene set or a ChIP-seq dataset as input."
 
 toolchain = SYSTEM

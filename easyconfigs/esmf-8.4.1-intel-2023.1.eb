@@ -2,7 +2,7 @@ easyblock = 'EB_ESMF'
 name = 'esmf'
 version = '8.4.1'
 
-homepage = 'https://www.earthsystemcog.org/projects/esmf/'
+homepage = 'https://github.com/esmf-org/esmf'
 description = """The Earth System Modeling Framework (ESMF) is a suite of software tools for developing
  high-performance, multi-component Earth science modeling applications."""
 

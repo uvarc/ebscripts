@@ -3,7 +3,7 @@ version = 'py3.7'
 
 easyblock = 'Conda'
 
-homepage = 'https://github.com/PacificBiosciences/IsoSeq_SA3nUP'
+homepage = 'https://github.com/PacificBiosciences/IsoSeq'
 description = """IsoDeq3 is a Scalable De Novo Isoform Discovery"""
 
 toolchain = SYSTEM

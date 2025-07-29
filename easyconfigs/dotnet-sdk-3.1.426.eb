@@ -13,7 +13,7 @@ easyblock = 'Tarball'
 name = 'dotnet-sdk'
 version = '3.1.426'
 
-homepage = 'https://www.microsoft.com/net/'
+homepage = 'https://dotnet.microsoft.com/en-us/'
 description = """.NET is a free, cross-platform, open source developer platform for building many different types
  of applications."""
 
@@ -30,6 +30,7 @@ sanity_check_paths = {
 
 modextrapaths = {
     'PATH': [''],
+    'LD_LIBRARY_PATH': ['shared/Microsoft.NETCore.App/3.1.32'],
     'DOTNET_ROOT': [''],
 }
 

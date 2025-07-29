@@ -1,0 +1,28 @@
+# Ruoshi Sun
+# 2025-07-23
+
+easyblock = 'Conda'
+
+name = 'macs3'
+version = '3.0.3'
+
+homepage = 'https://github.com/macs3-project/MACS'
+description = """
+With the improvement of sequencing techniques, chromatin immunoprecipitation followed by high throughput sequencing
+(ChIP-Seq) is getting popular to study genome-wide protein-DNA interactions. To address the lack of powerful ChIP-Seq
+analysis method, we presented the Model-based Analysis of ChIP-Seq (MACS), for identifying transcript factor binding
+sites. MACS captures the influence of genome complexity to evaluate the significance of enriched ChIP regions and MACS
+improves the spatial resolution of binding sites through combining the information of both sequencing tag position and
+orientation.
+"""
+
+toolchain = SYSTEM
+
+builddependencies = [
+    ('miniforge', '24.3.0', '-py3.11'),
+]
+
+channels = ['bioconda', 'conda-forge']
+requirements = 'python=3.11 %(name)s=%(version)s'
+
+moduleclass = 'bio'

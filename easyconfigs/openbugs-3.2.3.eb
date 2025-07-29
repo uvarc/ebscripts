@@ -6,7 +6,7 @@ easyblock = 'CmdCp'
 name = 'openbugs'
 version = '3.2.3'
 
-homepage = 'http://www.openbugs.net/'
+homepage = ''
 description = "OpenBUGS is a software application for the Bayesian analysis of complex statistical models using Markov chain Monte Carlo (MCMC) methods."
 
 toolchain = SYSTEM

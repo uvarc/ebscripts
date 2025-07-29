@@ -6,7 +6,7 @@ easyblock = 'Tarball'
 name = 'dotnet-sdk'
 version = '8.0.404'
 
-homepage = 'https://www.microsoft.com/net/'
+homepage = 'https://dotnet.microsoft.com/en-us/'
 description = """.NET is a free, cross-platform, open source developer platform for building many different types
  of applications."""
 

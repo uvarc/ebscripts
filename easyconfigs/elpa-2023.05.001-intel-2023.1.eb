@@ -10,7 +10,7 @@ easyblock = 'EB_ELPA'
 name = 'elpa'
 version = '2023.05.001'
 
-homepage = 'https://elpa.rzg.mpg.de'
+homepage = 'https://elpa.mpcdf.mpg.de/'
 description = """Eigenvalue SoLvers for Petaflop-Applications ."""
 
 toolchain = {'name': 'intel', 'version': '2023.1'}

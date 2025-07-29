@@ -5,7 +5,7 @@ version = '8.2'
 
 hidden = True
 
-homepage = 'http://cnswww.cns.cwru.edu/php/chet/readline/rltop.html'
+homepage = 'https://tiswww.case.edu/php/chet/readline/rltop.html'
 
 description = """
  The GNU Readline library provides a set of functions for use by applications

@@ -1,0 +1,57 @@
+# Ruoshi Sun
+# 2025-07-24
+easyblock = 'Conda'
+
+name = 'bioconda'
+version = 'py3.11'
+
+homepage = 'https://bioconda.github.io'
+description = "Bioconda is a channel for the conda package manager specializing in bioinformatics software."
+
+toolchain = SYSTEM
+
+builddependencies = [
+    ('miniforge', '24.3.0', '-' + version),
+]
+#repeatmodeler no longer depends on nseg
+
+channels = [name, 'conda-forge']
+
+exts_defaultclass = 'PythonPackage'
+
+# first install without explicit versions, except python
+# then update the list below
+
+requirements = ' '.join([
+    'bcftools=1.22',
+    'biopython=1.85',
+    'cyvcf2=0.31.1',
+    'deeptools=3.5.6',
+    'deeptoolsintervals=0.1.9',
+    'hisat2=2.2.1',
+    'homer=5.1',
+    #'htseq=2.0.9', requires numpy=1.*
+    'htslib=1.22.1',
+    'kallisto=0.51.1',
+    'multiqc=1.30',
+    'numpy',
+    'pybigwig=0.3.24',
+    'python=3.11',
+    'pytables',
+    'recon=1.08',
+    'repeatmasker=4.1.9',
+    'repeatmodeler=2.0.7',
+    'repeatscout=1.0.7',
+    'rmblast=2.14.1',
+    'salmon=1.10.3',
+    'samtools=1.22.1',
+    'scikit-learn',
+    'scipy',
+    'stringtie=3.0.0',
+    'subread=2.1.1',
+    'svim=2.0.0',
+    'trf=4.09.1',
+    'twobitreader=3.1.7',
+])
+
+moduleclass = 'bio'
