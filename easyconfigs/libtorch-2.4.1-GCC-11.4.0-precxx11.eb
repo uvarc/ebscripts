@@ -23,4 +23,6 @@ sanity_check_paths = {
     'files': ['lib/libtorch.so'],
     'dirs': ['lib'],
 }
+
+modluafooter = 'add_property("arch","gpu")'
 moduleclass = 'data'
