@@ -1,0 +1,27 @@
+# Ruoshi Sun
+# 2025-08-08
+easyblock = 'Tarball'
+
+name = 'raxml-ng'
+version = '1.2.2'
+
+homepage = ['https://github.com/amkozlov/raxml-ng']
+description = """RAxML Next Generation is a phylogenetic tree inference tool which uses maximum-likelihood (ML)
+ optimality criterion. Its search heuristic is based on iteratively performing a series of Subtree
+ Pruning and Regrafting (SPR) moves, which allows to quickly navigate to the best-known ML tree."""
+
+toolchain = SYSTEM
+
+source_urls = ['https://github.com/amkozlov/raxml-ng/releases/download/%(version)s']
+sources = ['%(name)s_v%(version)s_linux_x86_64.zip']
+
+sanity_check_paths = {
+    'files': ['raxml-ng'],
+    'dirs': [],
+}
+
+sanity_check_commands = ["raxml-ng --help"]
+
+modextrapaths = {'PATH': ''}
+
+moduleclass = 'bio'

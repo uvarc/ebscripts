@@ -1,0 +1,31 @@
+# Ruoshi Sun
+# 2025-08-08
+ 
+easyblock = 'Tarball'
+
+name = 'freebayes'
+version = '1.3.10'
+
+homepage = 'https://arxiv.org/abs/1207.3907'
+description = "FreeBayes is a Bayesian genetic variant detector designed to find small polymorphisms, specifically SNPs (single-nucleotide polymorphisms), indels (insertions and deletions), MNPs (multi-nucleotide polymorphisms), and complex events (composite insertion and substitution events) smaller than the length of a short-read sequencing alignment."
+
+toolchain = SYSTEM
+
+source_urls = ['https://github.com/freebayes/freebayes/releases/download/v%(version)s']
+sources = ['%(name)s-%(version)s-linux-amd64-static.gz']
+
+postinstallcmds = [
+    'mv %(installdir)s/%(name)s-%(version)s-linux-amd64-static %(installdir)s/%(name)s',
+    'chmod +x %(installdir)s/%(name)s',
+]
+
+sanity_check_paths = {
+    'files': ['freebayes'],
+    'dirs': [],
+}
+
+sanity_check_commands = ['freebayes --help']
+
+modextrapaths = {'PATH': ''}
+
+moduleclass = 'bio'

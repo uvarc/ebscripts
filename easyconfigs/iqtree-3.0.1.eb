@@ -1,0 +1,30 @@
+# Ruoshi Sun
+# 2025-08-08
+
+easyblock = 'Conda'
+
+name = 'iqtree'
+version = '3.0.1'
+
+homepage = 'http://www.iqtree.org/'
+description = """Efficient phylogenomic software by maximum likelihood"""
+
+toolchain = SYSTEM
+
+builddependencies = [
+    ('miniforge', '24.3.0', '-py3.11'),
+]
+
+channels = [
+    'bioconda',
+    'conda-forge',
+]
+
+requirements = '%(name)s=%(version)s'
+
+sanity_check_paths = {
+    'files': ['bin/iqtree'],
+    'dirs': [''],
+}
+
+moduleclass = 'bio'
