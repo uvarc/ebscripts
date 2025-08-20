@@ -1,0 +1,31 @@
+# Ruoshi Sun
+# 2025-07-17
+
+easyblock = 'Bundle'
+
+name = 'netcdf'
+version = '4.9.2'
+
+homepage = 'http://www.unidata.ucar.edu/software/netcdf/'
+description = """NetCDF (network Common Data Form) is a set of software libraries and machine-independent data formats that support the creation, access, and sharing of array-oriented scientific data. This module bundles the C++ and Fortran libaries."""
+
+toolchain = {'name': 'nvompi', 'version': '25.3_5.0.7'}
+
+dependencies = [
+    ('netcdf-c', version),
+    ('netcdf-fortran', '4.6.0'),
+    ('netcdf-cxx', '4.3.1'),
+]
+
+# Create symbolic links to netcdf-c, netcdf-fortran, netcdf-cxx
+postinstallcmds = [
+    """for i in bin lib include; do
+           mkdir %(installdir)s/$i
+           for j in $EBROOTNETCDFMINC $EBROOTNETCDFMINFORTRAN $EBROOTNETCDFMINCXX; do
+               ln -s $j/$i/* %(installdir)s/$i
+           done
+       done""",
+   'rm %(installdir)s/lib/pkgconfig',
+]
+
+moduleclass = 'data'

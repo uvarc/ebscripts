@@ -1,0 +1,25 @@
+# Ruoshi Sun
+# 2025-07-22
+easyblock = 'Conda'
+
+name = 'snakemake'
+version = '9.8.1'
+
+homepage = 'https://snakemake.readthedocs.io'
+description = "The Snakemake workflow management system is a tool to create reproducible and scalable data analyses."
+
+toolchain = SYSTEM
+
+builddependencies = [
+    ('miniforge', '24.3.0', '-py3.11')
+]
+
+channels = ['conda-forge', 'bioconda']
+requirements = 'python=3.11 %(name)s-minimal=%(version)s '
+
+sanity_check_paths = {
+    'files': ['bin/snakemake'],
+    'dirs': ['bin']
+}
+
+moduleclass = 'tools'

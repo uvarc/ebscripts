@@ -15,12 +15,11 @@ easyblock = 'CMakeMake'
 name = 'cppcheck'
 version = '1.83'
 
-homepage = 'http://http://cppcheck.sourceforge.net/'
+homepage = 'http://cppcheck.sourceforge.net/'
 description = """Cppcheck is a static analysis tool for C/C++ code. It provides unique code analysis to detect bugs and focuses on detecting undefined behaviour 
 and dangerous coding constructs."""
 
 toolchain = SYSTEM
-toolchainopts = {'pic': True, 'opt': True}
 
 builddependencies = [
     ('cmake', '3.23.3', '', True)

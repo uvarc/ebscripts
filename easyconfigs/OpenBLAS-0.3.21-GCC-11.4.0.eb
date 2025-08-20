@@ -3,7 +3,7 @@
 name = 'OpenBLAS'
 version = '0.3.21'
 
-homepage = 'http://xianyi.github.com/OpenBLAS/'
+homepage = 'https://github.com/OpenMathLib/OpenBLAS'
 description = "OpenBLAS is an optimized BLAS library based on GotoBLAS2 1.13 BSD version."
 
 toolchain = {'name': 'GCC', 'version': '11.4.0'}

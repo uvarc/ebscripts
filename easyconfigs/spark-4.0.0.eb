@@ -1,0 +1,45 @@
+# Author: Denis Krišťák (INUITS)
+# modified Ruoshi Sun
+# 2025-07-14
+
+easyblock = 'Tarball'
+
+name = 'spark'
+version = '4.0.0'
+
+homepage = 'https://spark.apache.org'
+description = """Spark is Hadoop MapReduce done in memory"""
+
+toolchain = SYSTEM
+
+source_urls = [
+    'https://archive.apache.org/dist//%(namelower)s/%(namelower)s-%(version)s/',
+    'https://downloads.apache.org/%(namelower)s/%(namelower)s-%(version)s/'
+]
+sources = ['%(namelower)s-%(version)s-bin-hadoop3.tgz']
+
+dependencies = [
+    ('java', '21'),
+    ('miniforge', '24.3.0', '-py3.11'),
+]
+
+# customize spark-start script from https://github.com/umich-arc/spark-on-hpc
+postinstallcmds = [
+    'wget https://github.com/umich-arc/spark-on-hpc/raw/refs/heads/master/spark-start -P %(installdir)s/bin',
+    'sed -i -e "/authent/Id" -e "/openssl/d" -e "/umich/d" %(installdir)s/bin/spark-start',
+    'chmod +x %(installdir)s/bin/spark-start',
+]
+
+sanity_check_paths = {
+    'files': ['bin/pyspark', 'bin/spark-shell'],
+    'dirs': ['python']
+}
+
+sanity_check_commands = [
+    "pyspark -h",
+]
+
+modextrapaths = {'PYTHONPATH': ['python', 'python/lib/py4j-0.10.9.9-src.zip']}
+modextravars = {'SPARK_HOME': '%(installdir)s'}
+
+moduleclass = 'devel'

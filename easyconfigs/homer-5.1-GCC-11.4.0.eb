@@ -1,0 +1,36 @@
+# Ruoshi Sun
+# 2025-07-23
+
+easyblock = 'Binary'
+
+name = 'homer'
+version = '5.1'
+
+homepage = 'http://homer.ucsd.edu/homer/'
+description = "HOMER (Hypergeometric Optimization of Motif EnRichment) is a suite of tools for Motif Discovery and ChIP-Seq analysis. It is a collection of command line programs for unix-style operating systems written in mostly perl and c++. Homer was primarily written as a de novo motif discovery algorithm that is well suited for finding 8-12 bp motifs in large scale genomics data."
+
+toolchain = {'name': 'GCC', 'version': '11.4.0'}
+
+source_urls = ['http://%(name)s.ucsd.edu/%(name)s/']
+sources = ['configureHomer.pl']
+
+dependencies = [
+    ('Perl', '5.40.2'),
+]
+
+install_cmd = """
+    cp %(builddir)s/configureHomer.pl %(installdir)s
+    perl %(installdir)s/configureHomer.pl -install       # install reference genome
+    perl %(installdir)s/configureHomer.pl -install mm9   # install reference genome
+    perl %(installdir)s/configureHomer.pl -install mm10  # requested by gf8kz
+    perl %(installdir)s/configureHomer.pl -install hg19  # install reference genome
+"""
+
+sanity_check_paths = {
+    'files': ['bin/findTADsAndLoops.pl', 'bin/filterTADsAndLoops.pl'],
+    'dirs': ['bin'],
+}
+
+modextrapaths = {'PATH': ''}
+
+moduleclass = 'bio'

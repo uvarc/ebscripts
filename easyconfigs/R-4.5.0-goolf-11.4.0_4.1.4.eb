@@ -28,6 +28,7 @@ dependencies = [
     ('gmp', '6.2.0'),
     ('mpfr', '4.1.0'),
     ('proj', '9.2.0'),
+    ('imagemagick', '7.1.0-57', '', SYSTEM),
 ]
 
 # Some R extensions (mclust, quantreg, waveslim for example) require the math library (-lm) to avoid undefined symbols.

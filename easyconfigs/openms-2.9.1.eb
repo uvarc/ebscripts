@@ -6,7 +6,7 @@ easyblock = 'Conda'
 name = 'openms'
 version = '2.9.1'
 
-homepage = 'https://abibuilder.informatik.uni-tuebingen.de/archive/openms/Documentation/release/latest/html/index.html'
+homepage = 'https://openms.de/'
 description = """OpenMS is an open-source software C++ library for LC-MS data management and analyses. It offers an infrastructure for rapid development of mass spectrometry related software."""
 
 toolchain = SYSTEM

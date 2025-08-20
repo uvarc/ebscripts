@@ -5,7 +5,7 @@ easyblock = 'Conda'
 name = 'phonopy'
 version = '2.17.2'
 
-homepage = 'http://atztogo.github.io/phonopy/'
+homepage = 'https://phonopy.github.io/phonopy/'
 description = """
 Phonopy is an open source package of phonon calculations based on the supercell approach.
 Phono3py calculates phonon-phonon interaction and related properties using the supercell approach.

@@ -24,6 +24,7 @@ builddependencies = [
 
 local_comp = ('GCC', '11.4.0')
 dependencies = [
+    ('relion-env', version, '', SYSTEM),
     ('fltk', '1.4.3', '', local_comp),
     ('libjpeg-turbo', '3.0.1', '', local_comp),
     ('libtiff', '4.7.0', '', local_comp),
@@ -31,33 +32,20 @@ dependencies = [
     ('ctffind', '4.1.14', '', local_comp),
 ]
 
-preconfigopts = ' && '.join([
-    'export SETUPTOOLS_SCM_PRETEND_VERSION_FOR_RELION=%(version)s',
-    'mamba env create -qy -f %(builddir)s/%(name)s-%(version)s/environment.yml -p %(installdir)s/env',
-    'mamba clean -ya'
-    '',
-])
-
 configopts = '-DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DPYTHON_EXE_PATH=%(installdir)s/env/bin/python '
 configopts += '-DCUDA=OFF -DCudaTexture=OFF '
 configopts += '-DALTCPU=ON -DMKLFFT=ON -DFORCE_OWN_TBB=OFF '
-
-prebuildopts = 'ml -miniforge && '
-
-# move conda env elsewhere temporarily or else it will be removed
-buildopts = '&& mv %(installdir)s/env %(builddir)s'
 
 preinstallopts = 'export PATH=$EBROOTCMAKE/bin:$PATH && '
 
 postinstallcmds = [
     'mkdir %(installdir)s/lib',
     'for i in relion_python_classranker relion_python_blush relion_python_modelangelo; do sed -i "s/uvacse/\$USER/g" %(installdir)s/bin/$i; done',
-    'mv %(builddir)s/env %(installdir)s',
 ]
 
 sanity_check_paths = {
     'files': ['bin/relion'],
-    'dirs': ['env']
+    'dirs': ['bin']
 }
 
 moduleclass = 'bio'

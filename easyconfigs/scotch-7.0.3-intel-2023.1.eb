@@ -1,0 +1,20 @@
+easyblock='EB_SCOTCH'
+
+name = 'scotch'
+version = '7.0.3'
+
+homepage = 'https://gitlab.inria.fr/scotch/scotch'
+description = """Software package and libraries for sequential and parallel graph partitioning,
+static mapping, and sparse matrix block ordering, and sequential mesh and hypergraph partitioning."""
+
+toolchain = {'name': 'intel', 'version': '2023.1'}
+toolchainopts = {'pic': True}
+
+source_urls = ['https://gitlab.inria.fr/%(name)s/%(name)s/-/archive/v%(version)s/']
+sources = ['%(name)s-v%(version)s.tar.gz']
+
+dependencies = [
+    ('zlib', '1.2.13'),
+]
+
+moduleclass = 'math'

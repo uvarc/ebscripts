@@ -1,0 +1,22 @@
+easyblock = 'EB_ApptainerImage'
+
+name = 'gromacs'
+version = '2023.2'
+
+homepage = 'https://www.tensorflow.org'
+description = """GROMACS is a versatile package to perform molecular dynamics,
+i.e. simulate the Newtonian equations of motion for systems with hundreds to millions of particles."""
+
+toolchain = {'name': 'apptainer', 'version': '1.3.4'}
+
+sources = ['%(name)s-%(version)s.sif']
+
+use_gpu = True
+
+skipsteps = ['sanitycheck']
+
+modloadmsg = """This container is taken from NGC:
+https://catalog.ngc.nvidia.com/orgs/hpc/containers/gromacs
+"""
+modluafooter = 'add_property("arch","gpu")'
+moduleclass = 'data'

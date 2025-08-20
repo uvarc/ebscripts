@@ -17,7 +17,7 @@ easyblock = 'ConfigureMake'
 name = 'sortmerna'
 version = '2.1'
 
-homepage = 'http://bioinfo.lifl.fr/RNA/sortmerna/'
+homepage = 'https://github.com/sortmerna/sortmerna'
 description = "SortMeRNA is a biological sequence analysis tool for filtering, mapping and OTU-picking NGS reads."
 
 toolchain = SYSTEM

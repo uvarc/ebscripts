@@ -1,0 +1,25 @@
+# from EB repo
+# Ruoshi Sun
+# 2025-08-20
+
+easyblock = 'ConfigureMake'
+
+name = 'jq'
+version = '1.8.1'
+
+homepage = 'https://jqlang.org/'
+description = """jq is a lightweight and flexible command-line JSON processor."""
+
+toolchain = SYSTEM
+
+source_urls = ['https://github.com/jqlang/jq/releases/download/jq-%(version)s']
+sources = ['jq-%(version)s.tar.gz']
+
+configopts = '--with-oniguruma=builtin'
+
+sanity_check_paths = {
+    'files': ['bin/jq'],
+    'dirs': ['bin'],
+}
+
+moduleclass = 'tools'

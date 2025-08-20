@@ -46,7 +46,7 @@ sanity_check_paths = {
 sanity_check_commands = ['reframe -V']
 
 modextravars = {
-    'RFM_CONFIG_PATH': '/sfs/applications/resources/data/reframe',
+    'RFM_CONFIG_PATH': '/sfs/gpfs/tardis/applications/resources/data/reframe',
 }
 
 moduleclass = 'devel'

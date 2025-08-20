@@ -86,8 +86,7 @@ class EB_ApptainerImage(Binary):
         self.cfg['modloadmsg'] = msg
         self.log.debug(self.cfg['modloadmsg'])
         
-
-    def post_install_step(self):
+    def post_processing_step(self):
         """Copy installation to actual installation directory in case of a staged installation."""
         if self.cfg['staged_install']:
             staged_installdir = self.installdir
@@ -118,6 +117,26 @@ class EB_ApptainerImage(Binary):
 
         super(Binary, self).post_install_step()
 
+    def sanity_check_step(self):
+        """Custom sanity check for Apptainer images"""
+        for srcfile in self.cfg['sources']:
+            if srcfile.endswith('.sif') or srcfile.endswith('.simg') or srcfile.endswith('.img'):
+                containerfile = srcfile 
+                break
+        files = [f'{container_dir}/{containerfile}']
+        custom_paths = {
+            'files': files,
+            'dirs': []
+        }
+        custom_commands = [f'apptainer inspect {container_dir}/{containerfile}']
+        super(EB_ApptainerImage, self).sanity_check_step(custom_paths=custom_paths, custom_commands=custom_commands)
+
+    def permissions_step(self):
+        for srcfile in self.cfg['sources']:
+            if srcfile.endswith('.sif') or srcfile.endswith('.simg') or srcfile.endswith('.img'):
+                containerfile = srcfile 
+                break
+        os.system(f'chmod go+rx {container_dir}/{containerfile}')
 
     def make_module_extra(self):
         """Add the install directory to the PATH."""

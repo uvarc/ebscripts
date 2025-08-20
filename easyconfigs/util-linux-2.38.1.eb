@@ -3,7 +3,7 @@ easyblock = 'ConfigureMake'
 name = 'util-linux'
 version = '2.38.1'
 
-homepage = 'https://www.kernel.org/pub/linux/utils/util-linux'
+homepage = 'https://github.com/util-linux/util-linux'
 
 description = "Set of Linux utilities"
 
