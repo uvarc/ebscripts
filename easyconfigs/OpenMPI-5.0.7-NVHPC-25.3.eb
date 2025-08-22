@@ -32,8 +32,8 @@ dependencies = [
     ('UCX-CUDA', '1.18.0', '-CUDA-12.8.0', local_comp),
     #('libfabric', '1.16.1', '', local_comp),
     #('pmix', '5.0.6', '', local_comp),
-    ('UCC', '1.3.0', '', local_comp),
-    ('UCC-CUDA', '1.3.0', '-CUDA-12.8.0', local_comp),
+    #('UCC', '1.3.0', '', local_comp),
+    #('UCC-CUDA', '1.3.0', '-CUDA-12.8.0', local_comp),
 ]
 
 # CUDA related patches and custom configure option can be removed if CUDA support isn't wanted.
@@ -46,6 +46,7 @@ configopts = '--with-cuda=%(start_dir)s/opal/mca/cuda '
 configopts += '--enable-alt-short-float=no '
 
 configopts += '--with-ucx --enable-shared --with-slurm --without-hcoll '
+configopts += '--with-pmix=/opt/pmix/5.0.7 --with-hwloc=/usr --with-libevent=/usr '
 
 # https://github.com/open-mpi/ompi/issues/13190
 configopts += 'ompi_cv_fortran_have_iso_fortran_env_real16=n '
@@ -57,7 +58,7 @@ modextrapaths = {
 }
 modextravars = {
     'SLURM_CPU_BIND_TYPE': 'cores',
-    'SLURM_MPI_TYPE': 'pmi2',
+    'SLURM_MPI_TYPE': 'pmix',
     'OMPI_MCA_btl': '^openib',
     'UCX_WARN_UNUSED_ENV_VARS': 'n',
 }
