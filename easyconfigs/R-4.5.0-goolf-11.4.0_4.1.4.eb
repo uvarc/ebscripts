@@ -303,14 +303,5 @@ modextravars = {
     'R_LIBS_USER': '~/R/%(toolchain_name)s/%(version_major_minor)s'
 }
 
-#echo "R_LIBS_USER=~/R/%(toolchain_name)s/%(version_major_minor)s" > ~/.Renviron
-modloadmsg = """To use your local R packages in RStudio, run:
-mkdir -p ~/R/{goolf,x86_64-pc-linux-gnu-library}
-cd ~/R/x86_64-pc-linux-gnu-library
-ln -s ../%(toolchain_name)s/%(version_major_minor)s
-
-If you have a ~/.Renviron that sets R_LIBS_USER to a different version, e.g.:
-    R_LIBS_USER=~/R/goolf/4.3
-please remove that line.
-"""
+modloadmsg = "To use the same local packages for both R and RStudio, do not set R_LIBS_USER in ~/.Renviron"
 moduleclass = 'lang'
