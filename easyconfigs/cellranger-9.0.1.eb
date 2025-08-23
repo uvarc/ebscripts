@@ -23,4 +23,8 @@ sanity_check_paths = {
 
 sanity_check_commands = ['cellranger testrun --id=tiny']
 
+# https://www.10xgenomics.com/support/software/cell-ranger/latest/tutorials/cr-pipeline-telemetry
+modextravars = {
+    'TENX_DISABLE_TELEMETRY': '1',
+}
 moduleclass = 'bio'
