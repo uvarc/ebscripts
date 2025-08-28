@@ -1,11 +1,10 @@
 # Ruoshi Sun
-# 2025-04-17 py3.12
+# 2025-08-25 py3.12
 easyblock = 'Conda'
 
 name = 'jupyterlab'
-version = 'test'
+version = '4.4.6'
 versionsuffix = '-py3.12'
-hidden = True
 
 homepage = 'https://jupyter.org/'
 description = """JupyterLab is the latest web-based interactive development environment for notebooks, code, and data. Its flexible interface allows users to configure and arrange workflows in data science, scientific computing, computational journalism, and machine learning. A modular design invites extensions to expand and enrich functionality.
@@ -18,7 +17,7 @@ builddependencies = [('miniforge', '24.11.3', versionsuffix)]
 channels = ['conda-forge']
 requirements = ' '.join([
     'python=3.12',
-    '%(name)s=4.4.6', #%(version)s',
+    '%(name)s=%(version)s',
     'cython=3.1.3',
     'glib=2.84.3',
     'h5py=3.14.0',

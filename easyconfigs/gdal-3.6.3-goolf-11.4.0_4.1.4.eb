@@ -35,7 +35,7 @@ dependencies = [
     #('libxml2', '2.10.3'),
     #('libpng', '1.6.38'),
     #('libjpeg-turbo', '2.1.4'),
-    ('jasper', '4.0.0'),
+    ('jasper', '4.2.8'),
     #('LibTIFF', '4.4.0'),
     ('zlib', '1.2.13'),
     ('curl', '8.4.0'),
