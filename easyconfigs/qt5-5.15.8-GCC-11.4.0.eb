@@ -51,7 +51,7 @@ dependencies = [
     ('libjpeg-turbo', '2.1.4'),
     ('nss', '3.85'),
     ('snappy', '1.1.9', '', SYSTEM),
-    ('jasper', '4.0.0', '', SYSTEM),
+    ('jasper', '4.2.8'),
     ('bzip2', '1.0.6', '', SYSTEM),
     #('openssl', '1.1.1s'),
     ('icu', '72.1'),
