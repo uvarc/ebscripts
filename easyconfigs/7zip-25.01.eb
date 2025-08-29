@@ -1,0 +1,25 @@
+# Ruoshi Sun
+# 2025-08-28 replace p7zip due to CVEs
+easyblock = 'Tarball'
+
+name = '7zip'
+version = '25.01'
+
+homepage = 'https://www.7-zip.org'
+description = """7-Zip is a file archiver with a high compression ratio."""
+
+toolchain = SYSTEM
+
+source_urls = ['https://www.7-zip.org/a/']
+sources = ['7z2501-linux-x64.tar.xz']
+
+sanity_check_paths = {
+    'files': ['7zz'],
+    'dirs': [],
+}
+
+modextrapaths = {
+    'PATH': ''
+}
+
+moduleclass = 'tools'

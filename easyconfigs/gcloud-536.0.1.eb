@@ -1,0 +1,34 @@
+# Ruoshi Sun
+# 2025-08-28
+easyblock = 'Tarball'
+
+name = 'gcloud'
+version = '536.0.1'
+
+homepage = 'https://cloud.google.com/sdk/'
+description = "The Cloud SDK is a set of tools for Cloud Platform. It contains gcloud, gsutil, and bq, which you can use to access Google Compute Engine, Google Cloud Storage, Google BigQuery, and other products and services from the command-line."
+
+toolchain = SYSTEM
+
+source_urls = ['https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/']
+sources = ['google-cloud-sdk-%(version)s-linux-%(arch)s.tar.gz']
+
+allow_system_deps = [('Python', SYS_PYTHON_VERSION)]
+
+dependencies = [
+    #('miniforge', '24.3.0', '-py3.11'),
+    ('java', '21'),
+]
+
+postinstallcmds = [
+    '%(installdir)s/bin/gcloud components install app-engine-python',
+    '%(installdir)s/bin/gcloud components install app-engine-python-extras',
+    '%(installdir)s/bin/gcloud components install app-engine-java'
+]
+
+sanity_check_paths = {
+    'files': ['bin/gcloud', 'bin/bq', 'bin/gsutil'],
+    'dirs': ['lib', 'bin'],
+}
+
+moduleclass = 'tools'
