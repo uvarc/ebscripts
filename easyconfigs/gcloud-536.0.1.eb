@@ -1,8 +1,9 @@
-# Author: Karsten Siller, Ruoshi Sun
+# Ruoshi Sun
+# 2025-08-28
 easyblock = 'Tarball'
 
-name = 'gcloud-sdk'
-version = '422.0.0'
+name = 'gcloud'
+version = '536.0.1'
 
 homepage = 'https://cloud.google.com/sdk/'
 description = "The Cloud SDK is a set of tools for Cloud Platform. It contains gcloud, gsutil, and bq, which you can use to access Google Compute Engine, Google Cloud Storage, Google BigQuery, and other products and services from the command-line."
@@ -12,9 +13,11 @@ toolchain = SYSTEM
 source_urls = ['https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/']
 sources = ['google-cloud-sdk-%(version)s-linux-%(arch)s.tar.gz']
 
+allow_system_deps = [('Python', SYS_PYTHON_VERSION)]
+
 dependencies = [
-    ('miniforge', '24.3.0', '-py3.11'),
-    ('java', '8'),
+    #('miniforge', '24.3.0', '-py3.11'),
+    ('java', '21'),
 ]
 
 postinstallcmds = [

@@ -1,11 +1,10 @@
-# from EB github repo
-# modified Ruoshi Sun
-# 2020-02-20
+# Ruoshi Sun
+# 2025-08-28 upgrade due to CVE-2024-53263
 
 easyblock = 'MakeCp'
 
 name = 'git-lfs'
-version = '2.10.0'
+version = '3.7.0'
 
 homepage = 'https://git-lfs.github.com'
 description = """Git Large File Storage (LFS) replaces large files such as audio
@@ -17,7 +16,7 @@ toolchain = SYSTEM
 source_urls = ['https://github.com/git-lfs/git-lfs/archive/']
 sources = ['v%(version)s.tar.gz']
 
-builddependencies = [('go', '1.19.4')]
+builddependencies = [('go', '1.23.6')]
 
 files_to_copy = [(['bin/%(name)s'], 'bin')]
 
