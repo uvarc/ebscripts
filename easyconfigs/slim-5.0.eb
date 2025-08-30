@@ -1,10 +1,10 @@
 # Ruoshi Sun
-# 2023-03-29
+# 2025-08-29
 
 easyblock = 'CMakeMake'
 
 name = 'slim'
-version = '4.0.1'
+version = '5.0'
 
 homepage = 'https://messerlab.org/slim/'
 description = """SLiM is an evolutionary simulation package that provides facilities for very easily and quickly constructing genetically explicit individual-based evolutionary models."""
@@ -20,10 +20,8 @@ sources = [
 ]
 
 builddependencies = [
-    ('cmake', '3.23.3'),
+    ('cmake', '3.28.1'),
 ]
-
-separate_build_dir = True
 
 sanity_check_paths = {
     'files': ['bin/eidos', 'bin/slim'],

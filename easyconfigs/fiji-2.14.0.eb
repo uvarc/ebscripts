@@ -35,14 +35,14 @@ postinstallcmds = [
     local_plugin_cmd + 'edit-update-site "3D ImageJ Suite" https://sites.imagej.net/Tboudier/',
     local_plugin_cmd + 'edit-update-site CLIJ http://sites.imagej.net/clij',
     local_plugin_cmd + 'edit-update-site CLIJ2 http://sites.imagej.net/clij2',
-    local_plugin_cmd + 'update-force',
     local_plugin_cmd + 'edit-update-site "CLIJx assistant" http://sites.imagej.net/clijx-assistant',
     local_plugin_cmd + 'edit-update-site "CLIJx assistant extensions" http://sites.imagej.net/clijx-assistant-extensions',
-    local_plugin_cmd + 'update-force',
     local_plugin_cmd + 'edit-update-site "BioVoxxel 3D Box" http://sites.imagej.net/bv3dbox',
     local_plugin_cmd + 'edit-update-site SlideBook http://sites.imagej.net/SlideBook',
     local_plugin_cmd + 'edit-update-site Cookbook http://sites.imagej.net/Cookbook',
     local_plugin_cmd + 'edit-update-site "OMERO 5.4" http://sites.imagej.net/OMERO-5.4',
+    local_plugin_cmd + 'edit-update-site IBMP-CNRS https://sites.imagej.net/Mutterer',
+    local_plugin_cmd + 'edit-update-site PTBIOP https://biop.epfl.ch/Fiji-Update',
     # Update the installation
     local_plugin_cmd + 'update-force',
     # symlink to OpenCL

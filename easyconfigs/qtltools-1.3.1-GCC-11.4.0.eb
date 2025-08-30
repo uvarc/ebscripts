@@ -1,0 +1,39 @@
+# Ruoshi Sun
+# 2025-08-29 RIV-18536
+
+easyblock = 'MakeCp'
+
+name = 'qtltools'
+version = '1.3.1'
+
+homepage = "https://qtltools.github.io/qtltools/"
+description = """QTLtools is a tool set for molecular QTL discovery and analysis.
+It allows to go from the raw sequence data to collection of molecular Quantitative Trait Loci (QTLs) 
+in few easy-to-perform steps."""
+
+toolchain = {'name': 'GCC', 'version': '11.4.0'}
+
+source_urls = ['https://github.com/qtltools/qtltools/archive']
+sources = ['%(version)s.tar.gz']
+
+dependencies = [
+    ('gsl', '2.7.1'),
+    ('bzip2', '1.0.6', '', SYSTEM),
+    ('boost', '1.79.0'),
+    ('librmath', '4.2.3'),
+    ('htslib', '1.17', '', SYSTEM),
+]
+
+prebuildopts = "sed -i 's/libhts\.a/libhts.so/g' %(builddir)s/%(name)s-%(version)s/Makefile && "
+buildopts  = 'RMATH_INC=$EBROOTLIBRMATH/include HTSLD_INC=$EBROOTHTSLIB/include BOOST_INC=$EBROOTBOOST/include '
+buildopts += 'RMATH_LIB=$EBROOTLIBRMATH/lib64   HTSLD_LIB=$EBROOTHTSLIB/lib     BOOST_LIB=$EBROOTBOOST/lib '
+buildopts += 'prefix=%(builddir)s'
+
+files_to_copy = ['bin', 'scripts', 'LICENSE']
+
+sanity_check_paths = {
+    'files': ['bin/QTLtools'],
+    'dirs': ['bin']
+}
+
+moduleclass = 'bio'

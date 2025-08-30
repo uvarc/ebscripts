@@ -1,29 +1,25 @@
-# Author: Karsten Siller, Ruoshi Sun
-# 01/04/2019, 2020-02-10
+# Ruoshi Sun
+# 2025-08-29
 easyblock = 'CMakeMake'
 
 name = 'bamtools'
-version = '2.5.1'
+version = '2.5.3'
 
 homepage = 'https://github.com/pezmaster31/bamtools'
 description = "BamTools provides both a programmer's API and an end-user's toolkit for handling BAM files."
 
 toolchain = SYSTEM
 
-source_urls = ['https://github.com/pezmaster31/%(name)s/archive']
+source_urls = ['https://github.com/pezmaster31/bamtools/archive']
 sources = ['v%(version)s.tar.gz']
 
 builddependencies = [
-    ('cmake', '3.23.3'),
+    ('cmake', '3.28.1'),
 ]
-
-separate_build_dir = True
 
 sanity_check_paths = {
     'files': ['bin/%(name)s'],
     'dirs': ['bin', 'include', 'lib64'],
 }
-
-modextrapaths={'LD_LIBRARY_PATH': 'lib64'}
 
 moduleclass = 'bio'

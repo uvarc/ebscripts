@@ -13,7 +13,7 @@
 easyblock = 'CMakeMake'
 
 name = 'cppcheck'
-version = '1.83'
+version = '2.18.0'
 
 homepage = 'http://cppcheck.sourceforge.net/'
 description = """Cppcheck is a static analysis tool for C/C++ code. It provides unique code analysis to detect bugs and focuses on detecting undefined behaviour 
@@ -22,11 +22,11 @@ and dangerous coding constructs."""
 toolchain = SYSTEM
 
 builddependencies = [
-    ('cmake', '3.23.3', '', True)
+    ('cmake', '3.28.1'),
 ]
 
-source_urls = ['https://github.com/danmar/cppcheck/archive']
-sources = [SOURCELOWER_TAR_GZ]
+source_urls = ['https://github.com/danmar/cppcheck/archive/refs/tags']
+sources = ['%(version)s.tar.gz']
 
 sanity_check_paths = {
     'files': ['bin/cppcheck'],

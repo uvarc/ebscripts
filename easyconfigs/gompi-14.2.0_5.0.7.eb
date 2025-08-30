@@ -9,7 +9,7 @@ version = '%s_%s' % (local_comp_version, local_mpi_version)
 
 homepage = '(none)'
 description = """GNU Compiler Collection (GCC) based compiler toolchain,
- including MVAPICH for MPI support."""
+ including OpenMPI for MPI support."""
 
 toolchain = SYSTEM
 
