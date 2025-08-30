@@ -43,6 +43,8 @@ postinstallcmds = [
     local_plugin_cmd + 'edit-update-site SlideBook http://sites.imagej.net/SlideBook',
     local_plugin_cmd + 'edit-update-site Cookbook http://sites.imagej.net/Cookbook',
     local_plugin_cmd + 'edit-update-site "OMERO 5.4" http://sites.imagej.net/OMERO-5.4',
+    local_plugin_cmd + 'edit-update-site IBMP-CNRS https://sites.imagej.net/Mutterer',
+    local_plugin_cmd + 'edit-update-site PTBIOP https://biop.epfl.ch/Fiji-Update',
     # Update the installation
     local_plugin_cmd + 'update-force',
     # symlink to OpenCL

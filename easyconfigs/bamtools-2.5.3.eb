@@ -1,0 +1,25 @@
+# Ruoshi Sun
+# 2025-08-29
+easyblock = 'CMakeMake'
+
+name = 'bamtools'
+version = '2.5.3'
+
+homepage = 'https://github.com/pezmaster31/bamtools'
+description = "BamTools provides both a programmer's API and an end-user's toolkit for handling BAM files."
+
+toolchain = SYSTEM
+
+source_urls = ['https://github.com/pezmaster31/bamtools/archive']
+sources = ['v%(version)s.tar.gz']
+
+builddependencies = [
+    ('cmake', '3.28.1'),
+]
+
+sanity_check_paths = {
+    'files': ['bin/%(name)s'],
+    'dirs': ['bin', 'include', 'lib64'],
+}
+
+moduleclass = 'bio'
