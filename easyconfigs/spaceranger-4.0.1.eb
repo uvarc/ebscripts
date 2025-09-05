@@ -1,0 +1,29 @@
+# Ruoshi Sun
+# 2025-09-04 RIV-18589
+easyblock = 'Tarball'
+
+name = 'spaceranger'
+version = '4.0.1'
+
+homepage = 'https://www.10xgenomics.com/'
+description = "A set of analysis piplines that perform sample demultiplexing, barcode processing, and single cell 3' gene counting."
+
+toolchain = SYSTEM
+
+sources = [SOURCE_TAR_GZ]
+
+dependencies = [
+    ('bcl2fastq2', '2.20.0'),
+]
+
+sanity_check_paths = {
+    'files': ['bin/%(name)s'],
+    'dirs': ['bin'],
+}
+
+sanity_check_commands = ['spaceranger testrun --id=tiny']
+
+modextravars = {
+    'TENX_DISABLE_TELEMETRY': '1',
+}
+moduleclass = 'bio'
