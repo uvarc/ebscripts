@@ -1,0 +1,42 @@
+# Ruoshi Sun
+# 2025-09-08
+easyblock = 'ConfigureMake'
+
+name = 'mrtrix3'
+version = '3.0.7'
+
+homepage = 'https://www.mrtrix.org'
+description = """MRtrix3 provides a set of tools to perform various types of diffusion MRI analyses, from various forms of tractography through to next-generation group-level analyses. It is designed with consistency, performance, and stability in mind, and is freely available under an open-source license. It is developed and maintained by a team of experts in the field, fostering an active community of users from diverse backgrounds."""
+
+toolchain = {'name': 'GCC', 'version': '11.4.0'}
+
+source_urls = ['https://github.com/MRtrix3/mrtrix3/archive/refs/tags']
+sources = ['%(version)s.tar.gz']
+
+dependencies = [
+    ('eigen', '3.4.0'),
+    ('zlib', '1.2.13'),
+    ('python', '3.11.4'),
+    ('mesa', '23.1.4'),
+    ('qt5', '5.15.8'),
+    ('libtiff', '4.7.0'),
+    ('FFTW', '3.3.10'),
+    ('libpng', '1.6.39'),
+]
+
+configure_without_installdir = True
+
+# comment out "-j X"
+build_cmd = './build #'
+
+install_cmd = ' && '.join([
+    # install mrpeek
+    'git clone https://github.com/MRtrix3/mrpeek.git',
+    'cd mrpeek',
+    '../build',
+    'cp bin/mrpeek ../bin',
+    'cd ..',
+    'cp -r bin lib LICENCE.txt %(installdir)s',
+])
+
+moduleclass = 'bio'
