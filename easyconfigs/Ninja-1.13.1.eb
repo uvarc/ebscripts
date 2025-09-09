@@ -1,23 +1,21 @@
-# from EB github repo
-# modified Ruoshi Sun
-# 2023-04-03
+# Ruoshi Sun
+# 2025-09-08
 
 easyblock = 'CmdCp'
 
-name = 'ninja'
-version = '1.11.1'
-versionsuffix = '-py3.11'
+name = 'Ninja'
+version = '1.13.1'
 
 homepage = 'https://ninja-build.org/'
 description = "Ninja is a small build system with a focus on speed."
 
-toolchain = {'name': 'GCC', 'version': '11.4.0'}
+toolchain = SYSTEM
 
-source_urls = ['https://github.com/ninja-build/ninja/archive/']
+source_urls = ['https://github.com/ninja-build/ninja/archive/refs/tags']
 sources = ['v%(version)s.tar.gz']
 
 builddependencies = [
-    ('python', '3.11.4'),
+    ('miniforge', '24.11.3', '-py3.12'),
 ]
 
 cmds_map = [('.*', "./configure.py --bootstrap")]

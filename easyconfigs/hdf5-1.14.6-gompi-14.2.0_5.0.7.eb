@@ -19,6 +19,7 @@ dependencies = [
     #('szip', '2.1.1'),
 ]
 
-configopts = '--enable-shared --enable-parallel'
+# --enable-cxx and --enable-parallel are incompatible
+configopts = '--enable-shared --enable-parallel --enable-cxx --enable-unsupported'
 
 moduleclass = 'data'
