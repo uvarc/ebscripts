@@ -40,7 +40,7 @@ dependencies = [
 preconfigopts = 'gcc -Iopal/mca/cuda/include -shared opal/mca/cuda/lib/cuda.c -o opal/mca/cuda/lib/libcuda.so && '
 configopts = '--with-cuda=%(start_dir)s/opal/mca/cuda --with-show-load-errors=no '
 
-configopts += '--with-pmix=/opt/pmix --with-hwloc=/usr --with-libevent=/usr --without-hcoll '
+configopts += '--with-pmix=/opt/pmix/5.0.7 --with-hwloc=/usr --with-libevent=/usr --without-hcoll '
 
 sanity_check_paths = {
     'files': ['bin/mpirun'],
