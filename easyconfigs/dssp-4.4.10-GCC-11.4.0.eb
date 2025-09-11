@@ -28,9 +28,10 @@ builddependencies = [
 
 dependencies = [
     ('libcifpp', '7.0.8'),
+    ('python', '3.11.4'),
 ]
 
-configopts = '-DUSE_RSRC=ON -DFETCHCONTENT_FULLY_DISCONNECTED=ON -DCIFPP_SHARE_DIR=$EBROOTLIBCIFPP/share'
+configopts = '-DBUILD_PYTHON_MODULE=ON -DUSE_RSRC=ON -DFETCHCONTENT_FULLY_DISCONNECTED=ON -DCIFPP_SHARE_DIR=$EBROOTLIBCIFPP/share'
 
 postinstallcmds = [
     'cd %(installdir)s/bin && ln -s mkdssp dssp',
