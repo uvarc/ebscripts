@@ -1,0 +1,71 @@
+# This is a Mesa using software rendering via Gallium-DRI and libglvnd
+# - libglvnd can dynamically choose between system-installed NVidia
+# libGLX/libEGL or the software renderers provided by this Mesa
+# - EGL is available
+#
+# Software renderers enabled (swr deprecated as of v22):
+# - llvmpipe: uses LLVM for JIT code generation (multi-threaded)
+# - softpipe: a reference Gallium driver
+# Default renderer is llvmpipe. To use softpipe, set the environment
+# variable GALLIUM_DRIVER=softpipe
+
+easyblock = 'EB_Mesa'
+name = 'mesa'
+version = '25.2.3'
+
+homepage = 'https://www.mesa3d.org/'
+description = """Mesa is an open-source implementation of the OpenGL specification -
+ a system for rendering interactive 3D graphics."""
+
+toolchain = {'name': 'GCC', 'version': '11.4.0'}
+
+source_urls = ['https://archive.mesa3d.org']
+sources = [SOURCELOWER_TAR_XZ]
+
+builddependencies = [
+    #('binutils', '2.40'),
+    ('Meson', '1.9.0', '', SYSTEM),
+    ('Ninja', '1.13.1', '', SYSTEM),
+    #('flex', '2.6.4'),
+    ('bison', '3.8.2', '', SYSTEM),
+    ('pkgconf', '1.9.5'),
+    ('mako', '1.2.4'),
+    ('libxml2', '2.10.3'),
+    ('expat', '2.5.0'),
+    ('gettext', '0.21.1'),
+]
+
+dependencies = [
+    ('zlib', '1.2.13'),
+    ('zstd', '1.5.2'),
+    ('libdrm', '2.4.115'),
+    ('libglvnd', '1.6.0'),
+    ('libunwind', '1.6.2'),
+    ('LLVM', '21.1.1'),
+    ('x11', '20230603'),
+]
+
+preconfigopts = 'pip install --prefix=%(installdir)s pyyaml && export PYTHONPATH=%(installdir)s/lib/python3.11/site-packages:$PYTHONPATH && '
+
+configopts = "-Dplatforms=x11 -Dvulkan-drivers='' "
+configopts += "-Dllvm=enabled -Dshared-llvm=enabled -Dlibunwind=enabled -Degl=enabled -Dglvnd=enabled -Dglx=auto "
+
+# Easybuild will automatically add appropriate Gallium drivers for the processor architecture of the host
+# If you need a different configuration, it possible to override those values by setting your own configopts
+# configopts += " -Dgallium-drivers=swrast"
+
+prebuildopts = 'export PYTHONPATH=%(installdir)s/lib/python3.11/site-packages:$PYTHONPATH && '
+
+# symlink indirect to mesa GLX, similar to Debian, see
+# https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=881789
+# This helps in certain X forwarding situations (e.g. XQuartz)
+postinstallcmds = ["ln -s libGLX_mesa.so.0 %(installdir)s/lib/libGLX_indirect.so.0"]
+
+sanity_check_paths = {
+    'files': ['lib/libGLX_mesa.so'],
+    'dirs': [],
+}
+# Tells libglvnd where to find EGL libraries
+modextrapaths = {"__EGL_VENDOR_LIBRARY_DIRS": "share/glvnd/egl_vendor.d"}
+
+moduleclass = 'vis'

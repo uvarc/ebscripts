@@ -1,0 +1,85 @@
+name = 'LLVM'
+version = '21.1.1'
+
+homepage = "https://llvm.org/"
+description = """
+The LLVM Core libraries provide a modern source- and target-independent
+optimizer, along with code generation support for many popular CPUs
+(as well as some less common ones!) These libraries are built around a well
+specified code representation known as the LLVM intermediate representation
+("LLVM IR"). The LLVM Core libraries are well documented, and it is
+particularly easy to invent your own language (or port an existing compiler)
+to use LLVM as an optimizer and code generator.
+"""
+
+toolchain = {'name': 'GCC', 'version': '11.4.0'}
+toolchainopts = {
+    # 'cstd': 'gnu++11',
+    'pic': True
+}
+
+source_urls = ['https://github.com/llvm/llvm-project/releases/download/llvmorg-%(version)s/']
+sources = [
+    'llvm-project-%(version)s.src.tar.xz',
+]
+patches = [
+    'LLVM-18.1.8_envintest.patch',
+    'LLVM-19.1.7_libomptarget_tests.patch',
+    'LLVM-19.1.7_clang_rpathwrap_test.patch',
+]
+
+builddependencies = [
+    #('binutils', '2.44'),
+    ('python', '3.11.4'),
+    ('cmake', '4.0.0', '', SYSTEM),
+    ('psutil', '7.0.0'),  # Needed to enable test timeout in lit
+    ('lit', '18.1.8'),
+    ('git', '2.51.0', '', SYSTEM),
+]
+
+dependencies = [
+    ('libffi', '3.4.4'),
+    ('libxml2', '2.10.3'),
+    ('ncurses', '6.3'),
+    ('zlib', '1.2.13'),
+    ('z3', '4.8.9'),
+    ('zstd', '1.5.2'),
+]
+
+minimal = True
+
+build_shared_libs = True
+
+bootstrap = False
+full_llvm = False
+#build_clang_extras = True
+#build_runtimes = True
+#build_lld = True
+#build_lldb = True
+#build_bolt = True
+build_openmp = False
+build_openmp_tools = False
+build_openmp_offload = False
+#use_polly = True
+#python_bindings = True
+
+build_targets = ['all']
+# disable_werror = True
+
+skip_all_tests = False
+skip_sanitizer_tests = True
+test_suite_max_failed = 10
+test_suite_timeout_single = 5 * 60
+test_suite_ignore_patterns = [
+    "X86/register-fragments-bolt-symbols.s",
+    "modularize/ProblemsCoverage.modularize",
+    "Driver/atomic.f90",
+    "Driver/gcc-toolchain-install-dir.f90",
+    "api_tests/test_ompd_get_icv_from_scope.c",
+    "std/time/time.syn/formatter",
+    # Those 2 might fail with "tzdb: the path '/etc/localtime' is not a symlink"
+    "std/time/time.zone/time.zone.db/time.zone.db.tzdb",
+    "std/time/time.zone/time.zone.db/time.zone.db.access",
+]
+
+moduleclass = 'compiler'
