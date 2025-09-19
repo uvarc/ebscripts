@@ -14,14 +14,14 @@ sources = ['%(version)s.tar.gz']
 
 builddependencies = [
     #('binutils', '2.36.1'),
-    ('Meson', '1.0.1', '-py3.11'),
-    ('Ninja', '1.11.1', '-py3.11'),
+    ('Meson', '1.9.0', '', SYSTEM),
+    ('Ninja', '1.13.1', '', SYSTEM),
     ('pkgconf', '1.9.5'),
 ]
 
 dependencies = [
     ('x11', '20230603'),
-    ('mesa', '23.1.4'),
+    ('mesa', '25.2.3'),
 ]
 
 configopts = '-Degl=yes --libdir %(installdir)s/lib '

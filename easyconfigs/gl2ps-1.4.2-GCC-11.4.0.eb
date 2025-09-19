@@ -19,7 +19,7 @@ builddependencies = [
 
 dependencies = [
     ('x11', '20230603'),
-    ('mesa', '23.1.4'),
+    ('mesa', '25.2.3'),
     ('libglu', '9.0.2'),
     #('freeglut', '3.4.0'),
     ('libpng', '1.6.39'),

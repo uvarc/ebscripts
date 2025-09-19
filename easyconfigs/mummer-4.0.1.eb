@@ -6,7 +6,7 @@
 easyblock = 'ConfigureMake'
 
 name = 'mummer'
-version = '4.0.0rc1'
+version = '4.0.1'
 
 homepage = 'http://mummer.sourceforge.net/'
 description = """MUMmer is a system for rapidly aligning entire genomes, whether in complete or draft form. AMOS makes use of it."""
