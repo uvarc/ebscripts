@@ -1,9 +1,8 @@
 easyblock = 'ConfigureMake'
 
 name = 'x264'
-version = '20230226'
-
-hidden = True
+version = '20250619'
+local_commit = 'b35605ac'
 
 homepage = 'https://www.videolan.org/developers/x264.html'
 description = """
@@ -14,13 +13,13 @@ description = """
 
 toolchain = SYSTEM
 
-source_urls = ['https://code.videolan.org/videolan/%(name)s/-/archive/baee400f/']
-sources = [{'download_filename': '%(name)s-baee400f.tar.gz', 'filename': SOURCE_TAR_GZ}]
-checksums = ['f32bdcd8edaae7686f5aba9d4421d07c1d01e5c3c10c2a87c8f3131bddb59905']
+source_urls = [f'https://code.videolan.org/videolan/%(name)s/-/archive/{local_commit}/']
+sources = [{'download_filename': f'%(name)s-{local_commit}.tar.gz', 'filename': SOURCE_TAR_GZ}]
+checksums = ['3573e4b86887a762ff138597737fa2e573a1567323bcbc8eeef73da81232257a']
 
 builddependencies = [
-    #('binutils', '2.39'),
-    #('pkgconf', '1.9.3'),
+    #('binutils', '2.42'),
+    #('pkgconf', '2.3.0'),
     ('nasm', '2.14.02'),
 ]
 
