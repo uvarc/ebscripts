@@ -1,0 +1,82 @@
+# Ruoshi Sun
+# 2025-09-24 RIV-18751
+easyblock = 'Conda'
+
+name = 'perceptual_tsne'
+version = '20200114'
+
+homepage = 'https://github.com/DrewWham/Perceptual_tSNE'
+description = "Code to make perceptual embedding plots"
+
+toolchain = SYSTEM
+
+source_urls = ['https://github.com/DrewWham/Perceptual_tSNE/archive/refs/heads']
+sources = ['master.zip']
+
+builddependencies = [('miniforge', '24.3.0', '-py3.11')]
+dependencies = [('imagemagick', '7.1.0-57')]
+
+channels = ['conda-forge']
+requirements = 'python=3.6 r-base=3.6 opencv'
+
+postinstallcmds = [
+    'unzip ' + sources[0],
+    'mv Perceptual_tSNE-master/* %(installdir)s',
+    ' && '.join([
+        'ml -miniforge',
+        'export PATH=%(installdir)s/bin:$PATH MAKE="make -j16"',
+        # some dependencies will fail for ClusterR, tidyr, tidytree; deal with them later
+        'R -e \'install.packages(c("data.table","Rtsne","optparse","ClusterR","BiocManager","tidyr","tidytree","pvclust"), repos="https://cran.r-project.org/")\'',
+        'R -e \'install.packages("https://cran.r-project.org/src/contrib/Archive/lattice/lattice_0.20-38.tar.gz")\'',
+        'R -e \'install.packages(c("ape","stringr"), repos="https://cran.r-project.org/")\'',
+        ' && '.join([f'R -e \'install.packages("https://cran.r-project.org/src/contrib/Archive/{x}")\'' for x in [
+            'quadprog/quadprog_1.5-7.tar.gz',
+            'Matrix/Matrix_1.2-18.tar.gz',
+            'igraph/igraph_1.2.4.tar.gz',
+            'fastmatch/fastmatch_1.1-0.tar.gz',
+            'phangorn/phangorn_2.5.5.tar.gz',
+            'RcppArmadillo/RcppArmadillo_0.9.800.3.0.tar.gz',
+            'gtable/gtable_0.3.0.tar.gz',
+            'MASS/MASS_7.3-51.5.tar.gz',
+            'mgcv/mgcv_1.8-31.tar.gz',
+            'plyr/plyr_1.8.5.tar.gz',
+            'reshape2/reshape2_1.4.3.tar.gz',
+            'farver/farver_2.0.0.tar.gz',
+            'labeling/labeling_0.3.tar.gz',
+            'colorspace/colorspace_1.4-1.tar.gz',
+            'munsell/munsell_0.5.0.tar.gz',
+            'RColorBrewer/RColorBrewer_1.1-2.tar.gz',
+            'viridisLite/viridisLite_0.3.0.tar.gz',
+            'scales/scales_1.1.0.tar.gz',
+            'crayon/crayon_1.3.4.tar.gz',
+            'fansi/fansi_0.4.0.tar.gz',
+            'assertthat/assertthat_0.2.0.tar.gz',
+            'backports/backports_1.1.5.tar.gz',
+            'ellipsis/ellipsis_0.3.0.tar.gz',
+            'zeallot/zeallot_0.1.0.tar.gz',
+            'ggplot2/ggplot2_3.2.1.tar.gz',
+            'yulab.utils/yulab.utils_0.0.4.tar.gz',
+            'rvcheck/rvcheck_0.1.7.tar.gz',
+            'purrr/purrr_1.0.1.tar.gz',
+            'cpp11/cpp11_0.4.0.tar.gz',
+        ]]),
+        'R -e \'install.packages(c("ClusterR","tidyr","tidytree"), repos="https://cran.r-project.org/")\'',
+        'R -e \'BiocManager::install("ggtree", version = "3.10")\'',
+        ' && '.join([f'R -e \'install.packages("https://cran.r-project.org/src/contrib/Archive/{x}")\'' for x in [
+            'gridGraphics/gridGraphics_0.4-1.tar.gz',
+            'ggplotify/ggplotify_0.0.4.tar.gz',
+            'curl/curl_4.3.tar.gz',
+            'magick/magick_2.2.tar.gz',
+            'ggimage/ggimage_0.2.5.tar.gz',
+        ]]),
+        'R -e \'install.packages("ggrepel", repos="https://cran.r-project.org/")\'',
+    ]),
+    ' && '.join([
+        'export PATH=%(installdir)s/bin:$PATH',
+        'cd %(installdir)s',
+        "sed -i -e '/numpy/d' -e '/opencv-python/d' required/requirements.txt",
+        'pip install --no-cache-dir -r required/requirements.txt',
+    ]),
+]
+
+moduleclass = 'data'
