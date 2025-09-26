@@ -1,0 +1,26 @@
+# Ruoshi Sun
+# 2025-09-25
+easyblock = 'Conda'
+
+name = 'expressdiff'
+version = '20250615'
+
+homepage = 'https://github.com/StevenZev/ExpressDiff'
+description = 'Differential Analysis Pipeline for RNA-Seq Data'
+
+toolchain = SYSTEM
+
+source_urls = ['https://github.com/StevenZev/ExpressDiff/archive/refs/heads']
+sources = ['main.zip']
+
+builddependencies = [('miniforge', '24.3.0', '-py3.11')]
+
+channels = ['conda-forge', 'bioconda']
+requirements = 'python=3.11 streamlit pydeseq2'
+
+postinstallcmds = [
+    'unzip ' + sources[0],
+    'mv ExpressDiff-main/* %(installdir)s',
+]
+
+moduleclass = 'bio'
