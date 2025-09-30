@@ -17,7 +17,7 @@ source_urls = ['https://www.paraview.org/paraview-downloads/%s' % local_download
 sources = ["ParaView-v%(version)s.tar.gz"]
 checksums = ['68b1c6d15dd67ec442f964460c56212417e8af2a96763001f8548eb3cbc5ce87']
 
-builddependencies = [('cmake', '3.24.3')]
+builddependencies = [('cmake', '4.0.0', '', SYSTEM)]
 
 dependencies = [
     #('python', '3.11.2'), # fatal error: longintrepr.h: No such file or directory
@@ -30,7 +30,7 @@ dependencies = [
     #('Mesa', '22.2.4'),
     ('qt5', '5.15.8'),
     ('zlib', '1.2.13'),
-    ('ffmpeg', '5.1.2', '', SYSTEM),
+    ('ffmpeg', '8.0', '', SYSTEM),
     ('szip', '2.1.1'),
     #('krb5', '1.20.1'),
 ]

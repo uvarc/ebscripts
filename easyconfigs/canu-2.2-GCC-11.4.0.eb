@@ -17,7 +17,7 @@ osdependencies = [
 dependencies = [
     ('java', '8', '', SYSTEM),
     ('Perl', '5.40.2'),
-    ('gnuplot', '5.4.6'),
+    ('gnuplot', '6.0.3'),
 ]
 
 start_dir = 'src'

@@ -41,7 +41,7 @@ dependencies = [
     #('KaHIP', '3.16'),
     ('cgal', '5.5.2', '-py3.11'),
     ('paraview', '5.11.0'),
-    ('gnuplot', '5.4.6'),
+    ('gnuplot', '6.0.3'),
 ]
 
 modextrapaths = {
