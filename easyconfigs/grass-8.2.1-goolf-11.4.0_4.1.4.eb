@@ -36,7 +36,7 @@ dependencies = [
     ('proj', '9.2.0'),
     ('sqlite', '3.41.2', '', SYSTEM),
     ('freetype', '2.13.0'),
-    ('ffmpeg', '5.1.2', '', SYSTEM),
+    ('ffmpeg', '8.0', '', SYSTEM),
     ('libtiff', '4.7.0'),
     ('cairo', '1.17.4'),
     ('x11', '20230603'),
