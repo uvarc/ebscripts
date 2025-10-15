@@ -14,7 +14,7 @@ sources = ['fmt-%(version)s.zip']
 checksums = ['203eb4e8aa0d746c62d8f903df58e0419e3751591bb53ff971096eaa0ebd4ec3']
 
 builddependencies = [
-    ('binutils', '2.40'),
+    #('binutils', '2.44'),
     ('cmake', '4.0.0', '', SYSTEM),
 ]
 

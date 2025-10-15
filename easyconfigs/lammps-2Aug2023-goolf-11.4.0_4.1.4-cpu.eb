@@ -38,7 +38,7 @@ dependencies = [
     # ('tbb', '2020.3'),  # Optionally required by Intel package but has a link problem when using nvlink
     #('PCRE', '8.45'),
     ('libxml2', '2.10.3'),
-    ('ffmpeg', '5.1.2', '', SYSTEM),
+    ('ffmpeg', '8.0', '', SYSTEM),
     ('voro++', '0.4.6'),
     ('kim-api', '2.3.0'),
     ('eigen', '3.4.0'),

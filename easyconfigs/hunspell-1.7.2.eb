@@ -1,0 +1,23 @@
+# Ruoshi Sun
+# 2025-08-29
+easyblock = 'ConfigureMake'
+
+name = 'hunspell'
+version = '1.7.2'
+
+homepage = 'https://github.com/hunspell/hunspell'
+description = "Hunspell is a spell checker and morphological analyzer library and program designed for languages with rich morphology and complex word compounding or character encoding. Hunspell interfaces: Ispell-like terminal interface using Curses library, Ispell pipe interface, C++ class and C functions."
+
+toolchain = SYSTEM
+
+source_urls = [homepage + '/archive']
+sources = ['v%(version)s.tar.gz']
+
+preconfigopts = 'autoreconf -vfi && '
+
+sanity_check_paths = {
+    'files': ['bin/%(name)s'],
+    'dirs': ['lib'],
+}
+
+moduleclass = 'tools'

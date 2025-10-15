@@ -1,0 +1,24 @@
+easyblock = 'ConfigureMake'
+
+name = 'lame'
+version = '3.100'
+
+homepage = 'http://lame.sourceforge.net/'
+description = "LAME is a high quality MPEG Audio Layer III (MP3) encoder licensed under the LGPL."
+
+toolchain = SYSTEM
+
+source_urls = ['https://sourceforge.net/projects/%(name)s/files/%(name)s/%(version_major_minor)s/']
+sources = [SOURCELOWER_TAR_GZ]
+patches = ['LAME-3.99.5_check-tgetent.patch']
+checksums = [
+    'ddfe36cab873794038ae2c1210557ad34857a4b6bdc515785d1da9e175b1da1e',  # lame-3.100.tar.gz
+    '8bfb6a73f2db1511baf90fbd7174f11043ec4b592a4917edc30ccfb53bf37256',  # LAME-3.99.5_check-tgetent.patch
+]
+
+sanity_check_paths = {
+    'files': ['bin/%(name)s', 'include/%(name)s/%(name)s.h', 'lib/libmp3lame.so'],
+    'dirs': [],
+}
+
+moduleclass = 'data'

@@ -15,7 +15,7 @@ checksums = ['73afba9da382fed73ed8692d77fa037bb313280879cd4012a5e5697dccf55175']
 
 builddependencies = [
     #('binutils', '2.38'),
-    ('cmake', '3.24.3'),
+    ('cmake', '3.28.1', '', SYSTEM),
 ]
 
 dependencies = [

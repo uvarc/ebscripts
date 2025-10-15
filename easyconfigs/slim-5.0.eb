@@ -1,0 +1,33 @@
+# Ruoshi Sun
+# 2025-08-29
+
+easyblock = 'CMakeMake'
+
+name = 'slim'
+version = '5.0'
+
+homepage = 'https://messerlab.org/slim/'
+description = """SLiM is an evolutionary simulation package that provides facilities for very easily and quickly constructing genetically explicit individual-based evolutionary models."""
+
+toolchain = SYSTEM
+
+source_urls = [
+    'https://github.com/MesserLab/SLiM/releases/download/v%(version)s',
+]
+
+sources = [
+    'SLiM.zip'
+]
+
+builddependencies = [
+    ('cmake', '3.28.1'),
+]
+
+sanity_check_paths = {
+    'files': ['bin/eidos', 'bin/slim'],
+    'dirs': ['bin']
+}
+
+sanity_check_commands = ["slim -v"]
+
+moduleclass = 'bio'

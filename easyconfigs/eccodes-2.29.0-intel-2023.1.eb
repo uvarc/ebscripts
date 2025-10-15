@@ -14,7 +14,7 @@ toolchainopts = {'usempi': False}
 source_urls = ['https://confluence.ecmwf.int/download/attachments/45757960/']
 sources = ['eccodes-%(version)s-Source.tar.gz']
 
-builddependencies = [('cmake', '3.23.3', '', SYSTEM)]
+builddependencies = [('cmake', '3.28.1', '', SYSTEM)]
 
 dependencies = [
     ('netcdf', '4.9.2'),

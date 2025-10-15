@@ -1,0 +1,35 @@
+easyblock = 'ConfigureMake'
+
+name = 'tmux'
+version = '3.5a'
+
+homepage = 'https://github.com/tmux/tmux/'
+description = """tmux is a terminal multiplexer: it enables a number of
+terminals to be created, accessed, and controlled from a single screen. tmux
+may be detached from a screen and continue running in the background, then
+later reattached."""
+
+toolchain = SYSTEM
+
+source_urls = ['https://github.com/%(name)s/%(name)s/releases/download/%(version)s/']
+sources = [SOURCE_TAR_GZ]
+
+builddependencies = [
+    ('bison', '3.8.2'),
+]
+
+osdependencies = [
+    ('libevent',),
+    ('ncurses',),
+]
+
+configopts = '--enable-sixel'
+
+sanity_check_paths = {
+    'files': ['bin/tmux'],
+    'dirs': []
+}
+
+sanity_check_commands = ["tmux --help 2>&1 | grep 'usage: tmux'"]
+
+moduleclass = 'tools'

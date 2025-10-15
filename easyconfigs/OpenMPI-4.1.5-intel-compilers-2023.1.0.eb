@@ -44,7 +44,7 @@ preconfigopts = ' && '.join([
     ''
 ])
 
-configopts = "--with-ucx --enable-shared --with-verbs --enable-mpirun-prefix-by-default --with-slurm --with-pmix=/opt/pmix --with-hwloc=/usr --with-libevent=/usr --without-hcoll"
+configopts = "--with-ucx --enable-shared --with-verbs --enable-mpirun-prefix-by-default --with-slurm --with-pmix=/opt/pmix/5.0.7 --with-hwloc=/usr --with-libevent=/usr --without-hcoll"
 # CUDA related patches and custom configure option can be removed if CUDA support isn't wanted.
 configopts += ' --with-cuda=internal '
 

@@ -55,8 +55,6 @@ postinstallcmds = [
             'ellipsis/ellipsis_0.3.0.tar.gz',
             'zeallot/zeallot_0.1.0.tar.gz',
             'ggplot2/ggplot2_3.2.1.tar.gz',
-        ]]),
-        ' && '.join([f'R -e \'install.packages("https://cran.r-project.org/src/contrib/Archive/{x}")\'' for x in [
             'yulab.utils/yulab.utils_0.0.4.tar.gz',
             'rvcheck/rvcheck_0.1.7.tar.gz',
             'purrr/purrr_1.0.1.tar.gz',
@@ -64,20 +62,20 @@ postinstallcmds = [
         ]]),
         'R -e \'install.packages(c("ClusterR","tidyr","tidytree"), repos="https://cran.r-project.org/")\'',
         'R -e \'BiocManager::install("ggtree", version = "3.10")\'',
-        'R -e \'install.packages(c(), repos="https://cran.r-project.org/")\'',
         ' && '.join([f'R -e \'install.packages("https://cran.r-project.org/src/contrib/Archive/{x}")\'' for x in [
             'gridGraphics/gridGraphics_0.4-1.tar.gz',
             'ggplotify/ggplotify_0.0.4.tar.gz',
+            'curl/curl_4.3.tar.gz',
             'magick/magick_2.2.tar.gz',
             'ggimage/ggimage_0.2.5.tar.gz',
         ]]),
+        'R -e \'install.packages("ggrepel", repos="https://cran.r-project.org/")\'',
     ]),
     ' && '.join([
         'export PATH=%(installdir)s/bin:$PATH',
         'cd %(installdir)s',
         "sed -i -e '/numpy/d' -e '/opencv-python/d' required/requirements.txt",
         'pip install --no-cache-dir -r required/requirements.txt',
-        #'pip install --no-cache-dir dataclasses pygments',
     ]),
 ]
 

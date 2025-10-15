@@ -1,0 +1,30 @@
+# Ruoshi Sun
+# 2025-08-29
+easyblock = 'ConfigureMake'
+
+name = 'ddd'
+version = '3.4.1'
+
+homepage = 'https://www.gnu.org/software/ddd/'
+description = """DDD is a graphical front-end for command-line debuggers such as GDB, DBX, WDB, Ladebug, JDB, XDB, the Perl debugger, the bash debugger bashdb, the GNU Make debugger remake, or the Python debugger pydb."""
+
+toolchain = SYSTEM
+
+source_urls = [GNU_SOURCE]
+sources = [SOURCE_TAR_GZ]
+
+osdependencies = [
+   ('motif', ),
+   ('ncurses', ),
+]
+
+configopts = '--with-termlib=ncurses --with-termlib-libraries=/usr/lib64'
+
+parallel=1
+
+sanity_check_paths = {
+    'files': ['bin/ddd'],
+    'dirs': [],
+}
+
+moduleclass = 'vis'
