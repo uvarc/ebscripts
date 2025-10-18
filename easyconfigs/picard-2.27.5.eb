@@ -18,7 +18,7 @@ sources = [{
 
 # postinstallcmds = ["mv %(installdir)s/%(name)s-%(version)s.jar %(installdir)s/%(name)s.jar"]
 
-dependencies = [('java', '8')]
+dependencies = [('java', '21')]
 
 modextravars = {
     'PICARD': '%(installdir)s/picard.jar'

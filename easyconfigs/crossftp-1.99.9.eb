@@ -13,7 +13,7 @@ toolchain = SYSTEM
 source_urls = ['http://www.crossftp.com/']
 sources = ['%(name)s-all-bin-%(version)s.zip']
 
-dependencies = [('java', '8')]
+dependencies = [('java', '21')]
 
 sanity_check_paths = {
     'files': ['crossftp-all-bin/run_client.sh'],

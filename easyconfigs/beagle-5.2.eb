@@ -17,7 +17,7 @@ sources = ['%(name)s.21Apr21.304.jar']
 extract_sources = False
 
 dependencies = [
-    ('java', '8'),
+    ('java', '21'),
 ]
 
 # data are installed under BEAGLE_DATA_PATH
