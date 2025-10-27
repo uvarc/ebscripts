@@ -16,9 +16,9 @@ sources = ['configureHomer.pl']
 
 dependencies = [
     ('Perl', '5.40.2'),
-    ('java', '12', '', SYSTEM),
+    ('java', '21', '', SYSTEM),
     ('circos', '0.69.9'),
-    ('cytoscape', '3.9.1', '', SYSTEM),
+    #('cytoscape', '3.9.1', '', SYSTEM),
 ]
 
 install_cmd = """

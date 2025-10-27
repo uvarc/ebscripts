@@ -1,0 +1,27 @@
+# Ruoshi Sun
+# 2025-10-23
+name = 'SWIG'
+version = '4.4.0'
+
+homepage = 'http://www.swig.org/'
+description = """SWIG is a software development tool that connects programs written in C and C++ with
+ a variety of high-level programming languages."""
+
+toolchain = {'name': 'GCC', 'version': '11.4.0'}
+toolchainopts = {'pic': True}
+
+source_urls = [SOURCEFORGE_SOURCE]
+sources = [SOURCELOWER_TAR_GZ]
+
+builddependencies = [
+    ('bison', '3.8.2', '', SYSTEM),
+]
+
+dependencies = [
+    ('zlib', '1.2.13'),
+    ('pcre2', '10.42'),
+]
+
+configopts = '--without-alllang --with-boost=no'
+
+moduleclass = 'devel'

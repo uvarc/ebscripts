@@ -1,6 +1,7 @@
-easyblock = 'EB_OpenFOAM'
-name = 'openfoam'
-version = 'v2312'
+# Ruoshi Sun
+# 2025-10-22 RIV-18964
+name = 'OpenFOAM'
+version = 'v2506'
 
 homepage = 'https://www.openfoam.com/'
 description = """OpenFOAM is a free, open source CFD software package.
@@ -15,15 +16,15 @@ toolchain = {'name': 'goolf', 'version': '11.4.0_4.1.4'}
 toolchainopts = {'cstd': 'c++14', 'vectorize': False}
 
 source_urls = ['https://sourceforge.net/projects/openfoam/files/%(version)s/']
-sources = ['OpenFOAM-v2312.tgz']
-patches = [
-    ('OpenFOAM-v2312-cleanup.patch', 1),
-    ('OpenFOAM-v2212-wmake-OpenMPI.patch', 1),
+sources = [
+    SOURCE_TGZ,
+    {
+        'filename': '%(name)s-plugins-%(version)s.tgz',
+        'extract_cmd': 'tar --strip-components=1 -C %(installdir)s/%(name)s-%(version)s/ -xzf %s'
+    }
 ]
-checksums = [
-    {'OpenFOAM-v2312.tgz': 'f113183a4d027c93939212af8967053c5f8fe76fb62e5848cb11bbcf8e829552'},
-    {'OpenFOAM-v2312-cleanup.patch': 'f1389e5d89510209d99d35917a4a6bd727134121bbbaa12471235042e675dacf'},
-    {'OpenFOAM-v2212-wmake-OpenMPI.patch': '4f5110e98df1f057dc4b478a004e4ae2dc5cc763899f0d3ceb6773315c5c8ba9'},
+patches = [
+    ('OpenFOAM-v2212-wmake-OpenMPI.patch', 1),
 ]
 
 builddependencies = [
@@ -39,18 +40,18 @@ dependencies = [
     ('metis', '5.1.0'),
     ('scotch', '7.0.3'),
     #('KaHIP', '3.16'),
-    ('cgal', '5.5.2', '-py3.11'),
-    ('paraview', '5.11.0'),
-    #('gnuplot', '6.0.3'),
+    ('CGAL', '6.1'),
+    ('paraview', '6.0.1'),
+    ('gnuplot', '6.0.3'),
 ]
 
+sanity_check_paths = {
+    'files': ['%(name)s-%(version)s/bin/paraFoam'],
+    'dirs': [],
+}
+
 modextrapaths = {
-    'PATH': ['%(name)s-%(version)s/bin','%(name)s-%(version)s/platforms/linux64GccDPInt32Opt/bin'],
-    'LD_LIBRARY_PATH':[
-        '%(name)s-%(version)s/platforms/linux64GccDPInt32Opt/lib',
-        '%(name)s-%(version)s/platforms/linux64GccDPInt32Opt/lib/dummy',
-        '%(name)s-%(version)s/platforms/linux64GccDPInt32Opt/lib/eb-mpi',
-    ]
+    'PATH': ['%(name)s-%(version)s/bin'],
 }
 
 modextravars = {

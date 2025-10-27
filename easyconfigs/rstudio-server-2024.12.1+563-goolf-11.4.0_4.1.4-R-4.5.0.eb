@@ -19,16 +19,16 @@ source_urls = ['https://github.com/rstudio/rstudio/archive/refs/tags']
 sources = ['v%(version)s.tar.gz']
 
 builddependencies = [
-    ('ant', '1.10.1', '', SYSTEM),
+    ('ant', '1.10.15', '', SYSTEM),
     ('cmake', '3.28.1', '', SYSTEM),
-    ('ninja', '1.11.1', '-py3.11'),
+    ('Ninja', '1.13.1', '', SYSTEM),
     #('pkgconf', '1.8.0'),
     ('nodejs', '18.12.1'),
 ]
 
 dependencies = [
     ('boost', '1.83.0'),
-    ('java', '11', '', SYSTEM),
+    ('java', '21', '', SYSTEM),
     ('R', '4.5.0'),
     ('soci', '4.0.3', '-boost-1.83'),
     ('yaml-cpp', '0.7.0'),

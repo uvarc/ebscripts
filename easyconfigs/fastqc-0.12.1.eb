@@ -25,7 +25,7 @@ checksums = [
     'abe7b1e245869fede8b7ef2b187398ae426b509c84f246b0c8a013c61e355ccd',  # FastQC_shebang.patch
 ]
 
-dependencies = [('java', '11')]
+dependencies = [('java', '21')]
 
 postinstallcmds = ["chmod +x %(installdir)s/fastqc"]
 

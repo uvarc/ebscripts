@@ -14,7 +14,7 @@ toolchain = SYSTEM
 source_urls = [SOURCEFORGE_SOURCE]
 sources = ['BBMap_%(version)s.tar.gz']
 
-dependencies = [('java', '12', '', SYSTEM)]
+dependencies = [('java', '21', '', SYSTEM)]
 
 prebuildopts = 'cd jni && '
 
