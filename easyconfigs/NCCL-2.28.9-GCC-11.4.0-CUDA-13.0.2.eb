@@ -1,0 +1,25 @@
+name = 'NCCL'
+version = '2.28.9'
+versionsuffix = '-CUDA-%(cudaver)s'
+
+homepage = 'https://developer.nvidia.com/nccl'
+description = """The NVIDIA Collective Communications Library (NCCL) implements multi-GPU and multi-node collective
+communication primitives that are performance optimized for NVIDIA GPUs."""
+
+toolchain = {'name': 'GCC', 'version': '11.4.0'}
+
+github_account = 'NVIDIA'
+source_urls = [GITHUB_SOURCE]
+sources = ['v%(version)s-1.tar.gz']
+
+builddependencies = [('binutils', '2.40')]
+
+dependencies = [
+    ('CUDA', '13.0.2', '', SYSTEM),
+    ('UCX-CUDA', '1.19.0', versionsuffix),
+]
+
+# default CUDA compute capabilities to use (override via --cuda-compute-capabilities)
+cuda_compute_capabilities = ['8.0', '8.6', '9.0']
+
+moduleclass = 'lib'
