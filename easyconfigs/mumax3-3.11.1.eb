@@ -1,0 +1,46 @@
+# Ruoshi Sun
+# 2025-11-12
+easyblock = 'CmdCp'
+
+name = 'mumax3'
+version = '3.11.1'
+
+homepage = 'https://github.com/mumax/3'
+description = "GPU accelerated micromagnetic simulator."
+
+source_urls = ['https://github.com/mumax/3/archive']
+sources = ['v%(version)s.tar.gz']
+
+toolchain = SYSTEM #{'name': 'GCC', 'version': '11.4.0'}
+
+builddependencies = [
+    ('go', '1.23.6'),
+]
+
+dependencies = [
+    ('CUDA', '12.8.0'),
+]
+
+local_cmd = 'cd %(builddir)s/3-%(version)s && export GOPATH=`pwd` GO111MODULE=off && FILES=$(ls) && '
+local_cmd += 'mkdir -p src/github.com/mumax/3 && '
+local_cmd += 'mv $FILES src/github.com/mumax/3 && '
+local_cmd += 'cd src/github.com/mumax/3/cmd/mumax3 && ' 
+local_cmd += 'go install'
+
+cmds_map = [('', local_cmd)]
+
+files_to_copy = [
+    'bin/mumax3',
+    'src/github.com/mumax/3/LICENSE'
+]
+
+sanity_check_paths = {
+    'files': ['mumax3'],
+    'dirs': []
+}
+
+modextrapaths = {'PATH': ''}
+
+modluafooter = 'add_property("arch","gpu")'
+
+moduleclass = 'tools'
