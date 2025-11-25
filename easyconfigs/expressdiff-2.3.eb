@@ -29,6 +29,7 @@ postinstallcmds = [' && '.join([
     '%(installdir)s/bin/pip install -r requirements.txt',
     'cd frontend',
     'npm install',
+    'npm run build',
 ])]
 
 moduleclass = 'bio'

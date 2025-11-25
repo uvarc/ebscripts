@@ -1,0 +1,38 @@
+# Ruoshi Sun
+# 2025-11-24
+easyblock = 'ConfigureMake'
+
+name = 'atat'
+version = '3.50'
+
+homepage = 'https://axelvandewalle.github.io/www-avdw/atat/'
+description = """
+The Alloy-Theoretic Automated Toolkit (ATAT) is a generic name that refers to a collection of alloy theory tools
+"""
+
+toolchain = SYSTEM
+
+source_urls = [homepage]
+sources = ['%%(name)s%s.tar.gz' % version.replace('.', '_')]
+
+skip_steps = ['configure']
+
+local_bindir = '%(builddir)s/%(namelower)s/bin'
+
+prebuildopts = 'mkdir -p %s && ' % local_bindir
+buildopts = 'BINDIR=%s' % local_bindir
+
+installopts = buildopts
+
+postinstallcmds = [
+    'cp -r bin data examples glue license.txt %(installdir)s',
+]
+
+sanity_check_paths = {
+    'files': ['bin/maps'],
+    'dirs': []
+}
+
+modloadmsg = "First-time users please run:\necho set atatdir=$EBROOTATAT > $HOME/.atat.rc\n"
+
+moduleclass = 'chem'
