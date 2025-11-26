@@ -33,6 +33,4 @@ sanity_check_paths = {
     'dirs': []
 }
 
-modloadmsg = "First-time users please run:\necho set atatdir=$EBROOTATAT > $HOME/.atat.rc\n"
-
 moduleclass = 'chem'

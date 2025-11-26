@@ -1,0 +1,24 @@
+# Ruoshi Sun
+# 2025-11-25
+easyblock = 'Conda'
+
+name = 'cc3d'
+version = '4.7.0'
+
+homepage = 'https://compucell3d.org'
+description = """
+CompuCell3D is a flexible scriptable modeling environment, which allows the
+rapid construction of sharable Virtual Tissue in silico simulations of a wide
+variety of multi-scale, multi-cellular problems including angiogenesis,
+bacterial colonies, cancer, developmental biology, evolution, the immune system,
+tissue engineering, toxicology and even non-cellular soft materials.
+"""
+
+toolchain = SYSTEM
+
+builddependencies = [('miniforge', '24.11.3', '-py3.12')]
+
+channels = ['conda-forge', 'compucell3d']
+requirements = 'python=3.12 compucell3d=4.7.0'
+
+moduleclass = 'bio'
