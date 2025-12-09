@@ -1,0 +1,33 @@
+# Ruoshi Sun
+# 2025-12-08
+easyblock = 'Conda'
+
+name = 'ollama-python'
+version = '0.6.1'
+versionsuffix = '-py3.12'
+
+homepage = 'https://github.com/ollama/ollama-python'
+description = """The Ollama Python library provides the easiest way to integrate Python 3.8+ projects with Ollama."""
+
+toolchain = SYSTEM
+
+builddependencies = [('miniforge', '24.11.3', versionsuffix)]
+
+channels = ['conda-forge']
+requirements = ' '.join([
+    'python=3.12',
+    'jupyterlab=4.4.6',
+    'numpy=2.2.6',
+    'pandas=2.3.2',
+    'scipy=1.16.1',
+])
+
+postinstallcmds = [
+    '%(installdir)s/bin/pip install --no-cache-dir ollama==%(version)s jupyter-resource-usage==1.2.0 jupyterlab-nvdashboard==0.13.0',
+]
+
+modextravars = {
+    'PIP_DISABLE_PIP_VERSION_CHECK': '1',
+}
+
+moduleclass = 'tools'

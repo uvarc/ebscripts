@@ -1,0 +1,22 @@
+easyblock = 'EB_ApptainerImage'
+
+name = 'ollama'
+version = '0.13.1'
+
+homepage = 'https://ollama.com'
+description = """
+Ollama is the easiest way to get up and running with large language models such
+as gpt-oss, Gemma 3, Qwen3 and more.
+"""
+
+toolchain = {'name': 'apptainer', 'version': '1.3.4'}
+
+sources = [
+    '%(name)s-%(version)s.sif',
+    'pullm',
+]
+
+use_gpu = True
+
+modluafooter = 'add_property("arch","gpu")'
+moduleclass = 'data'
