@@ -13,10 +13,14 @@ toolchain = {'name': 'apptainer', 'version': '1.3.4'}
 
 sources = [
     '%(name)s-%(version)s.sif',
-    'pullm',
+    # port collision
+    #'pullm',
 ]
 
 use_gpu = True
 
 modluafooter = 'add_property("arch","gpu")'
+modaliases = {
+    'ollama': 'apptainer run --env OLLAMA_HOST=$OLLAMA_HOST $CONTAINERDIR/ollama-${EBVERSIONOLLAMA}.sif'
+}
 moduleclass = 'data'
