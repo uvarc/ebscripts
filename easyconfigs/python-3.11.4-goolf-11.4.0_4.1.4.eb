@@ -18,7 +18,7 @@ sources = ["Python-%(version)s.tgz"]
 
 # python needs bzip2 to build the bz2 package
 osdependencies = [
-    ('bzip2','zlib','readline','ncurses','sqlite')
+    ('zlib','readline','ncurses','sqlite')
 ]
 
 builddependencies = [
@@ -29,6 +29,7 @@ builddependencies = [
 ]
 
 dependencies = [
+    ('bzip2', '1.0.6', '', SYSTEM),
     ('libffi', '3.4.4'),
     #('openssl', '1.1.1s'),
     #('pybind11', '2.10.3'),
