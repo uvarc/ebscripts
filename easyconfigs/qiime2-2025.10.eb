@@ -1,0 +1,26 @@
+# Ruoshi Sun
+# 2025-12-19
+easyblock = 'Conda'
+
+name = 'qiime2'
+version = '2025.10'
+
+homepage = 'https://amplicon-docs.qiime2.org'
+description = """
+QIIME 2 is a powerful, extensible, and decentralized microbiome analysis package
+with a focus on data and analysis transparency. QIIME 2 enables researchers to
+start an analysis with raw DNA sequence data and finish with publication-quality
+figures and statistical results.
+"""
+
+toolchain = SYSTEM
+
+sources = ['qiime2-amplicon-ubuntu-latest-conda.yml']
+
+builddependencies = [
+    ('miniforge', '24.11.3', '-py3.12'),
+]
+
+environment_file = sources[0]
+
+moduleclass = 'bio'

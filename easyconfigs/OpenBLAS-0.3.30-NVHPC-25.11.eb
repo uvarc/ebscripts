@@ -1,0 +1,28 @@
+# Ruoshi Sun
+# 2025-12-19
+name = 'OpenBLAS'
+version = '0.3.30'
+
+homepage = 'http://xianyi.github.com/OpenBLAS/'
+description = "OpenBLAS is an optimized BLAS library based on GotoBLAS2 1.13 BSD version."
+
+toolchain = {'name': 'NVHPC', 'version': '25.11'}
+
+source_urls = [
+    'http://www.netlib.org/lapack/timing/',
+    'https://github.com/xianyi/OpenBLAS/archive/',
+]
+sources = ['v%(version)s.tar.gz']
+
+patches = [
+    ('large.tgz', '.'),
+    ('timing.tgz', '.'),
+    'OpenBLAS-0.3.15_workaround-gcc-miscompilation.patch',
+    'OpenBLAS-0.3.21_fix-order-vectorization.patch',
+    'OpenBLAS-0.3.30_revert-fix-out-of-bounds-access.patch',
+]
+
+run_lapack_tests = False
+max_failing_lapack_tests_num_errors = 150
+
+moduleclass = 'numlib'
