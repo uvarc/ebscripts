@@ -1,6 +1,5 @@
 name = 'imkl'
 version = '2025.0.1'
-
 accept_eula = True
 
 homepage = 'https://software.intel.com/content/www/us/en/develop/tools/oneapi/components/onemkl.html'
