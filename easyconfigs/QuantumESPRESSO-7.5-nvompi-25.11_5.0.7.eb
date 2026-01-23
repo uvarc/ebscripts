@@ -105,14 +105,5 @@ test_suite_threshold = 0.98
 test_suite_max_failed = 5  # Allow for some flaky tests (failed due to strict thresholds)
 test_suite_allow_failures = []
 
-moduleclass = 'chem'
-
-postinstallcmds = [
-    'ln -s /apps/software/standard/core/nvhpc/25.11/Linux_x86_64/25.11/comm_libs/13.0/hpcx/hpcx-2.25.1/ompi/lib/libscalapack_lp64.so.2 %(installdir)s/lib',
-]
-
-modextrapaths = {
-    'LD_LIBRARY_PATH': '/apps/software/standard/core/nvhpc/25.11/Linux_x86_64/25.11/comm_libs/13.0/hpcx/hpcx-2.25.1/ompi/lib',
-}
 modluafooter = 'add_property("arch","gpu")'
 moduleclass = "chem"
