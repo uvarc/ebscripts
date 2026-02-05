@@ -1,0 +1,23 @@
+easyblock = 'EB_ApptainerImage'
+
+name = 'jax'
+version = '0.8.1'
+
+homepage = 'https://docs.jax.dev/'
+description = """
+JAX is a Python library for accelerator-oriented array computation and program
+transformation, designed for high-performance numerical computing and
+large-scale machine learning.
+"""
+
+toolchain = {'name': 'apptainer', 'version': '1.3.4'}
+
+sources = ['%(name)s-%(version)s.sif']
+
+use_gpu = True
+
+modloadmsg = """This container is based on NGC 26.01
+https://docs.nvidia.com/deeplearning/frameworks/jax-release-notes/rel-26-01.html#rel-26-01
+"""
+modluafooter = 'add_property("arch","gpu")'
+moduleclass = 'data'
