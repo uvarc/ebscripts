@@ -80,11 +80,11 @@ case $1 in
         ;;
 esac
 
-EBDIR=$APPSDIR/software/EasyBuild/$EBVER
+EBDIR=$APPSDIR/software/standard/core/easybuild/$EBVER
 PYVER=$($PYTHON -V|awk '{print $2}') # e.g. 3.6.8
 PYVER=${PYVER%.*}                    # e.g. 3.6
 # the trailing slash matters for rsync
-EASYBLOCKSDIR=$APPSDIR/software/EasyBuild/$EBVER/lib/python${PYVER}/site-packages/easybuild/easyblocks/
+EASYBLOCKSDIR=$APPSDIR/software/standard/core/easybuild/$EBVER/lib/python${PYVER}/site-packages/easybuild/easyblocks/
 SOFTWAREDIR=$APPSDIR/software/standard
 
 for i in $APPSDIR $EBDIR $EASYBLOCKSDIR $SOFTWAREDIR; do
