@@ -21,7 +21,7 @@ source_urls = ['http://data.broadinstitute.org/igv/projects/downloads/%(version_
 sources = ['IGV_%(version)s.zip']
 
 dependencies = [
-    ('java', '11')
+    ('java', '21')
 ]
 
 modextrapaths = {'PATH': ''}

@@ -1,0 +1,22 @@
+# Ruoshi Sun
+# 2026-01-27
+easyblock = 'Conda'
+
+name = 'alphagenome'
+version = '0.5.1'
+
+homepage = 'https://mesonbuild.com'
+description = "Meson is a cross-platform build system designed to be both as fast and as user friendly as possible."
+
+toolchain = SYSTEM
+
+builddependencies = [
+    ('miniforge', '24.11.3', '-py3.12'),
+]
+
+requirements = 'python=3.12 numpy scipy matplotlib seaborn'
+
+postinstallcmds = [
+    '%(installdir)s/bin/pip install git+https://github.com/google-deepmind/alphagenome@v%(version)s',
+]
+moduleclass = 'bio'

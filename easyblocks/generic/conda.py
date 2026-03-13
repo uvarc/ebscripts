@@ -68,7 +68,7 @@ class Conda(Binary):
     def extract_step(self):
         """Copy sources via extract_step of parent, if any are specified."""
         if self.src:
-            super(Conda, self).extract_step()
+            super().extract_step()
 
     def install_step(self):
         """Install software using 'conda env create' or 'conda create' & 'conda install'
@@ -86,9 +86,8 @@ class Conda(Binary):
 
         # initialize conda environment
         # setuptools is just a choice, but *something* needs to be there
-        if conda_cmd == 'conda':
-            cmd = f"{conda_cmd} config --add create_default_packages setuptools"
-            run_shell_cmd(cmd)
+        cmd = f"{conda_cmd} config --add create_default_packages setuptools"
+        #run_shell_cmd(cmd)
 
         if self.cfg['environment_file'] or self.cfg['remote_environment']:
 
@@ -103,6 +102,8 @@ class Conda(Binary):
             run_shell_cmd(cmd)
 
         else:
+
+            install_args = ""
 
             if self.cfg['requirements']:
 
@@ -122,7 +123,7 @@ class Conda(Binary):
 
     def make_module_extra(self):
         """Add the install directory to the PATH."""
-        txt = super(Conda, self).make_module_extra()
+        txt = super().make_module_extra()
         txt += self.module_generator.set_environment('CONDA_ENV', self.installdir)
         txt += self.module_generator.set_environment('CONDA_PREFIX', self.installdir)
         txt += self.module_generator.set_environment('CONDA_DEFAULT_ENV', self.installdir)

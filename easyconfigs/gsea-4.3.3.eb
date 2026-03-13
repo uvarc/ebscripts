@@ -20,7 +20,8 @@ toolchain = SYSTEM
 source_urls = ['https://data.broadinstitute.org/gsea-msigdb/gsea/software/desktop/%(version_major_minor)s/']
 sources = ['GSEA_Linux_%(version)s.zip']
 
-dependencies = [('java', '11')]
+# uses bundled java
+#dependencies = [('java', '21')]
 
 sanity_check_paths = {
     'files': ['gsea.sh', 'gsea-cli.sh', 'gsea.args', 'readme.txt'],

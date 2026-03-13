@@ -18,10 +18,10 @@ osdependencies = [
     ('python3', ),
 ]
 builddependencies = [
-    ('cmake', '3.23.3'),
+    ('cmake', '4.0.0'),
 ]
 dependencies = [
-    ('java', '8'),
+    ('java', '21'),
 ]
 
 configopts = "-DVTK_RENDERING_BACKEND:STRING=OpenGL -DVTK_WRAP_JAVA=ON -DVTK_WRAP_PYTHON=ON"

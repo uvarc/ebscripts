@@ -1,0 +1,29 @@
+# Ruoshi Sun
+# 2026-02-11 RIV-19650
+
+easyblock = 'CMakeMake'
+
+name = 'gromacs'
+version = '2026.0'
+
+homepage = 'http://www.gromacs.org'
+description = """GROMACS is a versatile package to perform molecular dynamics,
+ i.e. simulate the Newtonian equations of motion for systems with hundreds to millions of particles."""
+
+toolchain = {'name': 'NVHPC', 'version': '26.1'}
+toolchainopts = {'openmp': True, 'usempi': True}
+
+source_urls = ['ftp://ftp.gromacs.org/gromacs/']
+sources = [SOURCELOWER_TAR_GZ]
+
+builddependencies = [
+    ('cmake', '3.28.1', '', SYSTEM),
+]
+
+cuda_compute_capabilities = ['8.0', '8.6', '9.0', '10.0']
+
+#preconfigopts = 'ml -nvidia-compilers && export PATH=$EBROOTNVHPC/Linux_x86_64/26.1/compilers/bin:$PATH && '
+configopts = '-DGMX_GPU=CUDA -DGMX_MPI=on'
+
+modluafooter = 'add_property("arch","gpu")'
+moduleclass = 'chem'

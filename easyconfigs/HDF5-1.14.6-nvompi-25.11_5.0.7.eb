@@ -1,0 +1,25 @@
+# Ruoshi Sun
+# 2025-12-05
+name = 'HDF5'
+version = '1.14.6'
+
+homepage = 'http://www.hdfgroup.org/HDF5/'
+description = "HDF5 is a unique technology suite that makes possible the management of extremely large and complex data collections."
+
+toolchain = {'name': 'nvompi', 'version': '25.11_5.0.7'}
+toolchainopts = {'pic': True, 'usempi': True}
+
+source_urls = [
+    'https://support.hdfgroup.org/releases/hdf5/v%%(version_major)s_%%(version_minor)s/v%s/downloads' % version.replace('.','_')
+]
+sources = [SOURCELOWER_TAR_GZ]
+
+local_gcc = ('GCC', '14.2.0')
+dependencies = [
+    ('zlib', '1.3.1', '', local_gcc),
+    ('szip', '2.1.1', '', local_gcc),
+]
+
+configopts = '--enable-shared --enable-parallel '
+
+moduleclass = 'data'

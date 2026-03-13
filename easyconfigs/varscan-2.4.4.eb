@@ -17,7 +17,7 @@ sources = ['VarScan.v%(version)s.jar']
 extract_sources = False
 
 dependencies = [
-    ('java', '12'),
+    ('java', '21'),
 ]
 
 #install_cmds = [

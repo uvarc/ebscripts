@@ -1,0 +1,27 @@
+# Ruoshi Sun
+# 2025-10-24
+easyblock = 'CMakeMake'
+
+name = 'geos'
+version = '3.14.0'
+
+homepage = 'https://trac.osgeo.org/geos'
+description = """GEOS (Geometry Engine - Open Source) is a C++ port of the Java Topology Suite (JTS)"""
+
+toolchain = {'name': 'GCC', 'version': '11.4.0'}
+toolchainopts = {'pic': True}
+
+source_urls = ['https://download.osgeo.org/geos/']
+sources = [SOURCELOWER_TAR_BZ2]
+
+builddependencies = [('cmake', '4.1.2', '', SYSTEM)]
+
+# Build static and shared libraries
+configopts = ['', '-DBUILD_SHARED_LIBS=OFF']
+
+sanity_check_paths = {
+    'files': ['bin/geos-config', 'lib/libgeos.%s' % SHLIB_EXT, 'lib/libgeos.a', 'include/geos.h'],
+    'dirs': [],
+}
+
+moduleclass = 'math'

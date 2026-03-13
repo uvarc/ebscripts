@@ -1,0 +1,43 @@
+easyblock = 'CMakeMake'
+
+name = 'DBCSR'
+version = '2.9.1'
+
+homepage = 'https://cp2k.github.io/dbcsr/develop/'
+description = """DBCSR stands for Distributed Blocked Compressed Sparse Row. DBCSR is a library designed to
+ efficiently perform sparse matrix-matrix multiplication, among other operations."""
+
+toolchain = {'name': 'intel', 'version': '2025.3'}
+toolchainopts = {'pic': True, 'openmp': True, 'usempi': True}
+
+source_urls = ['https://github.com/cp2k/dbcsr/releases/download/v%(version)s/']
+sources = [SOURCELOWER_TAR_GZ]
+#patches = ['%(name)s-%(version)s_fix-cmake.patch']
+
+local_gcc = ('GCC', '14.2.0')
+builddependencies = [
+    ('CMake', '4.2.2', '', local_gcc),
+    #('pkg-config', '0.29.2', '', local_gcc),
+    ('pkgconf', '2.4.3', '', local_gcc),
+]
+
+dependencies = [
+    ('libxsmm', '1.17'),
+    ('Python', '3.13.11', '', local_gcc),
+]
+
+preconfigopts = 'export PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${EBROOTLIBXSMM}/lib" && '
+
+configopts = ' '.join([
+    '-DBLA_VENDOR=Intel10_64lp_seq',
+    '-DUSE_SMM=auto',
+    '-DUSE_MPI=ON',
+    '-DUSE_OPENMP=ON',
+])
+
+sanity_check_paths = {
+    'files': ['include/dbcsr_tensor_api.mod', 'include/dbcsr.h', 'lib/libdbcsr.a'],
+    'dirs': ['lib/cmake/dbcsr'],
+}
+
+moduleclass = 'chem'

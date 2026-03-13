@@ -22,5 +22,4 @@ dependencies = [
     ('libfabric', '2.0.0', '', ('intel-compilers', local_comp_ver)),
 ]
  
-modluafooter = 'add_property("state","experimental")'
 moduleclass = 'toolchain'

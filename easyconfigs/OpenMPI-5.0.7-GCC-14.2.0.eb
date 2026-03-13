@@ -56,5 +56,4 @@ modextravars = {
     'UCX_WARN_UNUSED_ENV_VARS': 'n',
 }
 
-modluafooter = 'add_property("state","experimental")'
 moduleclass = 'mpi'

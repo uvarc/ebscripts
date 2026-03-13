@@ -11,14 +11,14 @@ source_urls = ['https://github.com/opensim-org/opensim-core/archive/refs/tags']
 sources = ['%(version)s.tar.gz']
 
 builddependencies = [
-    ('cmake', '3.24.3'),
-    ('ninja', '1.11.1', '-py3.11'),
+    ('cmake', '3.28.1', '', SYSTEM),
+    ('Ninja', '1.13.1', '', SYSTEM),
 ]
 
 dependencies = [
     ('python', '3.11.4'),
     ('swig', '4.1.1', '', SYSTEM),
-    ('java', '12', '', SYSTEM),
+    ('java', '21', '', SYSTEM),
     ('eigen', '3.4.0'),
 ]
 

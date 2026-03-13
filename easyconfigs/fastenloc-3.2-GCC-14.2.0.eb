@@ -1,0 +1,30 @@
+easyblock = 'MakeCp'
+
+name = 'fastenloc'
+version = '3.2'
+
+homepage = 'https://github.com/xqwen/fastenloc'
+description = """fastENLOC: fast enrichment estimation aided colocalization analysis enables integrative genetic association analysis of molecular QTL data and GWAS data."""
+
+source_urls = ['https://github.com/xqwen/fastenloc/archive/refs/tags/']
+sources = ['v%(version)s.tar.gz']
+
+toolchain = {'name': 'GCC', 'version': '14.2.0'}
+
+dependencies = [
+    ('GSL', '2.8'),
+    ('boost', '1.83.0')
+]
+
+prebuildopts = 'cd src && '
+
+files_to_copy = ['src/%(name)s', 'docs', 'sample_data', 'utility']
+
+sanity_check_paths = {
+    'files': ['fastenloc'],
+    'dirs': [],
+}
+
+modextrapaths = {'PATH': ''}
+
+moduleclass = 'bio'

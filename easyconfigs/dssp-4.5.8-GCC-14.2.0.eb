@@ -1,0 +1,54 @@
+# Thomas Hoffmann, EMBL Heidelberg, structures-it@embl.de, 2025/01
+# Ruoshi Sun
+# 2026-02-02
+easyblock = 'CMakeMake'
+
+name = 'dssp'
+version = '4.5.8'
+
+homepage = 'https://github.com/PDB-REDO/dssp'
+description = """This is a rewrite of DSSP, now offering full mmCIF support. The difference with
+previous releases of DSSP is that it now writes out an annotated mmCIF file by
+default, storing the secondary structure information in the _struct_conf
+category."""
+
+toolchain = {'name': 'GCC', 'version': '14.2.0'}
+
+github_account = 'PDB-REDO'
+source_urls = [GITHUB_SOURCE]
+sources = ['v%(version)s.tar.gz']
+
+builddependencies = [
+    ('cmake', '3.28.1', '', SYSTEM),
+    ('libmcfp', '1.3.5'),
+    ('boost', '1.83.0'),  # req. for testing
+    ('mrc', '1.3.13'),
+    ('Catch2', '3.11.0'),
+]
+
+dependencies = [
+    ('libcifpp', '9.0.5'),
+]
+
+configopts = ' '.join([
+    #'-DUSE_RSRC=ON',
+    #'-DFETCHCONTENT_FULLY_DISCONNECTED=ON',
+    '-DCIFPP_SHARE_DIR=$EBROOTLIBCIFPP/share',
+    '-Dcifpp_DIR=$EBROOTLIBCIFPP/lib/cmake/cifpp',
+    '-Dmcfp_DIR=$EBROOTLIBMCFP/lib/cmake/mcfp',
+])
+
+postinstallcmds = [
+    'cd %(installdir)s/bin && ln -s mkdssp dssp',
+    'cd %(installdir)s/share/man && ln -s mkdssp.1 dssp.1',
+]
+
+runtest = True
+
+sanity_check_commands = ['dssp -h']
+sanity_check_paths = {
+    'files': ['bin/dssp'],
+    'dirs': [],
+}
+
+moduleclass = 'bio'

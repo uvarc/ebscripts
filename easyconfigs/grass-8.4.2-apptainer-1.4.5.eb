@@ -1,0 +1,15 @@
+easyblock = 'EB_ApptainerImage'
+
+name = 'grass'
+version = '8.4.2'
+
+homepage = "https://grass.osgeo.org"
+description = """The Geographic Resources Analysis Support System - used
+ for geospatial data management and analysis, image processing,
+ graphics and maps production, spatial modeling, and visualization"""
+
+toolchain = {'name': 'apptainer', 'version': '1.4.5'}
+
+sources = ['%(name)s-%(version)s.sif']
+
+moduleclass = 'geo'

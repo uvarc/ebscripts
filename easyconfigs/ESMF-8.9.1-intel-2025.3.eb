@@ -1,0 +1,29 @@
+name = 'ESMF'
+version = '8.9.1'
+
+homepage = 'https://github.com/esmf-org/esmf'
+description = """The Earth System Modeling Framework (ESMF) is a suite of software tools for developing
+ high-performance, multi-component Earth science modeling applications."""
+
+toolchain = {'name': 'intel', 'version': '2025.3'}
+toolchainopts = {'usempi': True, 'openmp': True, 'cstd': 'c++11', 'pic': True}
+
+source_urls = ['https://github.com/esmf-org/esmf/archive/refs/tags']
+sources = ['v%(version)s.tar.gz']
+patches = ['ESMF-8.9.0_libopts.patch']
+
+builddependencies = [('cmake', '3.28.1', '', SYSTEM)]
+
+local_gcc = ('GCC', '14.2.0')
+dependencies = [
+    ('netcdf', '4.9.2'),
+    ('libarchive', '3.8.1', '', local_gcc),
+]
+
+buildopts = 'ESMF_NETCDF_INCLUDE=$EBROOTNETCDFMINFORTRAN/include '
+buildopts += 'ESMF_NETCDF_LIBS="`nc-config --libs` `nf-config --flibs` `ncxx4-config --libs`"'
+
+# too parallel causes the build to become really slow
+maxparallel = 8
+
+moduleclass = 'geo'

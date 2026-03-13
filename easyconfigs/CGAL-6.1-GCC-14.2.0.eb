@@ -1,0 +1,27 @@
+# Ruoshi Sun
+# 2025-10-23
+easyblock = 'CMakeMake'
+name = 'CGAL'
+version = '6.1'
+
+homepage = 'http://www.cgal.org/'
+description = """The goal of the CGAL Open Source Project is to provide easy access to efficient
+ and reliable geometric algorithms in the form of a C++ library."""
+
+toolchain = {'name': 'GCC', 'version': '14.2.0'}
+toolchainopts = {'strict': True}
+
+source_urls = ['https://github.com/CGAL/cgal/releases/download/v%(version)s']
+sources = ['CGAL-%(version)s.tar.xz']
+
+builddependencies = [
+    ('cmake', '4.1.2', '', SYSTEM),
+    ('binutils', '2.45'),
+]
+
+sanity_check_paths = {
+    'files': ['include/CGAL/Simple_cartesian.h'],
+    'dirs': ['include/CGAL', 'lib/cmake/CGAL'],
+}
+
+moduleclass = 'numlib'

@@ -1,0 +1,30 @@
+easyblock = 'MesonNinja'
+
+name = 'libdrm'
+version = '2.4.131'
+
+homepage = 'https://dri.freedesktop.org'
+description = """Direct Rendering Manager runtime library."""
+
+toolchain = {'name': 'GCC', 'version': '14.2.0'}
+
+source_urls = ['https://dri.freedesktop.org/libdrm/']
+sources = [SOURCELOWER_TAR_XZ]
+
+builddependencies = [
+    ('binutils', '2.45'),
+    ('pkgconf', '2.4.3'),
+    ('Meson', '1.9.0'),
+    ('Ninja', '1.13.1'),
+]
+dependencies = [('X11', '20250608')]
+
+# installing manpages requires an extra build dependency (docbook xsl)
+configopts = '-Dman-pages=disabled'
+
+sanity_check_paths = {
+    'files': ['lib/libdrm.%s' % SHLIB_EXT, 'include/libdrm/drm.h'],
+    'dirs': ['include', 'lib'],
+}
+
+moduleclass = 'lib'

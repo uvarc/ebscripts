@@ -1,0 +1,74 @@
+easyblock = 'CMakeMake'
+
+name = 'GDAL'
+version = '3.12.1'
+
+homepage = 'https://www.gdal.org'
+description = """GDAL is a translator library for raster geospatial data formats that is released under an X/MIT style
+ Open Source license by the Open Source Geospatial Foundation. As a library, it presents a single abstract data model
+ to the calling application for all supported formats. It also comes with a variety of useful commandline utilities for
+ data translation and processing."""
+
+toolchain = {'name': 'goolf', 'version': '14.2.0_5.0.7'}
+toolchainopts = {'usempi': True}
+
+source_urls = ['https://download.osgeo.org/%(namelower)s/%(version)s/']
+sources = [SOURCELOWER_TAR_XZ]
+patches = ['%(name)s-3.6.2_fix-python-CC-CXX.patch']
+
+builddependencies = [
+    ('cmake', '4.1.2', '', SYSTEM),
+    ('pkgconf', '2.4.3'),
+    ('bison', '3.8.2', '', SYSTEM),
+]
+dependencies = [
+    ('Python', '3.13.11'),
+    ('SciPy-bundle', '2025.07', '', ('golf', '14.2.0')),
+    ('expat', '2.7.3'),
+    ('GEOS', '3.14.0'),
+    ('sqlite', '3.51.2'),
+    ('libarchive', '3.8.1'),
+    ('libxml2', '2.14.3'),
+    ('libpng', '1.6.53'),
+    ('libjpeg-turbo', '3.1.3'),
+    ('libtiff', '4.7.1'),
+    ('zlib', '1.3.1'),
+    ('curl', '8.18.0'),
+    ('pcre', '8.45'),
+    ('PROJ', '9.7.0'),
+    ('libgeotiff', '1.7.4'),
+    ('hdf5', '1.14.6'),
+    ('HDF', '4.3.1'),
+    ('Armadillo', '15.0.1'),
+    ('CFITSIO', '4.6.3'),
+    ('zstd', '1.5.7'),
+    ('giflib', '5.2.2'),
+    ('json-c', '0.18'),
+    ('Xerces-C++', '3.3.0'),
+    ('pcre2', '10.42'),
+    ('OpenEXR', '3.3.4'),
+    ('Brunsli', '0.1'),
+    ('Qhull', '2020.2'),
+    ('LERC', '4.0.0'),
+    ('openjpeg', '2.5.4'),
+    ('SWIG', '4.4.0'),
+    ('netcdf', '4.9.2'),
+]
+
+# iterative build for both static and shared libraries
+local_configopts_common = "-DGDAL_USE_INTERNAL_LIBS=OFF -DGDAL_USE_MYSQL=OFF -DGDAL_USE_POPPLER=OFF "
+local_configopts_common += "-DGEOTIFF_INCLUDE_DIR=$EBROOTLIBGEOTIFF/include -DPython_ROOT=$EBROOTPYTHON "
+
+configopts = [
+    local_configopts_common + "-DBUILD_SHARED_LIBS=OFF",
+    local_configopts_common
+]
+
+sanity_check_paths = {
+    'files': ['lib/libgdal.a', f'lib/libgdal.{SHLIB_EXT}'],
+    'dirs': ['bin', 'include', 'lib/python%(pyshortver)s/site-packages'],
+}
+
+sanity_check_commands = ["python -s -c 'import osgeo.%(namelower)s'"]
+
+moduleclass = 'data'

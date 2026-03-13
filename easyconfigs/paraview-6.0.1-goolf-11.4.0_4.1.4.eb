@@ -1,0 +1,57 @@
+# Ruoshi Sun
+# 2025-10-22
+easyblock = 'CMakeNinja'
+
+name = 'paraview'
+version = '6.0.1'
+
+homepage = 'https://www.paraview.org'
+description = "ParaView is a scientific parallel visualizer."
+
+toolchain = {'name': 'goolf', 'version': '11.4.0_4.1.4'}
+toolchainopts = {'pic': True, 'usempi': True}
+
+local_download_suffix = 'download.php?submit=Download&version=v%(version_major_minor)s&type=source&os=all&downloadFile='
+source_urls = ['https://www.paraview.org/paraview-downloads/%s' % local_download_suffix]
+sources = ['ParaView-v%(version)s.tar.gz']
+
+builddependencies = [
+    ('cmake', '4.0.0', '', SYSTEM),
+    ('Ninja', '1.13.1', '', SYSTEM),
+]
+
+dependencies = [
+    #('python', '3.11.2'), # fatal error: longintrepr.h: No such file or directory
+    #('SciPy-bundle', '2023.02'),
+    ('xz', '5.2.7', '', SYSTEM),
+    ('hdf5', '1.12.2'),
+    ('netcdf', '4.9.2'),
+    #('libGLU', '9.0.2'),
+    #('X11', '20221110'),
+    ('mesa', '25.2.3'),
+    ('qt6', '6.9.2'),
+    ('zlib', '1.2.13'),
+    ('ffmpeg', '8.0', '', SYSTEM),
+    ('szip', '2.1.1'),
+    #('krb5', '1.20.1'),
+]
+
+# Paraview
+configopts = '-DPARAVIEW_INSTALL_DEVELOPMENT_FILES=ON -DPARAVIEW_BUILD_SHARED_LIBS=ON '
+configopts += '-DPARAVIEW_USE_MPI=ON '
+configopts += '-DPARAVIEW_ENABLE_FFMPEG=ON '
+configopts += '-DPARAVIEW_USE_PYTHON=ON '
+#configopts += '-DPython3_ROOT_DIR=$EBROOTPYTHON '
+
+# OpenGL & Mesa
+configopts += '-DOPENGL_glu_LIBRARY=$EBROOTLIBGLU/lib/libGLU.%s ' % SHLIB_EXT
+configopts += '-DOPENGL_INCLUDE_DIR=$EBROOTMESA/include '
+
+sanity_check_paths = {
+    'files': ['bin/paraview', 'bin/pvpython'],
+    'dirs': ['include/paraview-%(version_major_minor)s']
+}
+
+modextrapaths = {'PYTHONPATH': 'lib/python3.6/site-packages'}
+
+moduleclass = 'vis'

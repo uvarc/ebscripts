@@ -37,5 +37,12 @@ modextravars = {
 }
 modluafooter = """
 execute{cmd="source '"..pathJoin(root, "/etc/bash_profile").."'", modeA={"load"}}
+add_property("state","obsolete")
 """
+
+modloadmsg = """!!! WARNING !!!
+Module %(name)s/%(version)s has been deprecated and will be REMOVED in the future.
+If this module is required for your work please contact us at
+https://rc.virginia.edu/form/support-request/"""
+
 moduleclass = 'astro'

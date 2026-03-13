@@ -1,0 +1,47 @@
+# Ruoshi Sun
+# 2026-01-28
+easyblock = 'ConfigureMake'
+
+name = 'mrtrix3'
+version = '3.0.8'
+
+homepage = 'https://www.mrtrix.org'
+description = """MRtrix3 provides a set of tools to perform various types of diffusion MRI analyses, from various forms of tractography through to next-generation group-level analyses. It is designed with consistency, performance, and stability in mind, and is freely available under an open-source license. It is developed and maintained by a team of experts in the field, fostering an active community of users from diverse backgrounds."""
+
+toolchain = {'name': 'GCC', 'version': '14.2.0'}
+
+source_urls = ['https://github.com/MRtrix3/mrtrix3/archive/refs/tags']
+sources = ['%(version)s.tar.gz']
+
+builddependencies = [
+    ('eigen', '3.4.0'),
+]
+dependencies = [
+    ('zlib', '1.3.1'),
+    ('Python', '3.13.11'),
+    ('OpenGL', '2025.09'),
+    # qt6 requires -cstd=c++17 but will lead to "overloaded function is ambiguous" error
+    ('Qt5', '5.15.16'),
+    ('libtiff', '4.7.1'),
+    ('FFTW', '3.3.10'),
+    ('libpng', '1.6.53'),
+]
+
+configure_without_installdir = True
+
+#preconfigopts = 'export MOC=$EBROOTQT6/libexec/moc && '
+
+# comment out "-j X"
+build_cmd = './build #'
+
+install_cmd = ' && '.join([
+    # install mrpeek
+    'git clone https://github.com/MRtrix3/mrpeek.git',
+    'cd mrpeek',
+    '../build',
+    'cp bin/mrpeek ../bin',
+    'cd ..',
+    'cp -r bin lib LICENCE.txt %(installdir)s',
+])
+
+moduleclass = 'bio'

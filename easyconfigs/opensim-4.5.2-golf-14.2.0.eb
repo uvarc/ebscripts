@@ -1,0 +1,90 @@
+easyblock = 'CMakeMake'
+name = 'opensim'
+version = '4.5.2'
+
+homepage = 'https://github.com/opensim-org'
+description = 'OpenSim is software that lets users develop models of musculoskeletal structures and create dynamic simulations of movement'
+
+toolchain = {'name': 'golf', 'version': '14.2.0'}
+
+source_urls = ['https://github.com/opensim-org/opensim-core/archive/refs/tags']
+sources = ['%(version)s.tar.gz']
+
+builddependencies = [
+    ('cmake', '3.28.1', '', SYSTEM),
+    ('bison', '3.8.2', '', SYSTEM),
+    ('Ninja', '1.13.1'),
+]
+
+dependencies = [
+    ('Python', '3.13.11'),
+    ('SciPy-bundle', '2025.07'),
+    ('swig', '4.1.1', '', SYSTEM), # syntax error with 4.4.0
+    ('Java', '21', '', SYSTEM),
+    ('eigen', '3.4.0'),
+]
+
+preconfigopts = ' && '.join([
+    'module load matlab/R2025b',
+    'cmake %(builddir)s/opensim-core-%(version)s/dependencies ' + ' '.join([
+        '-DCMAKE_INSTALL_PREFIX=%(installdir)s/deps',
+        '-DSUPERBUILD_ezc3d=ON',
+        '-DOPENSIM_WITH_CASADI=ON',
+        '-DOPENSIM_WITH_TROPTER=ON',
+    ]),
+    'cmake . -LAH',
+    'cmake --build . --config Release -j20',
+    'for i in catch2 docopt ezc3d simbody; do ln -sf %(installdir)s/deps/$i/lib64 %(installdir)s/deps/$i/lib; done',
+    # clean up before config
+    'rm -rf *',
+    'export CPATH=$EBROOTJAVA/include/linux:$CPATH',
+    ''
+])
+
+configopts = ' '.join([
+    '%(builddir)s/opensim-core-%(version)s -G Ninja',
+    '-DOPENSIM_DEPENDENCIES_DIR=%(installdir)s/deps',
+    '-DBUILD_JAVA_WRAPPING=ON',
+    '-DBUILD_PYTHON_WRAPPING=ON',
+    '-DOPENSIM_C3D_PARSER=ezc3d',
+    '-DBUILD_TESTING=OFF',
+    '-DOPENSIM_INSTALL_UNIX_FHS=OFF',
+    '-DSWIG_DIR=$EBROOTSWIG',
+    '-DSWIG_EXECUTABLE=$EBROOTSWIG/bin/swig',
+    '-DOPENSIM_WITH_CASADI=ON',
+    '-DOPENSIM_WITH_TROPTER=ON',
+    '-DCMAKE_BUILD_TYPE=Release',
+]) + ' && cmake . -LAH'
+
+prebuildopts = 'export CPATH=$EBROOTJAVA/include/linux:$CPATH && '
+
+#prebuildopts = ' && '.join([
+    #'cd %(builddir)s/easybuild_obj',
+    #'export CPATH=$EBROOTJAVA/include/linux:$CPATH',
+    #'',
+#])
+
+# these options must precede -jX which is automatically appended to build_cmd by EB
+build_cmd = 'cmake --build . --config Release'
+
+# do not clean up or move the installation from previous steps
+cleanupoldinstall = False
+keeppreviousinstall = True
+#preinstallopts = 'cd %(builddir)s/easybuild_obj && ' 
+install_cmd = 'cmake'
+installopts = '--install .'
+
+sanity_check_paths = {
+    'files': ['bin/opensim-cmd'],
+    'dirs': ['bin', 'deps'],
+}
+
+modextrapaths = {
+    'LD_LIBRARY_PATH': ['deps/simbody/lib64']
+}
+
+modloadmsg = """Matlab users please run:
+module load matlab/R2025b
+"""
+
+moduleclass = 'data'

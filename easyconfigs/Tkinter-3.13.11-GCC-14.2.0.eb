@@ -1,0 +1,28 @@
+name = 'Tkinter'
+version = '3.13.11'
+
+homepage = 'https://python.org/'
+description = "Tkinter module, built with the Python buildsystem"
+
+toolchain = {'name': 'GCC', 'version': '14.2.0'}
+toolchainopts = {'pic': True}
+
+source_urls = ['https://www.python.org/ftp/python/%(version)s/']
+sources = ['Python-%(version)s.tgz']
+
+builddependencies = [
+    ('binutils', '2.45'),
+    ('pkgconf', '2.4.3'),
+    ('libffi', '3.4.5'),
+]
+
+dependencies = [
+    ('Python', version),
+    ('Tk', '9.0.3'),
+    ('zlib', '1.3.1'),
+]
+
+# Avoids running Python unit tests which get confused by the split prefix
+preconfigopts = 'sed -i "/test_embed/d" Lib/test/libregrtest/pgo.py &&'
+
+moduleclass = 'lang'

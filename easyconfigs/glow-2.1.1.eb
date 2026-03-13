@@ -1,0 +1,25 @@
+# Ruoshi Sun
+# 2025-11-17
+easyblock = 'GoPackage'
+
+name = 'glow'
+version = '2.1.1'
+
+homepage = 'https://github.com/charmbracelet/glow'
+
+description = 'Render markdown on the CLI, with pizzazz!'
+
+toolchain = SYSTEM
+
+github_account = 'charmbracelet'
+source_urls = [GITHUB_SOURCE]
+sources = ['v%(version)s.tar.gz']
+
+builddependencies = [('go', '1.23.6')]
+
+sanity_check_paths = {
+    'files': ['bin/glow'],
+    'dirs': []
+}
+
+moduleclass = 'tools'

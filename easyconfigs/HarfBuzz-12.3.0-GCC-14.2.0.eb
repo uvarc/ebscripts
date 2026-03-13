@@ -1,0 +1,47 @@
+easyblock = 'MesonNinja'
+
+name = 'HarfBuzz'
+version = '12.3.0'
+
+homepage = 'https://www.freedesktop.org/wiki/Software/HarfBuzz'
+description = """HarfBuzz is an OpenType text shaping engine."""
+
+toolchain = {'name': 'GCC', 'version': '14.2.0'}
+
+github_account = 'harfbuzz'
+source_urls = [GITHUB_SOURCE]
+sources = ['%(version)s.tar.gz']
+
+builddependencies = [
+    ('binutils', '2.45'),
+    ('gobject-introspection', '1.86.0'),
+    ('pkgconf', '2.4.3'),
+    ('Ninja', '1.13.1'),
+    ('Meson', '1.9.0'),
+    #('fonttools', '4.58.5'),  # For tests
+]
+
+dependencies = [
+    ('glib', '2.87.1'),
+    ('ICU', '78.1'),
+    ('cairo', '1.18.4'),
+    ('freetype', '2.14.1'),
+]
+
+configopts = '--default-library=both'  # static and shared library
+configopts += ' -Dgobject=enabled -Dintrospection=enabled'
+configopts += ' -Dglib=enabled'
+configopts += ' -Dicu=enabled'
+configopts += ' -Dcairo=enabled'
+configopts += ' -Dfreetype=enabled'
+configopts += ' -Ddocs=disabled'
+
+runtest = 'meson'
+testopts = 'test -C %(builddir)s/easybuild_obj -t 60'
+
+sanity_check_paths = {
+    'files': ['lib/libharfbuzz.%s' % SHLIB_EXT, 'bin/hb-view'],
+    'dirs': []
+}
+
+moduleclass = 'vis'

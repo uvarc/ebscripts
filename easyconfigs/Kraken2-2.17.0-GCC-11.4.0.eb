@@ -1,0 +1,69 @@
+# Update to version 2.1.6, the tarball name is changed back to normal "v2.1.6.tar.gz"
+# Author: J. Saßmannshausen (Imperial College London/UK) + Alexander Grund
+# Update: Emik Lin (HKUMed CPOS)
+
+easyblock = 'PackedBinary'
+
+name = 'Kraken2'
+version = '2.17.0'
+
+homepage = 'https://github.com/DerrickWood/kraken2/wiki'
+description = """Kraken is a system for assigning taxonomic labels to short DNA sequences,
+ usually obtained through metagenomic studies. Previous attempts by other
+ bioinformatics software to accomplish this task have often used sequence
+ alignment or machine learning techniques that were quite slow, leading to
+ the development of less sensitive but much faster abundance estimation
+ programs. Kraken aims to achieve high sensitivity and high speed by
+ utilizing exact alignments of k-mers and a novel classification algorithm."""
+
+# part is compiled with $CXX, the rest is in Perl
+toolchain = {'name': 'GCC', 'version': '11.4.0'}
+toolchainopts = {'openmp': True, 'cstd': 'c++11'}
+
+source_urls = ['https://github.com/DerrickWood/kraken2/archive/refs/tags']
+sources = ['v%(version_major_minor)s.tar.gz']
+
+dependencies = [
+    ('Perl', '5.40.2'),
+    ('blast', '2.17.0', '', SYSTEM),
+]
+
+# This is a better option, thanks to Alexander for that:
+preinstallopts = 'cd %(start_dir)s && wget https://raw.githubusercontent.com/DerrickWood/kraken2/f885f832c9863704638dece6c29f0fa4bc19a2e3/src/Makefile -O src/Makefile && '
+install_cmd = './install_kraken2.sh %(installdir)s/bin'
+
+# Kraken2 databases can be downloaded from https://benlangmead.github.io/aws-indexes/k2
+# or built as described in https://github.com/DerrickWood/kraken2/wiki/Manual#kraken-2-databases
+# The following commands will build and install the standard databases (100GB) in local_db_path
+# local_db_path = '%(installdir)s/db'
+# postinstallcmds = [
+#     'mkdir %s' % local_db_path,
+#     'cd %%(installdir)s/bin && ./kraken2-build --standard --threads %%(parallel)s --db %s' % local_db_path,
+# ]
+
+sanity_check_paths = {
+    'files': ['bin/%s' % x for x in [
+        '16S_gg_installation.sh', '16S_rdp_installation.sh', '16S_silva_installation.sh', 'add_to_library.sh',
+        'build_db', 'build_gg_taxonomy.pl', 'build_kraken2_db.sh', 'build_rdp_taxonomy.pl', 'build_silva_taxonomy.pl',
+        'classify', 'clean_db.sh', 'cp_into_tempfile.pl', 'download_genomic_library.sh', 'download_taxonomy.sh',
+        'dump_table', 'estimate_capacity', 'kraken2', 'kraken2-build', 'kraken2-inspect', 'kraken2lib.pm',
+        'lookup_accession_numbers.pl', 'make_seqid2taxid_map.pl', 'mask_low_complexity.sh', 'rsync_from_ncbi.pl',
+        'scan_fasta_file.pl']],
+    'dirs': [],
+}
+
+sanity_check_commands = [
+    'kraken2 --help',
+    'kraken2-build --help',
+    'kraken2-inspect --help',
+    'build_db -h',
+    'classify -h',
+]
+
+modextravars = {
+    'KRAKEN2_DATA_PATH': '/project/apps_data/kraken2',
+}
+
+modloadmsg = """Dataset located at: $KRAKEN2_DATA_PATH"""
+
+moduleclass = 'bio'

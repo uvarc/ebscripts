@@ -71,7 +71,7 @@ class EB_OpenFOAM(EasyBlock):
     def __init__(self, *args, **kwargs):
         """Specify that OpenFOAM should be built in install dir."""
 
-        super(EB_OpenFOAM, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         self.build_in_installdir = True
 
@@ -124,7 +124,7 @@ class EB_OpenFOAM(EasyBlock):
 
     def extract_step(self):
         """Extract sources as expected by the OpenFOAM(-Extend) build scripts."""
-        super(EB_OpenFOAM, self).extract_step()
+        super().extract_step()
         # make sure that the expected subdir is really there after extracting
         # if not, the build scripts (e.g., the etc/bashrc being sourced) will likely fail
         openfoam_installdir = os.path.join(self.installdir, self.openfoamdir)
@@ -153,7 +153,7 @@ class EB_OpenFOAM(EasyBlock):
     def patch_step(self, beginpath=None):
         """Adjust start directory and start path for patching to correct directory."""
         self.cfg['start_dir'] = os.path.join(self.installdir, self.openfoamdir)
-        super(EB_OpenFOAM, self).patch_step(beginpath=self.cfg['start_dir'])
+        super().patch_step(beginpath=self.cfg['start_dir'])
 
     def configure_step(self):
         """Configure OpenFOAM build by setting appropriate environment variables."""
@@ -293,8 +293,8 @@ class EB_OpenFOAM(EasyBlock):
         # make sure lib/include dirs for dependencies are found
         openfoam_extend_v3 = self.is_extend and self.looseversion >= LooseVersion('3.0')
         if self.looseversion < LooseVersion("2") or openfoam_extend_v3:
-            self.log.debug("List of deps: %s" % self.cfg.dependencies())
-            for dep in self.cfg.dependencies():
+            self.log.debug("List of deps: %s" % self.cfg.dependencies(runtime_only=True))
+            for dep in self.cfg.dependencies(runtime_only=True):
                 dep_name = dep['name'].upper(),
                 dep_root = get_software_root(dep['name'])
                 env.setvar("%s_SYSTEM" % dep_name, "1")
@@ -378,8 +378,9 @@ class EB_OpenFOAM(EasyBlock):
             if self.looseversion > LooseVersion('1606'):
                 # use Allwmake -log option if possible since this can be useful during builds, but also afterwards
                 cmd += ' -log'
-
-                if self.looseversion >= LooseVersion('2406'):
+                # source tarball for OpenFOAM v2412 does not include plugins,
+                # see discussion in https://github.com/easybuilders/easybuild-easyconfigs/pull/24663
+                if self.looseversion >= LooseVersion('2406') and self.version != 'v2412':
                     # Also build the plugins
                     cmd += ' && %s bash %s -log' % (self.cfg['prebuildopts'],
                                                     os.path.join(self.builddir, self.openfoamdir, 'Allwmake-plugins'))
@@ -495,7 +496,9 @@ class EB_OpenFOAM(EasyBlock):
         # modifyMesh is no longer there in OpenFOAM >= 12
         if self.is_dot_org and self.looseversion >= LooseVersion("12"):
             tools.remove("modifyMesh")
-        if self.looseversion >= LooseVersion('2406'):
+        # source tarball for OpenFOAM v2412 does not include plugins,
+        # see discussion in https://github.com/easybuilders/easybuild-easyconfigs/pull/24663
+        if self.looseversion >= LooseVersion('2406') and self.version != 'v2412':
             # built from the plugins
             tools.append("cartesianMesh")
 
@@ -572,7 +575,7 @@ class EB_OpenFOAM(EasyBlock):
 
             if self.looseversion <= LooseVersion('10'):
                 cmds = [
-                        "cp -a %s %s" % (motorbike_path, test_dir),
+                        "cp -dR --preserve=timestamps %s %s" % (motorbike_path, test_dir),
                         # Make sure the tmpdir for tests ir writeable if read-only-installdir is used
                         "chmod -R +w %s" % test_dir,
                         "cd %s" % os.path.join(test_dir, os.path.basename(motorbike_path)),
@@ -594,7 +597,7 @@ class EB_OpenFOAM(EasyBlock):
             # v11 and above run the motorBike example differently
             else:
                 cmds = [
-                        "cp -a %s %s" % (motorbike_path, test_dir),
+                        "cp -dR --preserve=timestamps %s %s" % (motorbike_path, test_dir),
                         # Make sure the tmpdir for tests ir writeable if read-only-installdir is used
                         "chmod -R +w  %s" % os.path.join(test_dir, os.path.basename(motorbike_path)),
                         "cd %s" % os.path.join(test_dir, os.path.basename(motorbike_path)),
@@ -614,12 +617,12 @@ class EB_OpenFOAM(EasyBlock):
             # because sourcing $FOAM_BASH sets up environment
             custom_commands.append(' && '.join(cmds))
 
-        super(EB_OpenFOAM, self).sanity_check_step(custom_paths=custom_paths, custom_commands=custom_commands)
+        super().sanity_check_step(custom_paths=custom_paths, custom_commands=custom_commands)
 
     def make_module_extra(self, altroot=None, altversion=None):
         """Define extra environment variables required by OpenFOAM"""
 
-        txt = super(EB_OpenFOAM, self).make_module_extra()
+        txt = super().make_module_extra()
 
         env_vars = [
             # Set WM_COMPILE_OPTION in the module file

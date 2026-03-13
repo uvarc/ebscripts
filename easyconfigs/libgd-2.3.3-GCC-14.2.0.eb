@@ -1,0 +1,25 @@
+# Ruoshi Sun
+# 2026-01-20
+
+easyblock = 'ConfigureMake'
+
+name = 'libgd'
+version = '2.3.3'
+
+homepage = 'https://libgd.github.io/'
+description = "GD is an open source code library for the dynamic creation of images by programmers."
+
+toolchain = {'name': 'GCC', 'version': '14.2.0'}
+toolchainopts = {'pic': True}
+
+source_urls = ['https://github.com/%(name)s/%(name)s/releases/download/gd-%(version)s/']
+sources = [SOURCELOWER_TAR_GZ]
+
+osdependencies = ['fontconfig', 'libjpeg-turbo', 'libpng', 'zlib']
+
+sanity_check_paths = {
+    'files': ['lib/%(name)s.a', 'lib/%(name)s.so'],
+    'dirs': ['bin', 'include'],
+}
+
+moduleclass = 'lib'

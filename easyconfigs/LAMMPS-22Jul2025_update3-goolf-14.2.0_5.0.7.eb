@@ -1,0 +1,156 @@
+# Ruoshi Sun
+# 2025-11-07
+name = 'LAMMPS'
+version = '22Jul2025_update3'
+
+homepage = 'https://www.lammps.org'
+description = """LAMMPS stands for Large-scale Atomic/Molecular Massively Parallel Simulator.
+LAMMPS is a classical molecular dynamics simulation code designed to
+run efficiently on parallel computers.
+"""
+
+toolchain = {'name': 'goolf', 'version': '14.2.0_5.0.7'}
+toolchainopts = {'openmp': True, 'usempi': True}
+
+source_urls = [GITHUB_LOWER_SOURCE]
+sources = ['stable_%(version)s.tar.gz']
+patches = [
+    'LAMMPS-22Jul2025_install_lammps_python_package_in_eb_software_module.patch',
+]
+
+builddependencies = [
+    ('CMake', '4.2.2'),
+    ('pkg-config', '0.29.2'),
+    ('archspec', '0.2.5'),
+    ('PyYAML', '6.0.3'),
+]
+dependencies = [
+    ('Python', '3.13.11'),
+    ('libpng', '1.6.53'),
+    ('libjpeg-turbo', '3.1.3'),
+    ('netcdf', '4.9.2'),
+    ('GSL', '2.8'),
+    ('zlib', '1.3.1'),
+    ('gzip', '1.12', '', SYSTEM),
+    ('curl', '8.18.0'),
+    ('hdf5', '1.14.6'),
+    ('pcre', '8.45'),
+    ('libxml2', '2.14.3'),
+    ('ffmpeg', '8.0', '', SYSTEM),
+    ('Voro++', '0.4.6'),
+    ('kim-api', '2.4.1'),
+    ('eigen', '3.4.0'),
+    ('PLUMED', '2.10.0'),
+    ('SciPy-bundle', '2025.07', '', ('golf', '14.2.0')),
+    # VTK package is auto-disabled if this dep is not available
+    ('VTK', '9.5.2'),
+    ('mpi4py', '4.1.1'),
+]
+
+# To use additional custom configuration options, use the 'configopts' easyconfig parameter
+# See docs and lammps easyblock for more information.
+# https://github.com/lammps/lammps/blob/master/cmake/README.md#lammps-configuration-options
+
+# OpenMP-Kokkos build is default in the current easyblock. One can switch to serial backend of Kokkos,
+# which is claimed to be faster in pure MPI calculations
+# configopts = "-DKokkos_ENABLE_SERIAL=yes "
+
+configopts = ' '.join([
+    '-DCMAKE_CXX_STANDARD=17',
+    '-DCMAKE_CXX_STANDARD_REQUIRED=on',
+])
+
+# include the following extra packages into the build
+general_packages = [
+    'ASPHERE',
+    'ATC',
+    'AWPMD',
+    'BOCS',
+    'BODY',
+    'BPM',
+    'BROWNIAN',
+    'CG-DNA',
+    'CG-SDK',
+    'CLASS2',
+    'COLLOID',
+    'COLVARS',
+    'COMPRESS',
+    'CORESHELL',
+    'DIELECTRIC',
+    'DIFFRACTION',
+    'DIPOLE',
+    'DPD-BASIC',
+    'DPD-MESO',
+    'DPD-REACT',
+    'DPD-SMOOTH',
+    'DRUDE',
+    'EFF',
+    'ELECTRODE',
+    'EXTRA-COMPUTE',
+    'EXTRA-DUMP',
+    'EXTRA-FIX',
+    'EXTRA-MOLECULE',
+    'EXTRA-PAIR',
+    'FEP',
+    'GRANULAR',
+    'H5MD',
+    'INTERLAYER',
+    'KIM',
+    'KSPACE',
+    'LATBOLTZ',
+    'MANIFOLD',
+    'MACHDYN',
+    'MANYBODY',
+    'MC',
+    'MEAM',
+    'MGPT',
+    'MISC',
+    'ML-IAP',
+    'ML-PACE',
+    'ML-RANN',
+    'ML-SNAP',
+    'MOFFF',
+    'MOLECULE',
+    'MOLFILE',
+    'MPIIO',
+    'NETCDF',
+    'OPENMP',
+    'ORIENT',
+    'PERI',
+    'PHONON',
+    'PLUGIN',
+    'PLUMED',
+    'POEMS',
+    'PTM',
+    'PYTHON',
+    'QEQ',
+    'QTB',
+    'REACTION',
+    'REAXFF',
+    'REPLICA',
+    'RIGID',
+    'SCAFACOS',
+    'SHOCK',
+    'SMTBQ',
+    'SPH',
+    'SPIN',
+    'SRD',
+    'TALLY',
+    'UEF',
+    'VORONOI',
+    'VTK',
+    'YAFF',
+]
+
+# Excluded packages due to requiring additional (non-trivial) deps
+# - ADIOS
+# - LATTE
+# - MESONT (requires very large files downloaded during build)
+# - ML-HDNNP (requires N2P2)
+# - ML-QUIP
+# - MSCG
+# - QMMM (setup seems complex)
+
+skipsteps = ['test'] # only 1 test failed out of 570 (607 - DihedralStyle:table_spline)
+
+moduleclass = 'chem'

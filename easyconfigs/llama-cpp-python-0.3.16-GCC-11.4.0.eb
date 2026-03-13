@@ -1,0 +1,37 @@
+# Ruoshi Sun
+# 2025-12-12
+easyblock = 'Conda'
+
+name = 'llama-cpp-python'
+version = '0.3.16'
+
+homepage = 'https://github.com/ggml-org/llama.cpp'
+description = """LLM inference in C/C++"""
+
+toolchain = {'name': 'GCC', 'version': '11.4.0'}
+
+builddependencies = [
+    ('miniforge', '24.11.3', '-py3.12', SYSTEM),
+    ('cmake', '4.1.2', '', SYSTEM),
+]
+dependencies = [('CUDA', '12.8.0', '', SYSTEM)]
+
+channels = ['conda-forge']
+requirements = ' '.join([
+    'python=3.12',
+    'gradio=5.49.1',
+    'numpy=2.2.6',
+    'matplotlib=3.10.7',
+    'openai=2.9.0',
+])
+
+postinstallcmds = [
+    """export CMAKE_ARGS="-DGGML_CUDA=on -DCMAKE_CUDA_ARCHITECTURES='80;86;90'" && %(installdir)s/bin/pip install --no-cache-dir %(name)s==%(version)s""",
+]
+
+modextravars = {
+    'PIP_DISABLE_PIP_VERSION_CHECK': '1',
+}
+
+modluafooter = 'add_property("arch","gpu")'
+moduleclass = 'tools'

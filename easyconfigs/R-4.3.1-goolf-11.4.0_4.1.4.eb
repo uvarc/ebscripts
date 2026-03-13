@@ -18,7 +18,7 @@ osdependencies = [
 ]
 
 dependencies = [
-    ('java', '12', '', SYSTEM),  
+    ('java', '21', '', SYSTEM),  
     ('curl', '8.4.0'),
     ('gdal', '3.6.3'),
     ('gsl', '2.7.1'),

@@ -1,0 +1,23 @@
+easyblock = 'ConfigureMake'
+
+name = 'intltool'
+version = '0.51.0'
+
+#hidden=True
+homepage = 'https://www.geany.org/'
+description = " The Intltool is an internationalization tool used for extracting translatable strings from source files, collecting the extracted strings with messages from traditional source files, and merging the translations into .xml, .desktop and .oaf files."
+
+toolchain = SYSTEM
+
+source_urls = ['http://launchpad.net/%(name)s/trunk/%(version)s/+download/']
+sources = [SOURCELOWER_TAR_GZ]
+
+osdependencies = [('libxml2',)]
+
+
+sanity_check_paths = {
+    'files': ['bin/%(name)s-extract', 'bin/%(name)s-merge', 'bin/%(name)s-update', 'bin/intltoolize', 'bin/%(name)s-prepare'],
+    'dirs': [],
+}
+
+moduleclass = 'lang'

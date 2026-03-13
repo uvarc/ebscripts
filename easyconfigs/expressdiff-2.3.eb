@@ -1,0 +1,38 @@
+# Ruoshi Sun
+# 2025-11-19
+easyblock = 'Conda'
+
+name = 'expressdiff'
+version = '2.3'
+
+homepage = 'https://github.com/StevenZev/ExpressDiff'
+description = 'Differential Analysis Pipeline for RNA-Seq Data'
+
+toolchain = SYSTEM
+
+source_urls = ['https://github.com/StevenZev/ExpressDiff/archive/refs/heads']
+sources = ['v%(version)s.zip']
+
+builddependencies = [('miniforge', '24.3.0', '-py3.11')]
+dependencies = [
+    ('nodejs', '24.5.0'),
+    ('trimmomatic', '0.40'),
+]
+
+channels = ['conda-forge']
+requirements = 'python=3.11 numpy pandas'
+
+postinstallcmds = [' && '.join([
+    'unzip ' + sources[0],
+    'mv ExpressDiff-%(version)s/bin/* %(installdir)s/bin',
+    'rmdir ExpressDiff-%(version)s/bin', 
+    'mv ExpressDiff-%(version)s/* %(installdir)s',
+    'cd %(installdir)s',
+    'sed -i -e "/numpy/d" -e "/pandas/d" requirements.txt',
+    '%(installdir)s/bin/pip install -r requirements.txt',
+    'cd frontend',
+    'npm install',
+    'npm run build',
+])]
+
+moduleclass = 'bio'

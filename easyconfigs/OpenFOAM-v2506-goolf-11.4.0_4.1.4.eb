@@ -1,0 +1,62 @@
+# Ruoshi Sun
+# 2025-10-22 RIV-18964
+name = 'OpenFOAM'
+version = 'v2506'
+
+homepage = 'https://www.openfoam.com/'
+description = """OpenFOAM is a free, open source CFD software package.
+ OpenFOAM has an extensive range of features to solve anything from complex fluid flows
+ involving chemical reactions, turbulence and heat transfer,
+ to solid dynamics and electromagnetics."""
+
+toolchain = {'name': 'goolf', 'version': '11.4.0_4.1.4'}
+# Users have found that vectorizion caused OpenFOAM to produce some very incorrect results.
+# Disabling vectorize was confirmed to fix the the known issues.
+# With no test suite, sticking to known working toolchain options until proven otherwise.
+toolchainopts = {'cstd': 'c++14', 'vectorize': False}
+
+source_urls = ['https://sourceforge.net/projects/openfoam/files/%(version)s/']
+sources = [
+    SOURCE_TGZ,
+    {
+        'filename': '%(name)s-plugins-%(version)s.tgz',
+        'extract_cmd': 'tar --strip-components=1 -C %(installdir)s/%(name)s-%(version)s/ -xzf %s'
+    }
+]
+patches = [
+    ('OpenFOAM-v2212-wmake-OpenMPI.patch', 1),
+]
+
+builddependencies = [
+    ('bison', '3.8.2', '', SYSTEM),
+    ('cmake', '3.28.1', '', SYSTEM),
+    #('flex', '2.6.4'),
+]
+
+dependencies = [
+    ('libreadline', '8.2'),
+    ('ncurses', '6.3'),
+    # OpenFOAM requires 64 bit METIS using 32 bit indexes (array indexes)
+    ('metis', '5.1.0'),
+    ('scotch', '7.0.3'),
+    #('KaHIP', '3.16'),
+    ('CGAL', '6.1'),
+    ('paraview', '6.0.1'),
+    ('gnuplot', '6.0.3'),
+]
+
+sanity_check_paths = {
+    'files': ['%(name)s-%(version)s/bin/paraFoam'],
+    'dirs': [],
+}
+
+modextrapaths = {
+    'PATH': ['%(name)s-%(version)s/bin'],
+}
+
+modextravars = {
+    'WM_PROJECT_DIR': '%(installdir)s/%(name)s-%(version)s',
+    'FOAM_TUTORIALS': '%(installdir)s/%(name)s-%(version)s/tutorials',
+}
+
+moduleclass = 'cae'

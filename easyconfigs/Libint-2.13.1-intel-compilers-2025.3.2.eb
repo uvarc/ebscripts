@@ -1,0 +1,68 @@
+easyblock = 'CMakeNinja'
+
+name = 'Libint'
+version = '2.13.1'
+local_lmax = 6
+# custom configuration, to be used as dependency for CP2K
+
+homepage = 'https://github.com/evaleev/libint'
+description = """Libint library is used to evaluate the traditional (electron repulsion) and certain novel two-body
+ matrix elements (integrals) over Cartesian Gaussian functions used in modern atomic and molecular theory."""
+
+toolchain = {'name': 'intel-compilers', 'version': '2025.3.2'}
+toolchainopts = {'pic': True, 'cstd': 'c++11'}
+
+source_urls = ['https://github.com/evaleev/libint/archive']
+sources = ['v%(version)s.tar.gz']
+
+local_gcc = ('GCC', '14.2.0')
+builddependencies = [
+    ('Ninja', '1.13.1', '', local_gcc),
+    ('gmp', '6.3.0', '', local_gcc),
+    ('Boost', '1.88.0'),
+    ('eigen', '3.4.0', '', local_gcc),
+    ('Python', '3.13.11', '', local_gcc),
+    ('cmake', '3.28.1', '', SYSTEM),
+]
+
+# configure options as required by CP2K,
+# see Jenkinsfile in https://github.com/cp2k/libint-cp2k
+local_eri_max_am = '%s;%s' % (local_lmax, local_lmax - 1)
+local_eri23_max_am = '%s;%s' % (local_lmax + 2, local_lmax + 1)
+
+preconfigopts = ' && '.join([
+    'HERE=$(pwd)',
+    'cd ..',
+    'rm -rf libint-%(version)s',
+    'git clone https://github.com/evaleev/libint libint-%(version)s',
+    'cd libint-%(version)s',
+    'git checkout 5fb07b4',
+    'cd $HERE',
+    '',
+])
+
+configopts = ' '.join([
+    '-DBUILD_SHARED_LIBS=ON',
+    '-DLIBINT2_BUILD_SHARED_AND_STATIC_LIBS=ON',
+    '-DLIBINT2_ENABLE_FORTRAN=ON',
+    '-DLIBINT2_ENABLE_ERI=1',
+    '-DLIBINT2_ENABLE_ERI2=1',
+    '-DLIBINT2_ENABLE_ERI3=1',
+    '-DLIBINT2_MAX_AM=%s' % local_lmax,
+    '-DLIBINT2_ERI_MAX_AM="%s"' % local_eri_max_am,
+    '-DLIBINT2_ERI2_MAX_AM="%s"' % local_eri23_max_am,
+    '-DLIBINT2_ERI3_MAX_AM="%s"' % local_eri23_max_am,
+    '-DLIBINT2_ENABLE_GENERIC_CODE=ON',
+    '-DLIBINT2_ENABLE_UNROLLING=0',
+])
+
+postinstallcmds = [
+    'cp src/lib/libint/library-install-stage/lib64/* %(installdir)s/lib',
+]
+
+sanity_check_paths = {
+    'files': ['lib/libint2.so', 'include/libint_f.mod'],
+    'dirs': [],
+}
+
+moduleclass = 'chem'

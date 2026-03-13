@@ -1,0 +1,21 @@
+# Ruoshi Sun
+# 2025-12-03 RIV-19238
+name = 'isoseq'
+version = '4.3.0'
+
+easyblock = 'Conda'
+
+homepage = 'https://github.com/PacificBiosciences/IsoSeq'
+description = """IsoDeq3 is a Scalable De Novo Isoform Discovery"""
+
+toolchain = SYSTEM
+
+builddependencies = [
+    ('miniforge', '24.11.3', '-py3.12'),
+]
+
+channels = ['conda-forge', 'bioconda' ]
+
+requirements = "python=3.12 %(name)s=%(version)s"
+
+moduleclass = 'bio'
