@@ -61,7 +61,7 @@ case $1 in
             echo "Error: trying to sync production into a branch other than main"
             exit 1
         fi
-        EBVER=5.0.0
+        EBVER=5.2.0
         APPSDIR="/sfs/weka/applications/${YMp}_build"
         PYTHON=/usr/bin/python3
         ;;
@@ -70,7 +70,7 @@ case $1 in
             echo "Error: trying to sync derp into a branch other than derp"
             exit 1
         fi
-        EBVER=5.0.0
+        EBVER=5.2.0
         APPSDIR="/sfs/weka/applications/${YMd}_build"
         PYTHON=/usr/bin/python3
         ;;
