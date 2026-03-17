@@ -39,8 +39,11 @@ import os
 import easybuild.tools.environment as env
 from easybuild.framework.easyblock import EasyBlock
 from easybuild.framework.easyconfig import CUSTOM
+from easybuild.framework.easyconfig.default import DEFAULT_CONFIG
 from easybuild.framework.easyconfig.easyconfig import get_easyblock_class
 from easybuild.tools.build_log import EasyBuildError, print_msg
+from easybuild.tools.config import build_option
+from easybuild.tools.hooks import TEST_STEP
 from easybuild.tools.modules import get_software_root, get_software_version
 from easybuild.tools.utilities import nub
 
@@ -68,7 +71,7 @@ class Bundle(EasyBlock):
 
     def __init__(self, *args, **kwargs):
         """Initialize easyblock."""
-        super(Bundle, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.altroot = None
         self.altversion = None
 
@@ -122,8 +125,21 @@ class Bundle(EasyBlock):
                 comp_cfg['name'] = comp_name
                 comp_cfg['version'] = comp_version
 
+                # The copy above may include unexpected settings for common values.
+                # In particular for a Pythonbundle we have seen a component inheriting
+                #  runtest = True
+                # which is not a valid value for many easyblocks.
+                # Reset runtest to the original default, if people want the test step
+                # they can set it explicitly, in default_component_specs or by the component easyblock
+                if comp_cfg._config['runtest'] != DEFAULT_CONFIG["runtest"]:
+                    self.log.warning(
+                        "Resetting runtest to default value for component easyblock "
+                        f"(from {comp_cfg._config['runtest']})."
+                        )
+                    comp_cfg._config['runtest'] = DEFAULT_CONFIG["runtest"]
+
                 # determine easyblock to use for this component
-                # - if an easyblock is specified explicitely, that will be used
+                # - if an easyblock is specified explicitly, that will be used
                 # - if not, a software-specific easyblock will be considered by get_easyblock_class
                 # - if no easyblock was found, default_easyblock is considered
                 comp_easyblock = comp_specs.get('easyblock')
@@ -220,7 +236,7 @@ class Bundle(EasyBlock):
 
         :return: list of strings describing checksum issues (missing checksums, wrong checksum type, etc.)
         """
-        checksum_issues = super(Bundle, self).check_checksums()
+        checksum_issues = super().check_checksums()
 
         for comp, _ in self.comp_instances:
             checksum_issues.extend(self.check_checksums_for(comp, sub="of component %s" % comp['name']))
@@ -305,9 +321,12 @@ class Bundle(EasyBlock):
                 self.comp_cfgs_sanity_check.append(comp)
 
             # run relevant steps
-            for step_name in ['patch', 'configure', 'build', 'install']:
+            for step_name in ['patch', 'configure', 'build', 'test', 'install']:
                 if step_name in cfg['skipsteps']:
                     comp.log.info("Skipping '%s' step for component %s v%s", step_name, cfg['name'], cfg['version'])
+                elif build_option('skip_test_step') and step_name == TEST_STEP:
+                    comp.log.info("Skipping %s step for component %s v%s, as requested via skip-test-step", step_name,
+                                  cfg['name'], cfg['version'])
                 else:
                     comp.run_step(step_name, [lambda x: getattr(x, '%s_step' % step_name)])
 
@@ -329,14 +348,18 @@ class Bundle(EasyBlock):
                                 new_val = path
                             env.setvar(envvar, new_val)
             else:
+                # Explicit call as EasyBlocks might set additional environment variables in
+                # the make_module step, which may be required for later component builds.
+                # Set fake arg to True, as module components should not try to create their own module.
+                comp.make_module_step(fake=True)
+
                 # Update current environment with component environment to ensure stuff provided
                 # by this component can be picked up by installation of subsequent components
                 # - this is a stripped down version of EasyBlock.make_module_req for fake modules
                 # - once bundle installation is complete, this is handled by the generated module as usual
                 for mod_envar, mod_paths in comp.module_load_environment.items():
                     # expand glob patterns in module load environment to existing absolute paths
-                    mod_expand = [x for p in mod_paths for x in comp.expand_module_search_path(p, False)]
-                    mod_expand = nub(mod_expand)
+                    mod_expand = mod_paths.expand_paths(self.installdir)
                     mod_expand = [os.path.join(self.installdir, path) for path in mod_expand]
                     # prepend to current environment variable if new stuff added to installation
                     curr_env = os.getenv(mod_envar, '')
@@ -382,6 +405,11 @@ class Bundle(EasyBlock):
                     raise EasyBuildError("Cannot process module requirements of bundle component %s v%s",
                                          cfg['name'], cfg['version'])
             else:
+                # Explicit call required as adding step to 'install_step' is not sufficient
+                # for module-only build. Set fake arg to True, as module components should
+                # not try to create their own module.
+                comp.make_module_step(*args, **dict(kwargs, fake=True))
+
                 for env_var_name, env_var_val in comp.module_load_environment.items():
                     if env_var_name in self.module_load_environment:
                         getattr(self.module_load_environment, env_var_name).extend(env_var_val)
@@ -399,7 +427,7 @@ class Bundle(EasyBlock):
             kwargs['altroot'] = self.altroot
         if 'altversion' not in kwargs:
             kwargs['altversion'] = self.altversion
-        return super(Bundle, self).make_module_extra(*args, **kwargs)
+        return super().make_module_extra(*args, **kwargs)
 
     def sanity_check_step(self, *args, **kwargs):
         """
@@ -407,7 +435,7 @@ class Bundle(EasyBlock):
         If nothing is being installed, just being able to load the (fake) module is sufficient
         """
         if self.cfg['exts_list'] or self.cfg['sanity_check_paths'] or self.cfg['sanity_check_commands']:
-            super(Bundle, self).sanity_check_step(*args, **kwargs)
+            super().sanity_check_step(*args, **kwargs)
         else:
             self.log.info("Testing loading of module '%s' by means of sanity check" % self.full_mod_name)
             fake_mod_data = self.load_fake_module(purge=True)

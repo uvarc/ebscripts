@@ -41,7 +41,7 @@ from itertools import chain
 import easybuild.tools.environment as env
 import easybuild.tools.toolchain as toolchain
 from easybuild.easyblocks.generic.pythonpackage import PythonPackage, det_python_version
-from easybuild.easyblocks.python import EXTS_FILTER_PYTHON_PACKAGES
+from easybuild.easyblocks.python import EXTS_FILTER_PYTHON_PACKAGES, PY_ENV_VARS
 from easybuild.framework.easyconfig import CUSTOM
 from easybuild.tools import LooseVersion
 from easybuild.tools.build_log import EasyBuildError, print_warning
@@ -197,12 +197,12 @@ def get_system_libs_for_version(tf_version, as_valid_libs=False):
         ('wrapt', '2.0.0:'): 'wrapt',
     }
 
-    dependency_mapping = dict((dep_name, tf_name)
-                              for (dep_name, version_range), tf_name in available_system_libs.items()
-                              if is_version_ok(version_range))
-    python_mapping = dict((pkg_name, tf_name)
-                          for (pkg_name, version_range), tf_name in python_system_libs.items()
-                          if is_version_ok(version_range))
+    dependency_mapping = {dep_name: tf_name
+                          for (dep_name, version_range), tf_name in available_system_libs.items()
+                          if is_version_ok(version_range)}
+    python_mapping = {pkg_name: tf_name
+                      for (pkg_name, version_range), tf_name in python_system_libs.items()
+                      if is_version_ok(version_range)}
 
     if as_valid_libs:
         tf_names = [tf_name for tf_name, version_range in unused_system_libs.items()
@@ -251,7 +251,7 @@ class EB_TensorFlow(PythonPackage):
 
     def __init__(self, *args, **kwargs):
         """Initialize TensorFlow easyblock."""
-        super(EB_TensorFlow, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         with self.cfg.disable_templating():
             self.cfg['exts_defaultclass'] = 'PythonPackage'
@@ -356,8 +356,8 @@ class EB_TensorFlow(PythonPackage):
         """
         dependency_mapping, python_mapping = get_system_libs_for_version(self.version)
         # Some TF dependencies require both a (usually C++) dependency and a Python package
-        deps_with_python_pkg = set(tf_name for tf_name in dependency_mapping.values()
-                                   if tf_name in python_mapping.values())
+        deps_with_python_pkg = {tf_name for tf_name in dependency_mapping.values()
+                                if tf_name in python_mapping.values()}
 
         system_libs = []
         cpaths = []
@@ -365,7 +365,7 @@ class EB_TensorFlow(PythonPackage):
         ignored_system_deps = []
 
         # Check direct dependencies
-        dep_names = set(dep['name'] for dep in self.cfg.dependencies())
+        dep_names = {dep['name'] for dep in self.cfg.dependencies()}
         for dep_name, tf_name in sorted(dependency_mapping.items(), key=lambda i: i[0].lower()):
             if dep_name in dep_names:
                 if tf_name in deps_with_python_pkg:
@@ -446,6 +446,8 @@ class EB_TensorFlow(PythonPackage):
         parent_dir = os.path.dirname(self.start_dir)
         # Path where Bazel will store its output, build artefacts etc.
         self.output_user_root_dir = os.path.join(parent_dir, 'bazel-root')
+        # Replace $HOME with a temporary folder to avoid using the user's home directory
+        self.home_dir = tempfile.mkdtemp(suffix='-tf-home')
         # Folder where wrapper binaries can be placed, where required. TODO: Replace by --action_env cmds
         self.wrapper_dir = os.path.join(parent_dir, 'wrapper_bin')
         mkdir(self.wrapper_dir)
@@ -596,10 +598,11 @@ class EB_TensorFlow(PythonPackage):
                           self.version)
         # Disable support of some features via config switch introduced in 1.12.1
         if LooseVersion(self.version) >= LooseVersion('1.12.1'):
-            self.target_opts += ['--config=noaws', '--config=nogcp', '--config=nohdfs']
-            # Removed in 2.1
-            if LooseVersion(self.version) < LooseVersion('2.1'):
-                self.target_opts.append('--config=nokafka')
+            self.target_opts += ['--config=nogcp']
+            if LooseVersion(self.version) < LooseVersion('2.18'):
+                self.target_opts += ['--config=noaws', '--config=nohdfs']  # Removed in 2.18
+            if LooseVersion(self.version) < LooseVersion("2.1"):
+                self.target_opts += ['--config=nokafka']  # removed in 2.1
         # MPI support removed in 2.1
         if LooseVersion(self.version) < LooseVersion('2.1'):
             config_env_vars['TF_NEED_MPI'] = ('0', '1')[bool(use_mpi)]
@@ -662,6 +665,13 @@ class EB_TensorFlow(PythonPackage):
                 'TF_CUDA_COMPUTE_CAPABILITIES': ','.join(cuda_cc),
                 'TF_CUDA_VERSION': cuda_maj_min_ver,
             })
+
+            # from v2.18 TF with CUDA needs this envs be set
+            if LooseVersion(self.version) >= LooseVersion('2.18'):
+                config_env_vars.update({
+                    'CUDA_NVCC': '1',
+                    'HERMETIC_CUDA_COMPUTE_CAPABILITIES': ','.join(cuda_cc),
+                })
 
             # for recent TensorFlow versions, $TF_CUDA_PATHS and $TF_CUBLAS_VERSION must also be set
             if LooseVersion(self.version) >= LooseVersion('1.14'):
@@ -809,7 +819,7 @@ class EB_TensorFlow(PythonPackage):
             regex_subs.extend([('-fPIE', '-fPIC'), ('"-pie"', '"-fPIC"')])
 
         # patch all CROSSTOOL* scripts to fix hardcoding of locations of binutils/GCC binaries
-        for path, dirnames, filenames in os.walk(os.getcwd()):
+        for path, _dirnames, filenames in os.walk(os.getcwd()):
             for filename in filenames:
                 if filename.startswith('CROSSTOOL'):
                     full_path = os.path.join(path, filename)
@@ -840,6 +850,8 @@ class EB_TensorFlow(PythonPackage):
         action_env = {}
         # A value of None is interpreted as using the invoking environments value
         INHERIT = None  # For better readability
+
+        action_env['HOME'] = self.home_dir
 
         jvm_max_memory = self.cfg['jvm_max_memory']
         if jvm_max_memory:
@@ -899,12 +911,14 @@ class EB_TensorFlow(PythonPackage):
             action_env['EBPYTHONPREFIXES'] = INHERIT
 
         # Ignore user environment for Python
-        action_env['PYTHONNOUSERSITE'] = '1'
+        action_env.update(PY_ENV_VARS)
 
         # TF 2 (final) sets this in configure
-        if LooseVersion(self.version) < LooseVersion('2.0'):
-            if self._with_cuda:
-                self.target_opts.append('--config=cuda')
+        if (LooseVersion(self.version) < LooseVersion('2.0')) and self._with_cuda:
+            self.target_opts.append('--config=cuda')
+        # TF 2.18 with CUDA needs to set cuda_wheel to config
+        if (LooseVersion(self.version) >= LooseVersion('2.18')) and self._with_cuda:
+            self.target_opts.append('--config=cuda_wheel')
 
         # note: using --config=mkl results in a significantly different build, with a different
         # threading model (which may lead to thread oversubscription and significant performance loss,
@@ -961,16 +975,20 @@ class EB_TensorFlow(PythonPackage):
             + ['build']
             + self.target_opts
             + [self.cfg['buildopts']]
-            # specify target of the build command as last argument
-            + ['//tensorflow/tools/pip_package:build_pip_package']
         )
+        if LooseVersion(self.version) < LooseVersion('2.16'):
+            cmd += ['//tensorflow/tools/pip_package:build_pip_package']
+        elif LooseVersion(self.version) < LooseVersion('2.17'):  # for v2.16.x
+            cmd += ['//tensorflow/tools/pip_package:v2/wheel --repo_env=WHEEL_NAME=tensorflow']
+        else:
+            cmd += ['//tensorflow/tools/pip_package:wheel --repo_env=WHEEL_NAME=tensorflow']
 
         with self.set_tmp_dir():
             run_shell_cmd(' '.join(cmd))
-
-            # run generated 'build_pip_package' script to build the .whl
-            cmd = "bazel-bin/tensorflow/tools/pip_package/build_pip_package %s" % self.builddir
-            run_shell_cmd(cmd)
+            if LooseVersion(self.version) < LooseVersion('2.16'):
+                # run generated 'build_pip_package' script to build the .whl
+                cmd = "bazel-bin/tensorflow/tools/pip_package/build_pip_package %s" % self.builddir
+                run_shell_cmd(cmd)
 
     def test_step(self):
         """Run TensorFlow unit tests"""
@@ -1102,7 +1120,7 @@ class EB_TensorFlow(PythonPackage):
                 self.log.warning(fail_msg)
                 # Try to enhance error message
                 failed_tests = []
-                failed_test_logs = dict()
+                failed_test_logs = {}
                 # Bazel outputs failed tests like "//tensorflow/c:kernels_test   FAILED in[...]"
                 for match in re.finditer(r'^(//[a-zA-Z_/:]+)\s+FAILED', res.output, re.MULTILINE):
                     test_name = match.group(1)
@@ -1136,10 +1154,13 @@ class EB_TensorFlow(PythonPackage):
             whl_version = self.version.replace("-rc", "rc")
         else:
             whl_version = self.version
-
-        whl_paths = glob.glob(os.path.join(self.builddir, 'tensorflow-%s-*.whl' % whl_version))
+        if LooseVersion(self.version) < '2.16':
+            whl_dir = self.builddir
+        else:
+            whl_dir = os.path.join(self.start_dir, 'bazel-bin/tensorflow/tools/pip_package/wheel_house')
+        whl_paths = glob.glob(os.path.join(whl_dir, f"tensorflow-{whl_version}-*.whl"))
         if not whl_paths:
-            whl_paths = glob.glob(os.path.join(self.builddir, 'tensorflow-*.whl'))
+            whl_paths = glob.glob(os.path.join(whl_dir, 'tensorflow-*.whl'))
         if len(whl_paths) == 1:
             # --ignore-installed is required to ensure *this* wheel is installed
             cmd = "pip install --ignore-installed --prefix=%s %s" % (self.installdir, whl_paths[0])
@@ -1195,7 +1216,7 @@ class EB_TensorFlow(PythonPackage):
             # tf_should_use importsweakref.finalize, which requires backports.weakref for Python < 3.4
             "%s -c 'from tensorflow.python.util import tf_should_use'" % self.python_cmd,
         ]
-        res = super(EB_TensorFlow, self).sanity_check_step(custom_paths=custom_paths, custom_commands=custom_commands)
+        res = super().sanity_check_step(custom_paths=custom_paths, custom_commands=custom_commands)
 
         # test installation using MNIST tutorial examples
         if self.cfg['runtest']:

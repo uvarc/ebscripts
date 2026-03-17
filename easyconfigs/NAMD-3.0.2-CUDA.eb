@@ -1,0 +1,27 @@
+# Ruoshi Sun
+# 2026-03-03 SUP-6990
+easyblock = 'Tarball'
+
+name = 'NAMD'
+version = '3.0.2'
+versionsuffix = '-CUDA'
+
+homepage = 'https://www.ks.uiuc.edu/Research/namd/'
+description = """NAMD is a parallel molecular dynamics code designed for high-performance simulation of
+ large biomolecular systems."""
+
+toolchain = SYSTEM
+
+sources = ['NAMD_%(version)s_Linux-x86_64-multicore%(versionsuffix)s.tar.gz']
+
+sanity_check_paths = {
+    'files': ['%(namelower)s3'],
+    'dirs': []
+}
+
+modextrapaths = {
+    'PATH': '',
+}
+modluafooter = 'add_property("arch","gpu")'
+
+moduleclass = 'chem'

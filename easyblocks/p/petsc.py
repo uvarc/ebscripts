@@ -75,7 +75,7 @@ class EB_PETSc(ConfigureMake):
 
     def __init__(self, *args, **kwargs):
         """Initialize PETSc specific variables."""
-        super(EB_PETSc, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         if LooseVersion(self.version) < LooseVersion("3.9"):
             raise EasyBuildError(
@@ -144,11 +144,11 @@ class EB_PETSc(ConfigureMake):
     def prepare_step(self, *args, **kwargs):
         """Prepare build environment."""
 
-        super(EB_PETSc, self).prepare_step(*args, **kwargs)
+        super().prepare_step(*args, **kwargs)
 
         # build with Python support if Python is loaded as a non-build (runtime) dependency
-        build_deps = self.cfg.dependencies(build_only=True)
-        if get_software_root('Python') and not any(x['name'] == 'Python' for x in build_deps):
+        runtime_dep_names = [dep['name'] for dep in self.cfg.dependencies(runtime_only=True)]
+        if get_software_root('Python') and 'Python' in runtime_dep_names:
             self.with_python = True
             self.module_load_environment.PYTHONPATH = self.bin_dir
             self.log.info("Python included as runtime dependency, so enabling Python support")
@@ -259,9 +259,8 @@ class EB_PETSc(ConfigureMake):
         # to library names from SCOTCH 7.0.1 or PETSc version 3.17.
         if (LooseVersion(self.version) >= LooseVersion("3.17")):
             sep_deps.append('SCOTCH')
-        depfilter = [d['name'] for d in self.cfg.builddependencies()] + sep_deps
 
-        deps = [dep['name'] for dep in self.cfg.dependencies() if not dep['name'] in depfilter]
+        deps = [dep['name'] for dep in self.cfg.dependencies(runtime_only=True) if not dep['name'] in sep_deps]
         for dep in deps:
             if isinstance(dep, str):
                 dep = (dep, dep)
@@ -331,7 +330,7 @@ class EB_PETSc(ConfigureMake):
             res = run_shell_cmd(cmd)
             out = res.output
         else:
-            out = super(EB_PETSc, self).configure_step()
+            out = super().configure_step()
 
         # check for errors in configure
         error_regexp = re.compile("ERROR")
@@ -384,7 +383,7 @@ class EB_PETSc(ConfigureMake):
         Install using make install (for non-source installations)
         """
         if not self.cfg['sourceinstall']:
-            super(EB_PETSc, self).install_step()
+            super().install_step()
 
         # Remove MPI-CXX flags added during configure to prevent them from being passed to consumers of PETsc
         petsc_variables_path = os.path.join(self.petsc_root, 'lib', 'petsc', 'conf', 'petscvariables')
@@ -395,7 +394,7 @@ class EB_PETSc(ConfigureMake):
 
     def make_module_extra(self):
         """Set PETSc specific environment variables (PETSC_DIR, PETSC_ARCH)."""
-        txt = super(EB_PETSc, self).make_module_extra()
+        txt = super().make_module_extra()
 
         txt += self.module_generator.set_environment('PETSC_DIR', self.petsc_root)
         if self.cfg['sourceinstall']:
@@ -428,4 +427,4 @@ class EB_PETSc(ConfigureMake):
         if self.with_python:
             custom_commands.append("python -m PetscBinaryIO --help")
 
-        super(EB_PETSc, self).sanity_check_step(custom_paths=custom_paths, custom_commands=custom_commands)
+        super().sanity_check_step(custom_paths=custom_paths, custom_commands=custom_commands)
