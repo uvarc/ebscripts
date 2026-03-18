@@ -1,0 +1,27 @@
+# Paul Orndorff
+# 2026-03-17 py3.12
+easyblock = 'Conda'
+
+name = 'matlab-proxy'
+version = '0.31.0'
+versionsuffix = '-py3.12'
+
+homepage = 'https://github.com/mathworks/matlab-proxy'
+description = """A Python package which enables you to launch MATLAB and access it from a web browser.
+"""
+
+toolchain = SYSTEM
+
+builddependencies = [('miniforge', '24.11.3', versionsuffix)]
+
+channels = ['conda-forge']
+requirements = ' '.join([
+    'python=3.12',
+])
+
+postinstallcmds = [
+    '%(installdir)s/bin/pip install --no-cache-dir matlab-proxy==0.31.0',
+    'chmod -R go-w %(installdir)s',
+]
+
+moduleclass = 'tools'
