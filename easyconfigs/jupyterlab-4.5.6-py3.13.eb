@@ -1,0 +1,55 @@
+# Ruoshi Sun
+# 2026-03-24
+easyblock = 'Conda'
+
+name = 'jupyterlab'
+version = '4.5.6'
+versionsuffix = '-py3.13'
+
+homepage = 'https://jupyter.org/'
+description = """JupyterLab is the latest web-based interactive development environment for notebooks, code, and data. Its flexible interface allows users to configure and arrange workflows in data science, scientific computing, computational journalism, and machine learning. A modular design invites extensions to expand and enrich functionality.
+"""
+
+toolchain = SYSTEM
+
+builddependencies = [('miniforge', '26.1.0')]
+
+channels = ['conda-forge']
+requirements = ' '.join([
+    'python=3.13',
+    '%(name)s=%(version)s',
+    'cython=3.2.4',
+    'glib=2.86.4',
+    'h5py=3.16.0',
+    'ipycanvas=0.14.3', # RIV-18950
+    'ipywidgets=8.1.8',
+#    spinning wheel for subfolders https://github.com/jupyterlab/jupyter-collaboration/issues/234
+#    'jupyter-collaboration=4.1.0',
+    'matplotlib=3.10.8',
+    'nodejs=25',
+    'notebook=7.5.5',
+    'numba=0.64.0',
+    'numpy=2.4.3',
+    'pandas=3.0.1',
+    'pandoc=3.9.0.2',
+    'papermill=2.7.0', # RIV-19932
+    'pillow=12.1.0',
+    'scikit-image=0.26.0',
+    'scikit-learn=1.8.0',
+    'scipy=1.17.1',
+    'seaborn=0.13.2',
+    'tqdm=4.67.3',
+    'zeromq=4.3.5',
+])
+
+postinstallcmds = [
+    '%(installdir)s/bin/pip install --no-cache-dir jupyter-resource-usage==1.2.0 jupyterlab-nvdashboard==0.13.0 plotly==6.6.0 dash==4.1.0 voila==0.5.11',
+    'export PATH=%(installdir)s/bin:$PATH LD_LIBRARY_PATH=%(installdir)s/lib:$LD_LIBRARY_PATH && jupyter lab build',
+    'chmod -R go-w %(installdir)s',
+]
+
+modextravars = {
+    'PIP_DISABLE_PIP_VERSION_CHECK': '1',
+}
+
+moduleclass = 'tools'

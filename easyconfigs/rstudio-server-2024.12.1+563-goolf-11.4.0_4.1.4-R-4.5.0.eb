@@ -28,7 +28,6 @@ builddependencies = [
 
 dependencies = [
     ('boost', '1.83.0'),
-    ('java', '21', '', SYSTEM),
     ('R', '4.5.0'),
     ('soci', '4.0.3', '-boost-1.83'),
     ('yaml-cpp', '0.7.0'),

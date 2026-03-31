@@ -114,7 +114,7 @@ class Conda(Binary):
                 self.log.info("Installed conda requirements")
 
             cmd = f"{self.cfg['preinstallopts']} {conda_cmd} create "
-            cmd += f"--force -y -p {self.installdir} {install_args}"
+            cmd += f"-y -p {self.installdir} {install_args}"
             run_shell_cmd(cmd)
 
         # clean up
