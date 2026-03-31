@@ -1,0 +1,23 @@
+# Ruoshi Sun
+# 2026-03-24 RIV-19932
+easyblock = 'Conda'
+
+name = 'papermill'
+version = '2.7.0'
+
+homepage = 'https://papermill.readthedocs.io/en/latest/'
+description = """Papermill is a tool for parameterizing and executing Jupyter Notebooks.
+"""
+
+toolchain = SYSTEM
+
+builddependencies = [('miniforge', '24.11.3', '-py3.12')]
+
+channels = ['conda-forge']
+requirements = 'python=3.13 %(name)s=%(version)s'
+
+modextravars = {
+    'PIP_DISABLE_PIP_VERSION_CHECK': '1',
+}
+
+moduleclass = 'tools'

@@ -1,0 +1,15 @@
+easyblock = 'EB_Java'
+
+name = 'java'
+version = '12'
+
+homepage = 'http://java.com/'
+description = """Java Platform, Standard Edition (Java SE) lets you develop and deploy
+ Java applications on desktops and servers."""
+
+toolchain = SYSTEM
+
+source_urls = ['https://download.java.net/java/GA/jdk12.0.2/e482c34c86bd4bf8b56c0b35558996b9/10/GPL']
+sources = ['openjdk-%(version)s.0.2_linux-x64_bin.tar.gz']
+
+moduleclass = 'lang'
