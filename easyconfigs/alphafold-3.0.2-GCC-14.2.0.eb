@@ -1,7 +1,7 @@
 easyblock = 'Conda'
 
 name = 'alphafold'
-version = '3.0.1'
+version = '3.0.2'
 
 homepage = 'https://github.com/google-deepmind/alphafold3'
 description = """
@@ -15,6 +15,7 @@ sources = ['v%(version)s.tar.gz']
 
 builddependencies = [
     ('miniforge', '26.1.0', '', SYSTEM),
+    ('CMake', '4.2.2'),
 ]
 
 dependencies = [
@@ -22,12 +23,18 @@ dependencies = [
 ]
 
 channels = ['conda-forge']
-requirements = 'python=3.11'
+requirements = ' '.join([
+    'python=3.12',
+    'scikit-build-core',
+    'pybind11',
+    'ninja',
+    'numpy',
+])
 
 postinstallcmds = [
     'mkdir -p %(installdir)s/app/alphafold',
     'tar xf %%(builddir)s/%s --strip-components=1 -C %%(installdir)s/app/alphafold' % sources[0],
-    '%(installdir)s/bin/pip install --no-cache-dir -r %(installdir)s/app/alphafold/dev-requirements.txt',
+    '%(installdir)s/bin/pip install --no-cache-dir absl-py>=2.3.1 dm-haiku==0.0.16 jax==0.9.1 jax[cuda12]==0.9.1 numpy rdkit==2025.9.4 tokamax==0.0.11 tqdm zstandard',
     '%(installdir)s/bin/pip install --no-cache-dir --no-deps %(installdir)s/app/alphafold',
     '%(installdir)s/bin/build_data',
 ]
