@@ -1,0 +1,25 @@
+# Ruoshi Sun
+# 2026-04-22
+easyblock = 'EB_ApptainerImage'
+name = 'freesurfer'
+version = '8.2.0'
+
+homepage = 'https://surfer.nmr.mgh.harvard.edu/'
+description = """FreeSurfer is a set of tools for analysis and visualization 
+of structural and functional brain imaging data.  FreeSurfer contains a fully 
+automatic structural imaging stream for processing cross sectional and 
+longitudinal data."""
+
+toolchain = {'name': 'apptainer', 'version': '1.4.5'}
+
+sources = ['%(namelower)s-%(version)s.sif']
+
+modloadmsg = """
+Please register for a license at
+    https://surfer.nmr.mgh.harvard.edu/registration.html
+and save the license.txt in your account. Run
+    apptainer exec --env FS_LICENSE=/path/to/license.txt ...
+to make FreeSurfer fully operational.
+"""
+
+moduleclass = 'bio'
