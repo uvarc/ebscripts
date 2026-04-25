@@ -1,0 +1,99 @@
+# Ruoshi Sun
+# 2026-04-24
+name = 'R'
+version = '4.6.0'
+
+homepage = 'http://www.r-project.org/'
+description = """R is a free software environment for statistical computing and graphics."""
+
+toolchain = {'name': 'goolf', 'version': '14.2.0_5.0.7' }
+toolchainopts = {'pic': True, 'usempi': True}
+
+source_urls = ['https://cloud.r-project.org/src/base/R-%(version_major)s']
+sources = [SOURCE_TAR_GZ]
+
+builddependencies = [
+    ('pkgconf', '2.4.3'),
+]
+
+osdependencies = [
+    ('readline', ),
+    ('ncurses', ),
+    ('libpng', ),  # for plotting in R
+    ('libjpeg-turbo', ),  # for plottting in R
+]
+
+dependencies = [
+    ('X11', '20250608'),
+    ('OpenGL', '2025.09'),
+    ('cairo', '1.18.4'),
+    ('libreadline', '8.3'),
+    ('ncurses', '6.5'),
+    ('bzip2', '1.0.8'),
+    ('xz', '5.2.7', '', SYSTEM),
+    ('zlib', '1.3.1'),
+    ('sqlite', '3.51.2'),
+    ('pcre2', '10.42'),
+    ('libpng', '1.6.53'),
+    ('libjpeg-turbo', '3.1.3'),
+    ('libwebp', '1.6.0'),
+    ('libtiff', '4.7.1'),
+    ('Java', '21', '', SYSTEM),  
+    #('libgit2', '1.9.1'),
+    ('OpenSSL', '3', '', SYSTEM),
+    ('hdf5', '1.14.6'),
+    ('curl', '8.18.0'),
+    ('HarfBuzz', '12.3.0'),
+    ('FriBidi', '1.0.16'),
+# common package dependencies
+    ('GDAL', '3.12.1'),
+    ('GSL', '2.8'),
+    ('gmp', '6.3.0'),
+    ('MPFR', '4.2.2'),
+    ('PROJ', '9.7.0'),
+    ('imagemagick', '7.1.0-57', '', SYSTEM),
+]
+
+# Some R extensions (mclust, quantreg, waveslim for example) require the math library (-lm) to avoid undefined symbols.
+# Adding it to FLIBS makes sure it is present when needed.
+preconfigopts = 'export FLIBS="$FLIBS -lm" && '
+
+configopts = '--with-pic --enable-threads --enable-R-shlib --enable-R-profiling --enable-memory-profiling '
+configopts += '--with-x=yes '
+configopts += " --with-recommended-packages=no"
+
+exts_default_options = {
+    'source_urls': [
+        'http://cran.r-project.org/src/contrib/Archive/%(name)s',  # package archive
+        'http://cran.r-project.org/src/contrib/',  # current version of packages
+        'http://cran.freestatistics.org/src/contrib',  # mirror alternative for current packages
+    ],
+    'source_tmpl': '%(name)s_%(version)s.tar.gz',
+}
+
+# !! order of packages is important !!
+# updated 2025-04-17
+exts_list = [
+    # default libraries, only here to sanity check their presence
+    'base',
+    'compiler',
+    'datasets',
+    'graphics',
+    'grDevices',
+    'grid',
+    'methods',
+    'parallel',
+    'splines',
+    'stats',
+    'stats4',
+    'tcltk',
+    'tools',
+    'utils',
+]
+
+modextravars = {
+    'R_LIBS_USER': '~/R/%(toolchain_name)s/%(version_major_minor)s'
+}
+
+modloadmsg = "To use the same local packages for both R and RStudio, do not set R_LIBS_USER in ~/.Renviron"
+moduleclass = 'lang'

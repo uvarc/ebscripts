@@ -18,7 +18,7 @@ builddependencies = [
 ]
 
 dependencies = [
-    ('boost', '1.83.0'),
+    ('Boost', '1.91.0'),
     ('sqlite', '3.51.2'),
     ('PostgreSQL', '18.1'),
 ]
