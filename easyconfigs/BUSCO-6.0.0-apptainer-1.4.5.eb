@@ -1,0 +1,15 @@
+# Ruoshi Sun
+# 2026-04-27
+easyblock = 'EB_ApptainerImage'
+
+name = 'BUSCO'
+version = '6.0.0'
+
+homepage = 'https://busco.ezlab.org/'
+description = "BUSCO: assessing genome assembly and annotation completeness with single-copy orthologs"
+
+toolchain = {'name': 'apptainer', 'version': '1.4.5'}
+
+sources = ['%(namelower)s-%(version)s.sif']
+
+moduleclass = 'bio'

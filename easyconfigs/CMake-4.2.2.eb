@@ -1,9 +1,5 @@
-# Ruoshi Sun
-# 2025-10-24
-
-easyblock = 'EB_CMake'
-name = 'cmake'
-version = '4.1.2'
+name = 'CMake'
+version = '4.2.2'
 
 homepage = 'https://www.cmake.org'
 
@@ -18,16 +14,16 @@ source_urls = ['https://www.cmake.org/files/v%(version_major_minor)s']
 sources = [SOURCELOWER_TAR_GZ]
 
 builddependencies = [
-    #('binutils', '2.39'),
+    #('binutils', '2.45'),
 ]
 
 dependencies = [
-    #('ncurses', '6.3'),
-    ('zlib', '1.2.13'),
-    ('bzip2', '1.0.6'),
-    ('curl', '8.4.0'),
-    #('libarchive', '3.6.2'),
-    #('openssl', '1.1.1s'),
+    #('ncurses', '6.5'),
+    #('zlib', '1.3.1'),
+    #('bzip2', '1.0.8'),
+    #('curl', '8.18.0'),
+    #('libarchive', '3.8.1'),
+    #('OpenSSL', '3', '', SYSTEM),
 ]
 
 moduleclass = 'devel'
