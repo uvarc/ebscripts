@@ -1,7 +1,7 @@
 easyblock = 'Binary'
 
 name = 'nextflow'
-version = '25.04.6'
+version = '25.10.4'
 
 homepage = 'https://www.%(namelower)s.io/'
 description = """Nextflow is a reactive workflow framework and a programming DSL 

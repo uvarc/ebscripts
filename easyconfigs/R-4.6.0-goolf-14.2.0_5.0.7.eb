@@ -39,7 +39,7 @@ dependencies = [
     ('libwebp', '1.6.0'),
     ('libtiff', '4.7.1'),
     ('Java', '21', '', SYSTEM),  
-    #('libgit2', '1.9.1'),
+    ('libgit2', '1.9.2'),
     ('OpenSSL', '3', '', SYSTEM),
     ('hdf5', '1.14.6'),
     ('curl', '8.18.0'),

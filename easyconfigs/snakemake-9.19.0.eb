@@ -1,9 +1,9 @@
 # Ruoshi Sun
-# 2026-02-20
+# 2026-04-28
 easyblock = 'Conda'
 
 name = 'snakemake'
-version = '9.16.3'
+version = '9.19.0'
 
 homepage = 'https://snakemake.readthedocs.io'
 description = "The Snakemake workflow management system is a tool to create reproducible and scalable data analyses."
@@ -11,7 +11,7 @@ description = "The Snakemake workflow management system is a tool to create repr
 toolchain = SYSTEM
 
 builddependencies = [
-    ('miniforge', '24.11.3', '-py3.12')
+    ('miniforge', '26.1.0'),
 ]
 
 channels = ['conda-forge', 'bioconda']
