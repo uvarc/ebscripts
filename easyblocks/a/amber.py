@@ -187,7 +187,7 @@ class EB_Amber(CMakeMake):
         # Force libs for available deps (see cmake/3rdPartyTools.cmake in Amber source for list of 3rd party libs)
         # This provides an extra layer of checking but should already be handled by TRUST_SYSTEM_LIBS=TRUE
         external_libs = ";".join(external_libs_list)
-        self.cfg.update('configopts', "-DFORCE_EXTERNAL_LIBS='%s'" % external_libs)
+        #self.cfg.update('configopts', "-DFORCE_EXTERNAL_LIBS='%s'" % external_libs)
 
         if get_software_root('FFTW') or get_software_root('imkl'):
             self.cfg.update('configopts', '-DUSE_FFT=TRUE')
