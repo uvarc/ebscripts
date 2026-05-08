@@ -1,0 +1,50 @@
+easyblock = 'Conda'
+
+name = 'alphafold'
+version = '3.0.0'
+
+homepage = 'https://github.com/google-deepmind/alphafold3'
+description = """
+This package provides an implementation of the inference pipeline of AlphaFold 3.
+"""
+
+toolchain = {'name': 'GCC', 'version': '11.4.0'}
+
+source_urls = ['https://github.com/google-deepmind/alphafold3/archive/refs/tags']
+sources = ['v%(version)s.tar.gz']
+
+builddependencies = [
+    ('miniforge', '24.3.0', '-py3.11', SYSTEM),
+]
+
+dependencies = [
+    ('hmmer', '3.4'),
+]
+
+channels = ['conda-forge']
+requirements = 'python=3.11'
+
+postinstallcmds = [
+    'mkdir -p %(installdir)s/app/alphafold',
+    'tar xf %%(builddir)s/%s --strip-components=1 -C %%(installdir)s/app/alphafold' % sources[0],
+    '%(installdir)s/bin/pip install --no-cache-dir -r %(installdir)s/app/alphafold/dev-requirements.txt',
+    '%(installdir)s/bin/pip install --no-cache-dir --no-deps %(installdir)s/app/alphafold',
+    '%(installdir)s/bin/build_data',
+]
+
+modextravars = {
+    'ALPHAFOLD_DATA_PATH': '/share/resources/data/alphafold3',
+# To work around a known XLA issue causing the compilation time to greatly
+# increase, the following environment variable setting XLA flags must be enabled
+# when running AlphaFold 3. Note that if using CUDA capability 7 GPUs, it is
+# necessary to set the following XLA_FLAGS value instead:
+    #'XLA_FLAGS': '--xla_disable_hlo_passes=custom-kernel-fusion-rewriter',
+# (no need to disable gemm in that case as it is not supported for such GPU).
+    'XLA_FLAGS': '--xla_gpu_enable_triton_gemm=false',
+# Memory settings used for folding up to 5,120 tokens on A100 80 GB.
+    'XLA_PYTHON_CLIENT_PREALLOCATE': 'true',
+    'XLA_CLIENT_MEM_FRACTION': '0.95',
+}
+
+modluafooter = 'add_property("arch","gpu")'
+moduleclass = 'bio'
