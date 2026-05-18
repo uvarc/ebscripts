@@ -1,7 +1,7 @@
 easyblock = 'EB_ApptainerImage'
 
 name = 'ollama'
-version = '0.13.1'
+version = '0.23.4'
 
 homepage = 'https://ollama.com'
 description = """
@@ -13,8 +13,6 @@ toolchain = {'name': 'apptainer', 'version': '1.4.5'}
 
 sources = [
     '%(name)s-%(version)s.sif',
-    # port collision
-    #'pullm',
 ]
 
 use_gpu = True
