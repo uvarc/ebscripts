@@ -1,0 +1,64 @@
+# Ruoshi Sun
+# 2025-04-29
+easyblock = 'ConfigureMake'
+
+name = 'apptainer'
+version = '1.4.5'
+
+homepage = 'https://apptainer.org'
+description = """Apptainer/Singularity is an application containerization solution for High-Performance Computing (HPC). The goal
+of Apptainer is to allow for "mobility of computing": an application containerized on one Linux system should
+be able to run on another system, as it is, and without the need to reconcile software dependencies and Linux
+version differences between the source and target systems."""
+
+toolchain = SYSTEM
+
+source_urls = ['https://github.com/%(name)s/%(name)s/releases/download/v%(version)s']
+sources = [SOURCELOWER_TAR_GZ]
+
+osdependencies = [
+    ('cryptsetup'),
+    ('fakeroot'),
+    ('fuse3-devel'),
+    ('libseccomp-devel'),
+]
+
+builddependencies = [
+    ('go', '1.23.6'),
+    ('LZO', '2.10'),
+    ('lz4', '1.10.0'),
+    ('zlib', '1.2.13'),
+]
+
+configure_cmd = './mconfig'
+prebuildopts = 'cd builddir && '
+preinstallopts = 'cd builddir && '
+
+postinstallcmds = [
+    'scripts/download-dependencies',
+    'scripts/compile-dependencies',
+    'mkdir -p %(installdir)s/libexec',
+    'scripts/install-dependencies %(installdir)s/libexec',
+    'rm %(installdir)s/etc/apptainer/apptainer.conf',
+    'ln -s /share/resources/data/apptainer/apptainer.conf %(installdir)s/etc/apptainer',
+]
+
+sanity_check_paths = {
+    'files': ['bin/apptainer'],
+    'dirs': [],
+}
+
+sanity_check_commands = [('apptainer', '--version')]
+
+modextrapaths = {
+    'PATH': 'libexec/apptainer/bin',
+# for some reason this doesn't work in EB 5
+    #'MODULEPATH': ['/apps/modulefiles/standard/container/%(name)s/%(version)s'],
+}
+
+modluafooter = 'prepend_path("MODULEPATH", "/apps/modulefiles/standard/container/apptainer/%(version)s")'
+modaliases = {
+    'apptainer': 'apptainer -s',
+    'singularity': 'singularity -s',
+}
+moduleclass = 'tools'
