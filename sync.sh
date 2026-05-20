@@ -25,8 +25,8 @@ TMP=$(mktemp -d)
 DIVIDER=$(printf %"$COLUMNS"s|tr ' ' '-')
 
 # determine YYYYMM for production and derp
-YMp=$(basename $(ssh -A login.hpc.virginia.edu realpath /apps))
-YMd=$(date -d "${YMp}01 + 6 month" +%Y%m)
+YMd=$(basename $(realpath /apps))
+YMp=$(date -d "${YMd}01 - 6 month" +%Y%m)
 
 function sync() {
     # collect all files in a temp dir first and then bulk rsync later to capture deleted modules
@@ -61,7 +61,6 @@ case $1 in
             echo "Error: trying to sync production into a branch other than main"
             exit 1
         fi
-        EBVER=5.1.1
         APPSDIR="/sfs/weka/applications/${YMp}_build"
         PYTHON=/usr/bin/python3
         ;;
@@ -70,7 +69,6 @@ case $1 in
             echo "Error: trying to sync derp into a branch other than derp"
             exit 1
         fi
-        EBVER=5.2.0
         APPSDIR="/sfs/weka/applications/${YMd}_build"
         PYTHON=/usr/bin/python3
         ;;
@@ -80,11 +78,12 @@ case $1 in
         ;;
 esac
 
+EBVER=$(ls $APPSDIR/software/standard/core/easybuild | tail -1)
 EBDIR=$APPSDIR/software/standard/core/easybuild/$EBVER
 PYVER=$($PYTHON -V|awk '{print $2}') # e.g. 3.6.8
 PYVER=${PYVER%.*}                    # e.g. 3.6
 # the trailing slash matters for rsync
-EASYBLOCKSDIR=$APPSDIR/software/standard/core/easybuild/$EBVER/lib/python${PYVER}/site-packages/easybuild/easyblocks/
+EASYBLOCKSDIR=$EBDIR/lib/python${PYVER}/site-packages/easybuild/easyblocks/
 SOFTWAREDIR=$APPSDIR/software/standard
 
 for i in $APPSDIR $EBDIR $EASYBLOCKSDIR $SOFTWAREDIR; do
