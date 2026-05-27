@@ -17,7 +17,7 @@ builddependencies = [
 
 dependencies = [
     ('Python', '3.13.11'),
-    ('cmake', '4.1.2', '', SYSTEM),
+    ('CMake', '4.2.2'),
 ]
 
 exts_list = [

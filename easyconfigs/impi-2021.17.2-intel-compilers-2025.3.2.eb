@@ -17,4 +17,12 @@ dependencies = [('UCX', '1.19.0', '', ('GCC', '14.2.0'))]
 # see https://community.intel.com/t5/Intel-MPI-Library/MPI-f08-with-polymorphic-argument-CLASS/m-p/1590421
 rebuild_f08_bindings = True
 
+modextravars = {
+    'SLURM_MPI_TYPE': 'pmix',
+    'I_MPI_PMI_LIBRARY': '/opt/pmix/5.0.7/lib/libpmix.so',
+    'UCX_NET_DEVICES': 'mlx5_2:1',
+}
+modextrapaths = {
+    'LD_LIBRARY_PATH': '/opt/pmix/5.0.7/lib',
+}
 moduleclass = 'mpi'
