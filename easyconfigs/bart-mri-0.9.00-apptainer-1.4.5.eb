@@ -1,0 +1,17 @@
+# Ruoshi Sun
+# 2026-06-02 RIV-20377
+easyblock = 'EB_ApptainerImage'
+
+name = 'bart-mri'
+version = '0.9.00'
+
+homepage = 'http://mrirecon.github.io/bart/'
+description = """
+The Berkeley Advanced Reconstruction Toolbox (BART) toolbox is a free and open-source image-reconstruction framework for Computational Magnetic Resonance Imaging developed by the research groups of Martin Uecker (Goettingen University), Jon Tamir (UT Austin), and Michael Lustig (UC Berkeley). It consists of a programming library and a toolbox of command-line programs. The library provides common operations on multi-dimensional arrays, Fourier and wavelet transforms, as well as generic implementations of iterative optimization algorithms. The command-line tools provide direct access to basic operations on multi-dimensional arrays as well as efficient implementations of many calibration and reconstruction algorithms for parallel imaging and compressed sen.
+"""
+
+toolchain = {'name': 'apptainer', 'version': '1.4.5'}
+
+sources = ['%(name)s-%(version)s.sif']
+
+moduleclass = 'vis'

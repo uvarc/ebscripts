@@ -15,7 +15,8 @@ sources = ['3Tissue_v%(version)s.tar.gz']
 toolchain = {'name': 'GCC', 'version': '14.2.0'}
 
 dependencies = [
-    ('Python', '3.13.11'),
+    # must use python<3.12 for "import imp"
+    ('miniforge', '24.3.0', '-py3.11', SYSTEM),
     ('eigen', '3.4.0'),
     ('FFTW', '3.3.10'),
 ]

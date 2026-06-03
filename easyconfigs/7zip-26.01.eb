@@ -1,9 +1,10 @@
 # Ruoshi Sun
-# 2025-08-28 replace p7zip due to CVEs
+# 2026-06-02 upgrade to 26.01 due to CVE
+# 2025-08-28 replace p7zip due to CVE
 easyblock = 'Tarball'
 
 name = '7zip'
-version = '25.01'
+version = '26.01'
 
 homepage = 'https://www.7-zip.org'
 description = """7-Zip is a file archiver with a high compression ratio."""
@@ -11,7 +12,7 @@ description = """7-Zip is a file archiver with a high compression ratio."""
 toolchain = SYSTEM
 
 source_urls = ['https://www.7-zip.org/a/']
-sources = ['7z2501-linux-x64.tar.xz']
+sources = ['7z2601-linux-x64.tar.xz']
 
 sanity_check_paths = {
     'files': ['7zz'],

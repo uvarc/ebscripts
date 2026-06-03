@@ -15,6 +15,16 @@ source_urls = ['https://github.com/conda-forge/%(name)s/releases/download/%(vers
 local_arch = {'arm64': 'aarch64'}.get(ARCH, ARCH)
 sources = ['Miniforge3-%%(version)s-0-Linux-%s.sh' % local_arch]
 
+postinstallcmds = ['%(installdir)s/bin/mamba install -c conda-forge ' + ' '.join([
+    'matplotlib=3.10.9',
+    'numpy=2.4.6',
+    'pandas=3.0.3',
+    'pillow=12.2.0',
+    'scikit-learn=1.8.0',
+    'scipy=1.17.1',
+    'seaborn=0.13.2',
+])]
+
 sanity_check_paths = {
     'files': ['bin/conda'],
     'dirs': [],
