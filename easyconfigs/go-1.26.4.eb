@@ -1,7 +1,7 @@
 easyblock = 'Tarball'
 
 name = 'go'
-version = '1.26.2'
+version = '1.26.4'
 
 homepage = 'https://www.golang.org'
 description = """Go is an open source programming language that makes it easy to build

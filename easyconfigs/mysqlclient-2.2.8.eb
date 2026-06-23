@@ -1,0 +1,27 @@
+# Ruoshi Sun
+# 2026-06-22
+easyblock = 'PythonPackage'
+
+name = 'mysqlclient'
+version = '2.2.8'
+
+homepage = 'https://github.com/PyMySQL/mysqlclient-python'
+description = """Python interface to MySQL"""
+
+toolchain = SYSTEM
+
+source_urls = [PYPI_LOWER_SOURCE]
+sources = [SOURCELOWER_TAR_GZ]
+
+builddependencies = [
+    ('miniforge', '26.1.0'),
+]
+
+options = {'modulename': 'MySQLdb'}
+
+sanity_check_paths = {
+    'files': [],
+    'dirs': ['lib']
+}
+
+moduleclass = 'lib'

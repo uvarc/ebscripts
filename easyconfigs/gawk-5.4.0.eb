@@ -1,9 +1,7 @@
-# from EB repo
-
 easyblock = 'ConfigureMake'
 
 name = 'gawk'
-version = '5.1.1'
+version = '5.4.0'
 
 homepage = 'https://www.gnu.org/software/gawk'
 description = """The awk utility interprets a special-purpose programming language that makes it possible to handle
@@ -13,7 +11,6 @@ toolchain = SYSTEM
 
 source_urls = [GNU_SOURCE]
 sources = [SOURCE_TAR_GZ]
-checksums = ['6168d8d1dc8f74bd17d9dc22fa9634c49070f232343b744901da15fb4f06bffd']
 
 sanity_check_paths = {
     'files': ['bin/gawk'],

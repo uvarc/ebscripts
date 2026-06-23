@@ -1,0 +1,96 @@
+# Ruoshi Sun
+# 2026-06-16
+easyblock = 'ConfigureMake'
+
+name = 'yambo'
+version = '5.3.0'
+local_yambo_libs_ver = '1.0'
+
+homepage = 'https://www.yambo-code.org/'
+description = """YAMBO implements Many-Body Perturbation Theory (MBPT) methods (such as GW and BSE) and Time-Dependent Density Functional Theory (TDDFT), which allows for accurate prediction of fundamental properties as band gaps of semiconductors, band alignments, defect quasi-particle energies, optics and out-of-equilibrium properties of materials."""
+
+toolchain = {'name': 'NVHPC', 'version': '26.1'}
+toolchainopts = {
+    'usempi': True, 'openmp': True, 'opt': 'True',
+    'extra_fcflags': '-Mbackslash',
+    'extra_fflags': '-Mbackslash',
+}
+
+local_yambo_ext_cmd = 'mkdir yambo-%(version)s && '
+local_yambo_ext_cmd += 'tar --strip-components=1 -xzf %s -C yambo-%(version)s'
+local_yambo_lib_ext_cmd = 'mkdir -p yambo-%(version)s/lib/yambo/ && '
+local_yambo_lib_ext_cmd += 'tar --strip-components=1 -xzf %s -C yambo-%(version)s/lib/yambo/'
+
+source_urls = ['https://github.com/yambo-code/yambo/archive/']
+sources = [
+    {
+        'download_filename': '%(version)s.tar.gz',
+        'filename': 'yambo-%(version)s.tar.gz',
+        'extract_cmd': local_yambo_ext_cmd,
+    },
+    {
+        'source_urls': ['https://github.com/yambo-code/yambo-libraries/archive/'],
+        'download_filename': '%s.tar.gz' % local_yambo_libs_ver,
+        'filename': 'yambo-libraries-%s.tar.gz' % local_yambo_libs_ver,
+        'extract_cmd': local_yambo_lib_ext_cmd,
+    },
+    {
+        # see https://github.com/yambo-code/yambo/wiki/Libraries#external-libraries
+        'source_urls': ['https://github.com/yambo-code/yambo/files/962173/'],
+        'filename': 'iotk-y1.2.2.tar.gz',
+        'extract_cmd': 'cp %s yambo-%(version)s/lib/archive/',
+    },
+]
+
+dependencies = [
+    ('FFTW', '3.3.10'),
+    ('HDF5', '1.14.6'),
+    ('libxc', '5.2.3'),
+    ('netcdf', '4.9.2'),
+    ('DeviceXlib', '0.9.1'),
+]
+
+local_cuda = '$EBROOTNVHPC/Linux_x86_64/%(toolchain_version)s/cuda/13.1'
+
+configopts = ' '.join([
+    'CUDA_HOME=%s NVHPC_CUDA_HOME=%s NVCOMPILER_COMM_LIBS_HOME=$EBROOTNVHPC/Linux_x86_64/%%(toolchain_version)s/comm_libs/13.1' % (local_cuda, local_cuda),
+    'MPIFC=mpif90 MPIF77=mpif90 MPICC=mpicc FC=nvfortran F77=nvfortran',
+    'CPP="cpp -E -P" FPP="nvfortran -Mpreprocess -E" F90SUFFIX=".f90"',
+    '--enable-cuda-fortran',
+    '--with-cuda-path=%s' % local_cuda,
+    '--with-cuda-runtime=13.1 --with-cuda-cc="80,cc100,cc120"',
+    '--enable-open-mp --enable-mpi --enable-dp --enable-hdf5-par-io',
+    '--enable-time-profile --enable-memory-profile --enable-msgs-comps',
+    '--with-fft-path=$EBROOTFFTW',
+    '--with-hdf5-path=$EBROOTHDF5',
+    '--with-libxc-path=$EBROOTLIBXC',
+    '--with-netcdf-path=$EBROOTNETCDF',
+    '--with-netcdff-path=$EBROOTNETCDF',
+    '--with-blas-libs="-L$EBROOTNVHPC/Linux_x86_64/%(toolchain_version)s/REDIST/compilers/lib -lblas"',
+    '--with-lapack-libs="-L$EBROOTNVHPC/Linux_x86_64/%(toolchain_version)s/REDIST/compilers/lib -llapack"',
+    '--with-scalapack-libs="-L$EBROOTNVHPC/Linux_x86_64/%(toolchain_version)s/comm_libs/13.1/hpcx/hpcx-2.25.1/ompi/lib -lscalapack"',
+    '--with-blacs-libs="-L$EBROOTNVHPC/Linux_x86_64/%(toolchain_version)s/comm_libs/13.1/hpcx/hpcx-2.25.1/ompi/lib -lscalapack"',
+    '--with-devxlib-path=$EBROOTDEVICEXLIB',
+])
+
+prebuildopts = "unset LIBS && export SHELL='sh -x' && "
+
+buildopts = 'all'
+
+cleanupoldinstall = False
+skipsteps = ['install']
+
+postinstallcmds = [
+    'cp lib/external/nvfortran/mpif90/bin/* %(installdir)s/bin',
+    'cp -r lib/external/nvfortran/mpif90/include %(installdir)s',
+    'cp -r lib/external/nvfortran/mpif90/lib %(installdir)s',
+]
+
+sanity_check_paths = {
+    'files': ['bin/' + x for x in ['a2y', 'p2y', 'yambo', 'yambo_ph', 'ypp', 'ypp_ph',
+                                   'iotk', 'iotk.x']],
+    'dirs': []
+}
+
+modluafooter = 'add_property("arch","gpu")'
+moduleclass = 'phys'

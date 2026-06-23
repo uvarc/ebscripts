@@ -1,0 +1,28 @@
+# Ruoshi Sun
+# 2026-06-11
+easyblock = 'Conda'
+
+name = 'deeplabcut'
+version = '3.0.0'
+
+homepage = 'https://github.com/DeepLabCut/DeepLabCut'
+description = """
+DeepLabCut is a toolbox for markerless pose estimation of animals performing various tasks.
+"""
+
+toolchain = {'name': 'GCC', 'version': '14.2.0'}
+
+builddependencies = [('miniforge', '26.1.0', '', SYSTEM)]
+
+dependencies = [('X11', '20250608')]
+
+channels = ['conda-forge']
+requirements = 'python=3.12'
+
+postinstallcmds = [
+    '%(installdir)s/bin/pip install torch==2.11.0 torchvision==0.26.0 --index-url https://download.pytorch.org/whl/cu130',
+    '%(installdir)s/bin/pip install %(name)s[gui]==%(version)s',
+]
+
+modluafooter = 'add_property("arch","gpu")'
+moduleclass = 'bio'

@@ -1,0 +1,26 @@
+# Ruoshi Sun
+# 2026-06-10
+easyblock = 'Conda'
+
+name = 'anvio'
+version = '9'
+
+homepage = 'http://merenlab.org/software/anvio/'
+description = """Anvi'o is an open-source, community-driven analysis and visualization platform for microbial 'omics. It brings together many aspects of today's cutting-edge strategies including genomics, metagenomics, metatranscriptomics, pangenomics, metapangenomics, phylogenomics, and microbial population genetics in an integrated and easy-to-use fashion through extensive interactive visualization capabilities.
+"""
+
+toolchain = SYSTEM
+
+source_urls = ['https://github.com/merenlab/anvio/releases/download/v%(version)s']
+sources = [SOURCELOWER_TAR_GZ]
+
+builddependencies = [('miniforge', '26.1.0')]
+
+channels = ['bioconda']
+requirements = 'python=3.10 sqlite=3.46 prodigal idba mcl muscle=3.8.1551 famsa hmmer diamond blast megahit spades bowtie2 bwa graphviz "samtools>=1.9" trimal iqtree trnascan-se fasttree vmatch r-base r-tidyverse r-optparse r-stringi r-magrittr bioconductor-qvalue meme ghostscript nodejs=20.12.2 llvmlite numba'
+
+postinstallcmds = [
+    '%%(installdir)s/bin/pip install %%(builddir)s/%s' % sources[0],
+]
+
+moduleclass = 'bio'

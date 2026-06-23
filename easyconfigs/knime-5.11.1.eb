@@ -1,0 +1,23 @@
+# Ruoshi Sun
+# 2026-06-22
+easyblock = 'Tarball'
+
+name = 'knime'
+version = '5.11.1'
+
+homepage = 'https://www.knime.com'
+
+description = """KNIME is an analytics platform for data mining."""
+
+toolchain = SYSTEM
+
+sources = [
+    '%(name)s_%(version)s.linux.gtk.x86_64.tar.gz'
+]
+
+sanity_check_paths = {
+    'files': ['knime'],
+    'dirs': [],
+}
+
+moduleclass = 'data'

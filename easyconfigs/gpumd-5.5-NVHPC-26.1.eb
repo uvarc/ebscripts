@@ -1,0 +1,36 @@
+# Ruoshi Sun
+# 2026-06-17
+easyblock = 'MakeCp'
+
+name = 'gpumd'
+version = '5.5'
+
+homepage = 'https://github.com/brucefan1983/GPUMD'
+description = "GPUMD stands for Graphics Processing Units Molecular Dynamics. It is a general-purpose molecular dynamics (MD) code fully implemented on graphics processing units (GPUs)."
+
+toolchain = {'name': 'NVHPC', 'version': '26.1'}
+toolchainopts = {'cstd': 'c++14'}
+
+source_urls = ['https://github.com/brucefan1983/GPUMD/archive/refs/tags']
+sources = ['v%(version)s.tar.gz']
+
+start_dir = 'src'
+
+buildopts = ' '.join([
+    'CFLAGS="-allow-unsupported-compiler -O3 -arch=all-major"',
+    'LDFLAGS="-L$EBROOTNVHPC/Linux_x86_64/%(toolchain_version)s/math_libs/13.1/lib64"'
+])
+
+files_to_copy = [
+    (['gpumd', 'nep'], 'bin'),
+    'doc', 'examples', 'potentials', 'tools',
+    'LICENCE',
+]
+
+sanity_check_paths = {
+    'files': ['bin/gpumd'],
+    'dirs': ['bin'],
+}
+
+modluafooter = 'add_property("arch","gpu")'
+moduleclass = 'chem'
