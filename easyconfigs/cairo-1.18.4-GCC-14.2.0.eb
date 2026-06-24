@@ -33,11 +33,10 @@ dependencies = [
     ('glib', '2.87.1'),
     ('X11', '20250608'),
     ('LZO', '2.10'),
+    ('fontconfig', '2.17.1'),
 ]
 
 configopts = '--default-library=both'  # static and shared library
-
-maxparallel = 1
 
 sanity_check_paths = {
     'files': ['bin/cairo-trace',

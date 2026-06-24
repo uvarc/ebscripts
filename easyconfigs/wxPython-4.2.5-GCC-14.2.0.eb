@@ -1,0 +1,42 @@
+# This easyconfig was created by the BEAR Software team at the University of Birmingham.
+name = 'wxPython'
+version = '4.2.5'
+
+homepage = "https://www.wxpython.org/"
+description = """Wraps the wxWidgets C++ toolkit and provides access to the user interface portions of the wxWidgets 
+API, enabling Python applications to have a native GUI on Windows, Macs or Unix systems, with a native look and feel 
+and requiring very little (if any) platform specific code."""
+
+
+toolchain = {'name': 'GCC', 'version': '14.2.0'}
+source_urls = ['https://github.com/wxWidgets/Phoenix/releases/download/%(name)s-%(version)s']
+sources = [SOURCE_TAR_GZ]
+patches = [
+    'wxPython-4.1.1_fix_install_path.patch',
+    'wxPython-4.1.1_use_bang_env_python.patch',
+]
+
+builddependencies = [
+    ('pkgconf', '2.4.3'),
+    ('Cython', '3.1.2'),
+]
+
+dependencies = [
+    ('Python', '3.13.11'),
+    ('libpng', '1.6.53'),
+    ('zlib', '1.3.1'),
+    ('libjpeg-turbo', '3.1.3'),
+    ('libtiff', '4.7.1'),
+    ('expat', '2.7.3'),
+    ('GTK3', '3.24.51'),
+    ('glib', '2.87.1'),
+    #('GConf', '3.2.6'),
+    ('GST-plugins-base', '1.26.6'),
+    ('OpenGL', '2025.09'),
+    #('LibSoup', '3.0.7'),
+    ('wxWidgets', '3.2.10'),
+    #('WebKitGTK+', '2.37.1'),
+    ('attrdict3', '2.0.2'),
+]
+
+moduleclass = 'vis'

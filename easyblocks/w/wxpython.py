@@ -90,7 +90,7 @@ class EB_wxPython(PythonPackage):
             pyver = pyver[0] + pyver[2]
 
             installopts = ' '.join([self.cfg['installopts']] + self.py_installopts)
-            cmd = "pip install %(installopts)s --prefix=%(prefix)s dist/wxPython-%(version)s-cp%(pyver)s*.whl" % {
+            cmd = "pip install %(installopts)s --prefix=%(prefix)s dist/wxpython-%(version)s-cp%(pyver)s*.whl" % {
                 'installopts': installopts,
                 'prefix': self.installdir,
                 'version': self.version,

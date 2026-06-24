@@ -19,7 +19,7 @@ You should receive a unique download URL via email.
 sources = ['MaxQuant_v%(version)s.zip']
 
 dependencies = [
-    ('dotnet', '8.0.422')
+    ('dotnet', '8')
 ]
 
 sanity_check_paths = {

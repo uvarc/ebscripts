@@ -35,7 +35,7 @@ dependencies = [
     ('X11', '20250608'),
     ('OpenGL', '2025.09'),
     ('Graphene', '1.10.8'),
-    #('librsvg', '2.61.0'), # system
+    ('librsvg', '2.62.3'), # system
     ('openjpeg', '2.5.4'),
     ('OpenEXR', '3.3.4'),
     ('libwebp', '1.6.0'),

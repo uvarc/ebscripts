@@ -1,33 +1,24 @@
 # Ruoshi Sun
-# 2024-04-09
+# 2026-06-23
 easyblock = 'PackedBinary'
 
 name = 'fiji'
-version = '2.14.0'
+version = '2.16.0'
 
 homepage = 'https://fiji.sc'
 description = """Fiji is an image processing package—a 'batteries-included' distribution of
- ImageJ, bundling a lot of plugins which facilitate scientific image analysis.
-This release is based on ImageJ-2.1.0 and Fiji-2.1.1"""
+ ImageJ, bundling a lot of plugins which facilitate scientific image analysis."""
 
 toolchain = SYSTEM
 
-source_urls = [
-    'https://downloads.imagej.net/fiji/releases/%(version)s/',
-    'http://downloads.openmicroscopy.org/omero/5.4.1/artifacts'
-]
-sources = [
-    'fiji-%(version)s-nojre.zip',
-    'OMERO.insight-ij-5.4.1-ice36-b75.zip',
-]
+source_urls = ['https://downloads.imagej.net/fiji/archive/stable/20260307-1417']
+sources = ['%(name)s-stable-linux64-jdk.zip']
 
-dependencies = [('java', '8')]
+dependencies = [('Java', '21')]
 
-local_plugin_cmd = '%(installdir)s/ImageJ-linux64 -Xss1280k -Xmx2048M -- --update '
+local_plugin_cmd = '%(installdir)s/ImageJ-linux64 --headless --update '
 
 postinstallcmds = [
-    # Remove binaries for other platforms
-    'rm %(installdir)s/{ImageJ-win32.exe,ImageJ-win64.exe}',
     # Enable any update site (edit existing site with same parameters to enable it)
     # Full list at https://imagej.github.io/list-of-update-sites/
     local_plugin_cmd + 'edit-update-site BaSiC http://sites.imagej.net/BaSiC',
@@ -57,7 +48,9 @@ sanity_check_paths = {
 modextravars = {'JAVA_TOOL_OPTIONS': '-Xss1280k'}
 
 modloadmsg = """
-To launch the GUI, run "fiji-gui" on OOD Desktop.
+To launch the GUI, request OOD Desktop and run:
+ImageJ-linux64
+
 Additional plugins can be installed in $HOME/.plugins.
 """
 
