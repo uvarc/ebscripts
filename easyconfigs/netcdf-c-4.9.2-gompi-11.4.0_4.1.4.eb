@@ -23,13 +23,13 @@ source_urls = ['https://downloads.unidata.ucar.edu/%(name)s/%(version)s/']
 sources = [SOURCELOWER_TAR_GZ]
 
 builddependencies = [
-    ('cmake', '3.24.3'),
+    ('cmake', '3.28.1', '', SYSTEM),
     ('doxygen', '1.9.5'),
 ]
 
 dependencies = [
     ('bzip2', '1.0.6', '', SYSTEM),
-    ('curl', '8.4.0'),
+    ('curl', '8'),
     ('szip', '2.1.1'),
     ('hdf5', '1.12.2'),
 ]

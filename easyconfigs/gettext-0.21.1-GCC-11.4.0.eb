@@ -17,7 +17,7 @@ checksums = ['e8c3650e1d8cee875c4f355642382c1df83058bd5a11ee8555c0cf276d646d45']
 #builddependencies = [('binutils', '2.40')]
 
 dependencies = [
-    ('libxml2', '2.10.3'),
+    ('libxml2', '2'),
     #('ncurses', '6.4'),
 ]
 

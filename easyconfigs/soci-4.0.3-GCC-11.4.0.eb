@@ -14,13 +14,13 @@ sources = ['v%(version)s.tar.gz']
 checksums = ['4b1ff9c8545c5d802fbe06ee6cd2886630e5c03bf740e269bb625b45cf934928']
 
 builddependencies = [
-    ('cmake', '3.24.3'),
+    ('cmake', '3.28.1', '', SYSTEM),
 ]
 
 dependencies = [
     ('boost', '1.79.0'),
-    ('sqlite', '3.41.2', '', SYSTEM),
-    ('postgresql', '14.5', '', SYSTEM),
+    ('SQLite', '3'),
+    ('PostgreSQL', '18.4'),
 ]
 
 # Matches RStudio (1.4.1717) install options

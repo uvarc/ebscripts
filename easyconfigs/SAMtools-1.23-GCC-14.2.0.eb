@@ -31,7 +31,7 @@ dependencies = [
     ('zlib', '1.3.1'),
     ('bzip2', '1.0.8'),
     ('xz', '5.2.7', '', SYSTEM),
-    ('curl', '8.18.0'),
+    ('curl', '8'),
 ]
 
 moduleclass = 'bio'

@@ -20,12 +20,12 @@ builddependencies = [
     ('pkgconf', '2.4.3'),
     ('Rust', '1.92.0'),
     ('cargo-c', '0.10.15'),
-    ('curl', '8.20.0'),
+    ('curl', '8'),
 ]
 dependencies = [
     ('cairo', '1.18.4'),
     ('fontconfig', '2.17.1'),
-    ('freetype', '2.14.1'),
+    ('freetype', '2'),
     ('Gdk-Pixbuf', '2.42.12'),
     ('HarfBuzz', '12.3.0'),
     ('pango', '1.57.0'),

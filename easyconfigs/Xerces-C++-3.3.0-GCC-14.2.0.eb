@@ -24,11 +24,10 @@ checksums = [
 
 builddependencies = [
     ('binutils', '2.45'),
-    ('cmake', '4.1.2', '', SYSTEM),
 ]
 
 dependencies = [
-    ('curl', '8.18.0'),
+    ('CMake', '4.2.2'),
     ('ICU', '78.1'),
 ]
 

@@ -25,7 +25,7 @@ builddependencies = [
 ]
 
 dependencies = [
-    ('glib', '2.87.1'),
+    ('GLib', '2'),
 ]
 
 configopts = "--default-library=both "

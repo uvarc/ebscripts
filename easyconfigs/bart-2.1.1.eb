@@ -18,7 +18,7 @@ builddependencies = [
 ]
 
 channels = ['conda-forge']
-requirements = 'python=3.12'
+requirements = 'python=3.9'
 
 _conf = '%(name)s2-master/%(name)s2/%(name)s.conf'
 

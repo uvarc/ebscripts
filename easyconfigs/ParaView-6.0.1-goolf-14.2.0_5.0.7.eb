@@ -14,7 +14,7 @@ source_urls = ['https://www.paraview.org/paraview-downloads/%s' % local_download
 sources = ['ParaView-v%(version)s.tar.gz']
 
 builddependencies = [
-    ('cmake', '4.1.2', '', SYSTEM),
+    ('CMake', '4.2.2'),
     ('Ninja', '1.13.1'),
 ]
 
@@ -27,7 +27,7 @@ dependencies = [
     ('netcdf', '4.9.2'),
     ('libdrm', '2.4.131'),
     ('OpenGL', '2025.09'),
-    ('Qt6', '6.9.3'),
+    ('Qt6', '6'),
     ('zlib', '1.3.1'),
     ('ffmpeg', '8.0', '', SYSTEM),
     ('szip', '2.1.1'),

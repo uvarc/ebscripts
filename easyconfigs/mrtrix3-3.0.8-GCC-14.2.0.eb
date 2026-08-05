@@ -22,9 +22,9 @@ dependencies = [
     ('OpenGL', '2025.09'),
     # qt6 requires -cstd=c++17 but will lead to "overloaded function is ambiguous" error
     ('Qt5', '5.15.16'),
-    ('libtiff', '4.7.1'),
+    ('LibTIFF', '4'),
     ('FFTW', '3.3.10'),
-    ('libpng', '1.6.53'),
+    ('libpng', '1.6'),
 ]
 
 configure_without_installdir = True

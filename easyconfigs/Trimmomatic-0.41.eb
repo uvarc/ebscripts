@@ -1,0 +1,31 @@
+# Ruoshi Sun
+# 2026-07-14
+easyblock = 'Tarball'
+
+name = 'Trimmomatic'
+version = '0.41'
+
+homepage = 'http://www.usadellab.org/cms/index.php?page=trimmomatic'
+description = """Trimmomatic performs a variety of useful trimming tasks for illumina paired-end and single ended data."""
+
+toolchain = SYSTEM
+
+source_urls = ['https://github.com/usadellab/Trimmomatic/releases/download/v%(version)s']
+sources = [SOURCE_ZIP]
+
+dependencies = [('Java', '25')]
+
+jarfile = 'trimmomatic-%(version)s.jar'
+
+sanity_check_paths = {
+    'files': [jarfile],
+    'dirs': [],
+}
+
+modextravars = {
+    'TRIMMOMATIC': '%s/%s' % ('%(installdir)s', jarfile)
+}
+
+modloadmsg = "To execute trimmomatic run: java -jar $EBROOTTRIMMOMATIC/%s\n\n" % jarfile
+
+moduleclass = 'bio'

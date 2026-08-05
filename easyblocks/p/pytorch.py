@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 ##
-# Copyright 2020-2025 Ghent University
+# Copyright 2020-2026 Ghent University
 #
 # This file is part of EasyBuild,
 # originally created by the HPC team of Ghent University (http://ugent.be/hpc/en),
@@ -259,10 +259,20 @@ class EB_PyTorch(PythonPackage):
         extra_vars.update({
             'build_type': [None, "Build type for CMake, e.g. Release."
                                  "Defaults to 'Release' or 'Debug' depending on toolchainopts[debug]", CUSTOM],
-            'custom_opts': [[], "List of options for the build/install command. Can be used to change the defaults " +
+            'custom_opts': [[], "List of options for the build/install command. Can be used to change the defaults "
                                 "set by the PyTorch EasyBlock, for example ['USE_MKLDNN=0'].", CUSTOM],
             'excluded_tests': [{}, "Mapping of architecture strings to list of tests to be excluded", CUSTOM],
             'max_failed_tests': [10, "Maximum number of failing tests", CUSTOM],
+            # Relax checking of failed test suites (files)
+            'allow_extra_failures': [True, "Do not fail if more failing test suites in XML files are found than shown"
+                                           " in stdout of the test command. Can overestimate number of failed tests."
+                                           " Can be set to a number of maximum allowed extra failures.",
+                                           CUSTOM],
+            'allow_missing_failures': [False, "Do not fail if a failing test suite/file, as shown in stdout of the"
+                                              " test command, is not found in the XML files."
+                                              " As this also happens when tests fail to start at all,"
+                                              " it can miss a large number of failed tests."
+                                              " Can be set to a number of maximum allowed missing failures.", CUSTOM],
         })
 
         # disable use of pip to install PyTorch by default, overwriting the default set in PythonPackage;
@@ -438,6 +448,7 @@ class EB_PyTorch(PythonPackage):
         elif pytorch_version >= '1.9.0' and get_software_root('BLIS'):
             options.append('BLAS=BLIS')
             options.append('BLIS_HOME=' + get_software_root('BLIS'))
+            options.append('USE_MKLDNN=ON')
             options.append('USE_MKLDNN_CBLAS=ON')
         elif get_software_root('OpenBLAS'):
             # This is what PyTorch defaults to if no MKL is found.
@@ -452,6 +463,13 @@ class EB_PyTorch(PythonPackage):
             ])
         else:
             raise EasyBuildError("Did not find a supported BLAS in dependencies. Don't know which BLAS lib to use")
+
+        if pytorch_version >= '1.10':
+            acl_root = get_software_root('ArmComputeLibrary')
+            if acl_root:
+                options.append('USE_MKLDNN=ON')
+                options.append('USE_MKLDNN_ACL=ON')
+                env.setvar('ACL_ROOT_DIR', acl_root)
 
         available_dependency_options = EB_PyTorch.get_dependency_options_for_version(self.version)
         dependency_names = self.cfg.dependency_names()
@@ -524,7 +542,7 @@ class EB_PyTorch(PythonPackage):
 
         build_type = self.cfg.get('build_type')
         if build_type is None:
-            build_type = 'Debug' if self.toolchain.options.get('debug', None) else 'Release'
+            build_type = 'Debug' if self.toolchain.options.get('debug') else 'Release'
         else:
             for name in ('prebuildopts', 'preinstallopts', 'custom_opts'):
                 if '-DCMAKE_BUILD_TYPE=' in self.cfg[name]:
@@ -541,7 +559,7 @@ class EB_PyTorch(PythonPackage):
 
         unique_options = self.cfg['custom_opts']
         for option in options:
-            name = option.split('=')[0] + '='  # Include the equals sign to avoid partial matches
+            name = option.split('=', maxsplit=1)[0] + '='  # Include the equals sign to avoid partial matches
             if not any(opt.startswith(name) for opt in unique_options):
                 unique_options.append(option)
 
@@ -617,6 +635,7 @@ class EB_PyTorch(PythonPackage):
         env.setvar('SANDCASTLE', '1')
         # Skip this test(s) which is very flaky
         env.setvar('SKIP_TEST_BOTTLENECK', '1')
+        env.setvar('MAX_JOBS', str(self.cfg.parallel))
         if self.has_xml_test_reports:
             env.setvar(self.GENERATE_TEST_REPORT_VAR_NAME, '1')
         # Parse excluded_tests and flatten into space separated string
@@ -632,15 +651,15 @@ class EB_PyTorch(PythonPackage):
             'excluded_tests': ' '.join(excluded_tests)
         })
 
-        parsed_test_result = super().test_step(return_output_ec=True)
-        if parsed_test_result is None:
+        test_step_result = super().test_step(return_output_ec=True)
+        if test_step_result is None:
             if self.cfg['runtest'] is False:
                 msg = "Do not set 'runtest' to False, use --skip-test-step instead."
             else:
                 msg = "Tests did not run. Make sure 'runtest' is set to a command."
             raise EasyBuildError(msg)
 
-        tests_out, tests_ec = parsed_test_result
+        tests_out, tests_ec = test_step_result
 
         failed_test_names = find_failed_test_names(tests_out)
         parsed_test_result = parse_test_log(tests_out)
@@ -690,6 +709,11 @@ class EB_PyTorch(PythonPackage):
             parsed_test_result = new_result
             failed_test_names = new_failed_names
 
+        # Calculate total number of unsuccesful tests
+        failed_test_cnt = parsed_test_result.failure_cnt + parsed_test_result.error_cnt
+        # Always log what we detected, allows for easy comparison of different builds
+        self.log.info("Detected %d failed tests (out of %d)", failed_test_cnt, parsed_test_result.test_cnt)
+
         # Show failed subtests, if any, to aid in debugging failures
         if failed_test_names.error or failed_test_names.fail:
             msg = []
@@ -703,17 +727,28 @@ class EB_PyTorch(PythonPackage):
 
         # Create clear summary report
         # Use a list of messages we can later join together
-        failure_msgs = ['\t%s (%s)' % (suite.name, suite.summary) for suite in parsed_test_result.failed_suites]
-        # These were accounted for
-        failed_test_suites = {suite.name for suite in parsed_test_result.failed_suites}
-        # Those are all that failed according to the summary output
-        all_failed_test_suites = parsed_test_result.all_failed_suites
-        # We should have determined all failed test suites and only those.
-        # Otherwise show the mismatch and terminate later
-        if failed_test_suites != all_failed_test_suites:
-            failure_msgs.insert(0, 'Failed tests (suites/files):')
-            # Test suites where we didn't match a specific regexp and hence likely didn't count the failures
-            uncounted_test_suites = all_failed_test_suites - failed_test_suites
+        failure_msgs = []
+        # Only add count message if we detected any failed tests
+        if failed_test_cnt > 0:
+            failure_or_failures = 'failure' if parsed_test_result.failure_cnt == 1 else 'failures'
+            error_or_errors = 'error' if parsed_test_result.error_cnt == 1 else 'errors'
+            failure_msgs.append(f"{parsed_test_result.failure_cnt} test {failure_or_failures}, "
+                                f"{parsed_test_result.error_cnt} test {error_or_errors} "
+                                f"(out of {parsed_test_result.test_cnt}):")
+        if parsed_test_result.failed_suites:
+            failure_msgs.append('Failed tests (suites/files):')
+            failure_msgs.extend('\t%s (%s)' % (suite.name, suite.summary) for suite in parsed_test_result.failed_suites)
+
+        # At the end of stdout of the test command there is a summary of failed suites.
+        # We should have determined all those test suites and only those.
+        # These were accounted for:
+        failed_suites_parsed = {suite.name for suite in parsed_test_result.failed_suites}
+        # From summary:
+        failed_suites_from_summary = parsed_test_result.all_failed_suites
+        # Add all mismatches to summary
+        if failed_suites_parsed != failed_suites_from_summary:
+            # Test suites we missed when parsing and hence (likely) didn't count the failures:
+            uncounted_test_suites = failed_suites_from_summary - failed_suites_parsed
             if uncounted_test_suites:
                 failure_msgs.append('Could not count failed tests for the following test suites/files:')
                 for suite_name in sorted(uncounted_test_suites):
@@ -725,46 +760,59 @@ class EB_PyTorch(PythonPackage):
                         reason = 'Undetected or did not run properly'
                     failure_msgs.append(f'\t{suite_name} ({reason})')
             # Test suites not included in the catch-all regexp but counted. Should be empty.
-            unexpected_test_suites = failed_test_suites - all_failed_test_suites
+            unexpected_test_suites = failed_suites_parsed - failed_suites_from_summary
             if unexpected_test_suites:
                 failure_msgs.append('Counted failures of tests from the following test suites/files that are not '
                                     'contained in the summary output of PyTorch:')
                 failure_msgs.extend(sorted(unexpected_test_suites))
 
-        # Calculate total number of unsuccesful and total tests
-        failed_test_cnt = parsed_test_result.failure_cnt + parsed_test_result.error_cnt
-        # Only add count message if we detected any failed tests
-        if failed_test_cnt > 0:
-            failure_or_failures = 'failure' if parsed_test_result.failure_cnt == 1 else 'failures'
-            error_or_errors = 'error' if parsed_test_result.error_cnt == 1 else 'errors'
-            failure_msgs.insert(0, "%d test %s, %d test %s (out of %d):" % (
-                parsed_test_result.failure_cnt, failure_or_failures,
-                parsed_test_result.error_cnt, error_or_errors,
-                parsed_test_result.test_cnt
-            ))
-
         # Assemble final report
         failure_report = '\n'.join(failure_msgs)
 
-        if failed_test_suites != all_failed_test_suites:
-            # Fail because we can't be sure how many tests failed
-            # so comparing to max_failed_tests cannot reasonably be done
-            if failed_test_suites | set(parsed_test_result.terminated_suites) == all_failed_test_suites:
-                # All failed test suites are either counted or terminated with a signal
-                msg = ('Failing because these test suites were terminated which makes it impossible '
-                       'to accurately count the failed tests: ')
-                msg += ", ".join("%s(%s)" % name_signal
-                                 for name_signal in sorted(parsed_test_result.terminated_suites.items()))
-            elif len(failed_test_suites) < len(all_failed_test_suites):
-                msg = ('Failing because not all failed tests could be determined. Tests failed to start, crashed '
-                       'or the test accounting in the PyTorch EasyBlock needs updating!\n'
-                       'Missing: ' + ', '.join(sorted(all_failed_test_suites - failed_test_suites)))
+        # On mismatch failed_test_cnt may be wrong.
+        # Fail, including the full report, or warn before comparing to max_failed_tests.
+        if failed_suites_parsed != failed_suites_from_summary:
+            def to_num(bool_or_int):
+                return float('inf') if bool_or_int is True else int(bool_or_int)
+            num_allowed_extra_failures = to_num(self.cfg['allow_extra_failures'])
+            num_allowed_missing_failures = to_num(self.cfg['allow_missing_failures'])
+            missing_suites = failed_suites_from_summary - failed_suites_parsed
+            extra_suites = failed_suites_parsed - failed_suites_from_summary
+
+            if missing_suites:
+                if missing_suites == set(parsed_test_result.terminated_suites):
+                    # All failed test suites are either counted or terminated with a signal
+                    if len(missing_suites) <= num_allowed_missing_failures:
+                        msg = f'These {len(missing_suites)} test suites were terminated,'
+                    else:
+                        msg = f'Failing because these {len(missing_suites)} test suites were terminated,'
+                    msg += ' which makes it impossible to accurately count the failed tests: '
+                    msg += ", ".join("%s(%s)" % name_signal
+                                     for name_signal in sorted(parsed_test_result.terminated_suites.items()))
+                else:
+                    if len(missing_suites) <= num_allowed_missing_failures:
+                        msg = 'Not all failed tests could be determined.'
+                    else:
+                        msg = 'Failing because not all failed tests could be determined.'
+                    msg += ('Tests failed to start, crashed or the test accounting in the '
+                            'PyTorch EasyBlock needs updating!\n'
+                            f'Missing ({len(missing_suites)}): ' + ', '.join(sorted(missing_suites)))
             else:
-                msg = ('Failing because there were unexpected failures detected: ' +
-                       ', '.join(sorted(failed_test_suites - all_failed_test_suites)))
-            raise EasyBuildError(msg + '\n' +
-                                 'You can check the test failures (in the log) manually and if they are harmless, '
-                                 'use --ignore-test-failure to make the test step pass.\n' + failure_report)
+                msg = ''
+            if extra_suites:
+                if msg:
+                    msg += '\n'  # There can be missing AND extra suites
+
+                if len(extra_suites) <= num_allowed_extra_failures:
+                    msg += f'{len(extra_suites)} unexpected failures detected: '
+                else:
+                    msg += f'Failing because there were {len(extra_suites)} unexpected failures detected: '
+                msg += ', '.join(sorted(extra_suites))
+            if len(missing_suites) > num_allowed_missing_failures or len(extra_suites) > num_allowed_extra_failures:
+                raise EasyBuildError(msg + '\n' +
+                                     'You can check the test failures (in the log) manually and if they are harmless, '
+                                     'use --ignore-test-failure to make the test step pass.\n' + failure_report)
+            print_warning(msg, log=self.log)
 
         if failed_test_cnt > 0:
             max_failed_tests = self.cfg['max_failed_tests']
@@ -791,6 +839,8 @@ class EB_PyTorch(PythonPackage):
             raise EasyBuildError("Test ended with failures! Exit code: %s\n%s", tests_ec, failure_report)
         elif tests_ec:
             raise EasyBuildError("Test command had non-zero exit code (%s), but no failed tests found?!", tests_ec)
+        else:
+            self.log.info("All tests passed successfully!")
 
     def test_cases_step(self):
         self._set_cache_dirs()

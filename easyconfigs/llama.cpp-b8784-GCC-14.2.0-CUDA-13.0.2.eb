@@ -23,7 +23,7 @@ dependencies = [
     #('Python', '3.11.3'),
     #('SciPy-bundle', '2023.07'),
     #('PyTorch', '2.1.2', versionsuffix),
-    ('curl', '8.18.0'),
+    ('curl', '8'),
     #('SentencePiece', '0.2.0'),
     #('Transformers', '4.39.3'),
     #('protobuf', '24.0'),

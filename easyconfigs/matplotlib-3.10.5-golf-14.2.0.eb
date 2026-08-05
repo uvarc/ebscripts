@@ -20,8 +20,8 @@ builddependencies = [
 dependencies = [
     ('Python', '3.13.11'),
     ('SciPy-bundle', '2025.07'),
-    ('libpng', '1.6.53'),
-    ('freetype', '2.14.1'),
+    ('libpng', '1.6'),
+    ('freetype', '2'),
     ('Tkinter', '%(pyver)s'),
     ('Pillow', '11.3.0'),
     ('Qhull', '2020.2'),

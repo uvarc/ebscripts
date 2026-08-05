@@ -24,7 +24,7 @@ sources = [SOURCE_TAR_GZ]
 
 #osdependencies = ['cairo', 'libjpeg-turbo', 'libpng', 'pango', 'qt']
 dependencies = [
-    ('qt5', '5.15.8'),
+    ('Qt5', '5'),
     ('libffi', '3.4.4'),
 ]
 

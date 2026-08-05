@@ -31,7 +31,7 @@ dependencies = [
     ('lpsolve', '5.5.2.11', '', SYSTEM),
     ('SuiteSparse', '7.11.0', '', ('golf', '14.2.0')),
     ('BamTools', '2.5.3'),
-    ('sqlite', '3.51.2'),
+    ('SQLite', '3'),
 ]
 
 skipsteps = ['configure']

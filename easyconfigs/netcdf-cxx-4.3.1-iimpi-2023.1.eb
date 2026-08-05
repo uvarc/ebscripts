@@ -18,13 +18,13 @@ source_urls = ['https://downloads.unidata.ucar.edu/%(name)s/%(version)s/']
 sources = ['%(name)s4-%(version)s.tar.gz']
 
 builddependencies = [
-    ('cmake', '3.23.3', '', SYSTEM),
+    ('cmake', '3.28.1', '', SYSTEM),
     ('doxygen', '1.9.5'),
 ]
 
 dependencies = [
     ('netcdf-c', '4.9.2'),
-    ('curl', '8.4.0'),
+    ('curl', '8'),
     ('szip', '2.1.1'),
 ]
 

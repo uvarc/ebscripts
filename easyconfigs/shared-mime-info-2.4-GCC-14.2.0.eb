@@ -24,8 +24,8 @@ builddependencies = [
 ]
 
 dependencies = [
-    ('libxml2', '2.14.3'),
-    ('glib', '2.87.1'),
+    ('libxml2', '2'),
+    ('GLib', '2'),
 ]
 
 sanity_check_paths = {

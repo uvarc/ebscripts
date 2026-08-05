@@ -1,0 +1,17 @@
+easyblock = 'ModuleRC'
+
+name = 'libxml2'
+version = '2'
+
+homepage = 'http://xmlsoft.org/'
+
+description = """
+ Libxml2 is the XML C parser and toolchain developed for the Gnome project
+ (but usable outside of the Gnome platform).
+"""
+
+toolchain = {'name': 'GCC', 'version': '11.4.0'}
+
+dependencies = [(name, '2.15.3')]
+
+moduleclass = 'lib'

@@ -24,7 +24,7 @@ builddependencies = [
     ('pkg-config', '0.29.2'),
 ]
 dependencies = [
-    ('curl', '8.18.0'),
+    ('curl', '8'),
     ('bzip2', '1.0.8'),
     ('xz', '5.2.7', '', SYSTEM),
     ('zlib', '1.3.1'),

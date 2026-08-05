@@ -18,14 +18,14 @@ sources = ['v%(version)s.tar.gz']
 
 builddependencies = [
     #('binutils', '2.44'),
-    ('cmake', '4.0.0', '', SYSTEM),
+    ('cmake', '3.28.1', '', SYSTEM),
 ]
 
 # for running the binary of openjpeg like opj_compress you need the libraries like zlib etc.
 dependencies = [
     ('zlib', '1.2.13'),
-    ('libpng', '1.6.39'),
-    ('libtiff', '4.7.0'),
+    ('libpng', '1.6'),
+    ('LibTIFF', '4'),
 ]
 
 sanity_check_paths = {

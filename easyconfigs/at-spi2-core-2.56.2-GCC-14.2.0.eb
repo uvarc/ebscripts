@@ -24,7 +24,7 @@ builddependencies = [
 ]
 
 dependencies = [
-    ('glib', '2.87.1'),
+    ('GLib', '2'),
     ('dbus', '1.16.2'),
     ('X11', '20250608'),
 ]

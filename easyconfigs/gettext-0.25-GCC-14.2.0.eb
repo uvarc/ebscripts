@@ -13,10 +13,10 @@ toolchain = {'name': 'GCC', 'version': '14.2.0'}
 source_urls = [GNU_SOURCE]
 sources = [SOURCE_TAR_GZ]
 
-#builddependencies = [('binutils', '2.40')]
+builddependencies = [('binutils', '2.45')]
 
 dependencies = [
-    ('libxml2', '2.14.3'),
+    ('libxml2', '2'),
     ('ncurses', '6.5'),
 ]
 

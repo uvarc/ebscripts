@@ -15,7 +15,7 @@ checksums = ['d11af569e42a1baa1650d20ad61d12e41af4fead4aa7964a01f93b08b53ab074']
 
 builddependencies = [('binutils', '2.45')]
 
-dependencies = [('libjpeg-turbo', '3.1.3')]
+dependencies = [('libjpeg-turbo', '3')]
 
 sanity_check_paths = {
     'files': ['bin/jpgicc', 'bin/linkicc', 'bin/psicc', 'bin/transicc', 'include/lcms2.h', 'include/lcms2_plugin.h',

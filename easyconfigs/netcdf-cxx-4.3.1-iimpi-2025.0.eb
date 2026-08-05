@@ -25,7 +25,7 @@ builddependencies = [
 
 dependencies = [
     ('netcdf-c', '4.9.2'),
-    ('curl', '8.4.0', '', local_comp),
+    ('curl', '8', '', local_comp),
     ('szip', '2.1.1', '', local_comp),
 ]
 

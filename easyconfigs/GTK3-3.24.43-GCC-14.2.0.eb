@@ -28,7 +28,7 @@ dependencies = [
     ('cairo', '1.18.4'),
     ('fontconfig', '2.17.1'),
     ('Gdk-Pixbuf', '2.42.12'),
-    ('glib', '2.87.1'),
+    ('GLib', '2'),
     ('gperf', '3.3', '', SYSTEM),
     ('pango', '1.57.0'),
     ('libepoxy', '1.5.10'),

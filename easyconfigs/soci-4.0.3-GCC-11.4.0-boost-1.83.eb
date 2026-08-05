@@ -20,8 +20,8 @@ builddependencies = [
 
 dependencies = [
     ('boost', '1.83.0'),
-    ('sqlite', '3.41.2', '', SYSTEM),
-    ('postgresql', '14.5', '', SYSTEM),
+    ('SQLite', '3'),
+    ('PostgreSQL', '18.4'),
 ]
 
 # Matches RStudio (1.4.1717) install options

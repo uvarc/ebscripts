@@ -17,7 +17,7 @@ sources = ['v%(version)s.tar.gz']
 dependencies = [
     ('htslib', '1.17', '', SYSTEM),
     ('boost', '1.79.0'),
-    ('curl', '8.4.0'),
+    ('curl', '8'),
 ]
 
 # edit makefile

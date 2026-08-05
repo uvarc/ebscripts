@@ -13,10 +13,10 @@ sources = [SOURCELOWER_TAR_BZ2]
 
 builddependencies = [
     #('ffnvcodec', '11.1.5.2', '', SYSTEM),  # optional nvenc/dec support
+    #('NASM', '3.02'),
 ]
 
 dependencies = [
-    ('nasm', '2.14.02'),
     ('zlib', '1.2.13'),
     ('bzip2', '1.0.6'),
     ('x264', '20250619'),

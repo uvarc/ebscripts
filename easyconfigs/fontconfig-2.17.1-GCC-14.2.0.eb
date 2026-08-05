@@ -24,8 +24,8 @@ builddependencies = [
 ]
 
 dependencies = [
-    ('expat', '2.7.3'),
-    ('freetype', '2.14.1'),
+    ('expat', '2'),
+    ('freetype', '2'),
     ('util-linux', '2.41'),
 ]
 

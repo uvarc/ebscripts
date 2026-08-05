@@ -24,10 +24,10 @@ builddependencies = [
 
 dependencies = [
     ('HDF5', '1.14.6'),
-    ('curl', '8.18.0', '', local_gcc),
+    ('curl', '8', '', local_gcc),
     ('szip', '2.1.1', '', local_gcc),
     ('bzip2', '1.0.8', '', local_gcc),
-    ('libxml2', '2.14.3', '', local_gcc),
+    ('libxml2', '2', '', local_gcc),
 ]
 
 # make sure both static and shared libs are built

@@ -28,7 +28,7 @@ builddependencies = [
 dependencies = [
     ('zlib', '1.3.1'),
     ('bzip2', '1.0.8'),
-    ('glib', '2.87.1'),
+    ('GLib', '2'),
     ('GStreamer', version),
     ('GST-plugins-base', version),
     ('Gdk-Pixbuf', '2.42.12'),

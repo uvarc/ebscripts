@@ -40,8 +40,8 @@ dependencies = [
     ('pcre', '8.45'),
     ('boost', '1.83.0'),
     ('gmp', '6.2.0'),
-    ('libpng', '1.6.39'),
-    ('libjpeg-turbo', '2.1.4'),
+    ('libpng', '1.6'),
+    ('libjpeg-turbo', '3'),
     ('LMDB', '0.9.31'),
 ]
 

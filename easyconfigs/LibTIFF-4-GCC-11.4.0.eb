@@ -1,0 +1,13 @@
+easyblock = 'ModuleRC'
+
+name = 'LibTIFF'
+version = '4'
+
+homepage = 'https://libtiff.gitlab.io/libtiff/'
+description = "tiff: Library and tools for reading and writing TIFF data files"
+
+toolchain = {'name': 'GCC', 'version': '11.4.0'}
+
+dependencies = [(name, '4.7.2')]
+
+moduleclass = 'lib'

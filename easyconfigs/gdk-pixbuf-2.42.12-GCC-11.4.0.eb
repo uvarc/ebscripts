@@ -18,18 +18,18 @@ sources = [SOURCELOWER_TAR_XZ]
 
 builddependencies = [
     #('binutils', '2.39'),
-    ('Meson', '1.0.1', '-py3.11'),
-    ('Ninja', '1.11.1', '-py3.11'),
+    ('Meson', '1.9.0', '', SYSTEM),
+    ('Ninja', '1.13.1', '', SYSTEM),
     #('pkgconf', '1.9.3'),
     ('gobject-introspection', '1.74.0'),
 ]
 
 dependencies = [
-    ('glib', '2.76.1'),
+    ('GLib', '2'),
     ('libffi', '3.4.4'),
-    ('libjpeg-turbo', '3.0.1'),
-    #('libpng', '1.6.38'),
-    ('libtiff', '4.7.0'),
+    ('libjpeg-turbo', '3'),
+    ('libpng', '1.6'),
+    ('LibTIFF', '4'),
     #('X11', '20221110'),
 ]
 

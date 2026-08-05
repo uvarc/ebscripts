@@ -1,0 +1,19 @@
+easyblock = 'ModuleRC'
+name = 'freetype'
+version = '2'
+
+homepage = 'https://www.freetype.org'
+
+description = """
+ FreeType 2 is a software font engine that is designed to be small, efficient,
+ highly customizable, and portable while capable of producing high-quality
+ output (glyph images). It can be used in graphics libraries, display servers,
+ font conversion tools, text image generation tools, and many other products
+ as well.
+"""
+
+toolchain = {'name': 'GCC', 'version': '11.4.0'}
+
+dependencies = [(name, '2.14.3')]
+
+moduleclass = 'vis'

@@ -26,8 +26,8 @@ local_comp = ('GCC', '11.4.0')
 dependencies = [
     ('relion-env', version, '', SYSTEM),
     ('fltk', '1.4.3', '', local_comp),
-    ('libjpeg-turbo', '3.0.1', '', local_comp),
-    ('libtiff', '4.7.0', '', local_comp),
+    ('libjpeg-turbo', '3', '', local_comp),
+    ('LibTIFF', '4', '', local_comp),
     ('wxwidgets', '3.2.6', '', local_comp),
     ('ctffind', '4.1.14', '', local_comp),
 ]

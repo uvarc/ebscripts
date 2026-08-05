@@ -13,7 +13,7 @@ source_urls = ['https://github.com/blais/xxdiff/archive/refs/heads/']
 sources = ['master.zip']
 
 dependencies = [
-    ('qt5', '5.15.8'),
+    ('Qt5', '5'),
 ]
 
 prebuildopts = 'export QTDIR=$EBROOTQT5 QMAKE=qmake && cd src && make -f Makefile.bootstrap &&'

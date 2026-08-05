@@ -25,14 +25,14 @@ sources = [SOURCELOWER_TAR_GZ]
 builddependencies = [
     ('binutils', '2.45'),
     ('pkgconf', '2.4.3'),
-    ('cmake', '4.1.2', '', SYSTEM),
+    ('CMake', '4.2.2'),
     ('googletest', '1.17.0'),
 ]
 
 dependencies = [
-    ('sqlite', '3.51.2'),
-    ('libtiff', '4.7.1'),
-    ('curl', '8.18.0'),
+    ('SQLite', '3'),
+    ('LibTIFF', '4'),
+    ('curl', '8'),
     ('xz', '5.2.7', '', SYSTEM),
     ('nlohmann_json', '3.12.0'),
 ]

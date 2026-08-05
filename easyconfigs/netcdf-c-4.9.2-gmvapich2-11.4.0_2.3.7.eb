@@ -29,7 +29,7 @@ builddependencies = [
 
 dependencies = [
     ('bzip2', '1.0.6', '', SYSTEM),
-    ('curl', '8.4.0'),
+    ('curl', '8'),
     ('szip', '2.1.1'),
     ('hdf5', '1.12.2'),
 ]

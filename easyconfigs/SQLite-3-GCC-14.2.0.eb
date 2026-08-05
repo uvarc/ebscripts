@@ -1,0 +1,13 @@
+easyblock = 'ModuleRC'
+
+name = 'SQLite'
+version = '3'
+
+homepage = 'http://www.sqlite.org'
+description = "SQLite: SQL Database Engine in a C Library"
+
+toolchain = {'name': 'GCC', 'version': '14.2.0'}
+
+dependencies = [(name, '3.53.3')]
+
+moduleclass = 'devel'

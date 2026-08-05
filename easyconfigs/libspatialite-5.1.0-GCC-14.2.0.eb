@@ -15,7 +15,7 @@ sources = [SOURCE_TAR_GZ]
 checksums = ['43be2dd349daffe016dd1400c5d11285828c22fea35ca5109f21f3ed50605080']
 
 builddependencies = [
-    ('cmake', '4.1.2', '', SYSTEM),
+    ('CMake', '4.2.2'),
     ('pkgconf', '2.4.3'),
 ]
 
@@ -24,9 +24,9 @@ dependencies = [
     ('minizip', '1.1'),
     ('FreeXL', '2.0.0'),
     ('GEOS', '3.14.0'),
-    ('sqlite', '3.51.2'),
+    ('SQLite', '3'),
     ('PROJ', '9.7.0'),
-    ('libxml2', '2.11.4'),
+    ('libxml2', '2'),
     ('librttopo', '1.1.0'),
 ]
 

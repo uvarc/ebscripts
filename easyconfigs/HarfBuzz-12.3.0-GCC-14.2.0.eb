@@ -22,10 +22,10 @@ builddependencies = [
 ]
 
 dependencies = [
-    ('glib', '2.87.1'),
+    ('GLib', '2'),
     ('ICU', '78.1'),
     ('cairo', '1.18.4'),
-    ('freetype', '2.14.1'),
+    ('freetype', '2.14.3'),
 ]
 
 configopts = '--default-library=both'  # static and shared library

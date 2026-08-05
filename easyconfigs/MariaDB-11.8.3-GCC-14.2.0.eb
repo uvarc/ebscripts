@@ -33,7 +33,7 @@ dependencies = [
     ('xz', '5.2.7', '', SYSTEM),        # optional
     ('jemalloc', '5.3.0'),  # optional
     ('snappy', '1.2.2'),    # needed by RocksDB; optional for InnoDB
-    ('libxml2', '2.14.3'),  # needed by Connect XML
+    ('libxml2', '2'),  # needed by Connect XML
     ('boost', '1.83.0'),    # needed by OQGraph
     ('Judy', '1.0.5'),      # needed by OQGraph
     ('pcre2', '10.42'),

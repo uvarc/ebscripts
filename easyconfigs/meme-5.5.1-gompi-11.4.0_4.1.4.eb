@@ -25,7 +25,7 @@ dependencies = [
     ('zlib', '1.2.13'),
     ('Perl', '5.40.2'),
     ('python', '3.11.4'),
-    ('ghostscript', '10.0.0', '', SYSTEM),
+    ('Ghostscript', '10.07.1'),
     ('xml-compile', '1.63'),
 ]
 

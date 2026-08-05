@@ -26,16 +26,16 @@ builddependencies = [
 ]
 
 dependencies = [
-    ('libpng', '1.6.53'),
+    ('libpng', '1.6'),
     ('zlib', '1.3.1'),
     ('xz', '5.2.7', '', SYSTEM),
-    ('curl', '8.18.0'),
+    ('curl', '8'),
     ('fontconfig', '2.17.1'),
-    ('libjpeg-turbo', '3.1.3'),
-    ('libtiff', '4.7.1'),
+    ('libjpeg-turbo', '3'),
+    ('LibTIFF', '4'),
     ('libwebp', '1.6.0'),
     ('jbigkit', '2.1'),
-    ('expat', '2.7.3'),
+    ('expat', '2'),
     ('GTK3', '3.24.51'),
     ('libnotify', '0.8.7'),
     ('X11', '20250608'),
@@ -43,7 +43,7 @@ dependencies = [
     ('SDL2', '2.32.10'),
     ('cairo', '1.18.4'),
     ('GST-plugins-base', '1.26.6'),
-    ('glib', '2.87.1'),
+    ('GLib', '2'),
 ]
 
 local_cpath_ext = '$EBROOTGTK3/include/gtk-3.0:$EBROOTGLIB/include/glib-2.0:$EBROOTGLIB/lib/glib-2.0/include'

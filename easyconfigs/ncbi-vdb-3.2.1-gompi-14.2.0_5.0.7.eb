@@ -22,7 +22,7 @@ builddependencies = [
 
 dependencies = [
     ('hdf5', '1.14.6'),
-    ('libxml2', '2.14.3'),
+    ('libxml2', '2'),
     ('bzip2', '1.0.8'),
 ]
 

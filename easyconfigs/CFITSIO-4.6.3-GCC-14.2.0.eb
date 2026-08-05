@@ -18,7 +18,7 @@ sources = [SOURCELOWER_TAR_GZ]
 builddependencies = [('binutils', '2.45')]
 
 # curl for HTTPs support
-dependencies = [('curl', '8.18.0')]
+dependencies = [('curl', '8')]
 
 test_cmd = './testprog > testprog.lis && diff testprog.lis testprog.out && cmp testprog.fit testprog.std'
 

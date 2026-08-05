@@ -14,16 +14,16 @@ checksums = ['cfa008a5af822b36ae6287f18182c40c91dd699c55faa38605881ed175ca464f']
 
 builddependencies = [
     #('binutils', '2.39'),
-    ('Meson', '1.0.1', '-py3.11'),
-    ('Ninja', '1.11.1', '-py3.11'),
+    ('Meson', '1.9.0', '', SYSTEM),
+    ('Ninja', '1.13.1', '', SYSTEM),
     ('pkgconf', '1.9.5'),
 ]
 
 dependencies = [
-    ('glib', '2.76.1'),
+    ('GLib', '2'),
     ('dbus', '1.15.4'),
     ('at-spi2-core', '2.46.0'),
-    ('libxml2', '2.10.3'),
+    ('libxml2', '2'),
     ('atk', '2.38.0'),
 ]
 

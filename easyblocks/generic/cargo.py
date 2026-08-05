@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 ##
-# Copyright 2009-2025 Ghent University
+# Copyright 2009-2026 Ghent University
 #
 # This file is part of EasyBuild,
 # originally created by the HPC team of Ghent University (http://ugent.be/hpc/en),
@@ -44,14 +44,17 @@ import easybuild.tools.systemtools as systemtools
 import easybuild.tools.tomllib as tomllib
 from easybuild.framework.easyconfig import CUSTOM
 from easybuild.framework.extensioneasyblock import ExtensionEasyBlock
+from easybuild.tools import LooseVersion
 from easybuild.tools.build_log import EasyBuildError, print_warning
 from easybuild.tools.config import build_option
 from easybuild.tools.filetools import CHECKSUM_TYPE_SHA256, compute_checksum, copy_dir, dump_toml, extract_file, mkdir
 from easybuild.tools.filetools import read_file, remove_dir, write_file, which
+from easybuild.tools.modules import get_software_version
 from easybuild.tools.run import run_shell_cmd
 from easybuild.tools.toolchain.compiler import OPTARCH_GENERIC
 
 CRATESIO_SOURCE = "https://crates.io/api/v1/crates"
+CRATES_REGISTRY_URL = 'registry+https://github.com/rust-lang/crates.io-index'
 
 CONFIG_TOML_SOURCE_VENDOR = """
 [source.vendored-sources]
@@ -69,12 +72,12 @@ rev = "{rev}"
 replace-with = "vendored-sources"
 """
 
-CONFIG_TOML_SOURCE_GIT_BRANCH = """
-[source."{url}?rev={rev}"]
-git = "{url}"
-rev = "{rev}"
-branch = "{branch}"
-replace-with = "vendored-sources"
+CONFIG_LOCK_SOURCE = """
+[[package]]
+name = "{name}"
+version = "{version}"
+source = "{source}"
+# checksum intentionally not set
 """
 
 CARGO_CHECKSUM_JSON = '{{"files": {{}}, "package": "{checksum}"}}'
@@ -160,7 +163,7 @@ class Cargo(ExtensionEasyBlock):
 
     @staticmethod
     def src_parameter_names():
-        return super().src_parameter_names() + ['crates']
+        return ExtensionEasyBlock.src_parameter_names() + ['crates']
 
     @staticmethod
     def crate_src_filename(pkg_name, pkg_version, _url=None, rev=None):
@@ -214,30 +217,38 @@ class Cargo(ExtensionEasyBlock):
         self.cargo_home = os.path.join(self.builddir, '.cargo')
         self.set_cargo_vars()
 
-        # Populate sources from "crates" list of tuples
-        sources = []
-        for crate_info in self.crates:
-            if len(crate_info) == 2:
-                sources.append({
-                    'download_filename': self.crate_download_filename(*crate_info),
-                    'filename': self.crate_src_filename(*crate_info),
-                    'source_urls': [CRATESIO_SOURCE],
-                    'alt_location': 'crates.io',
-                })
-            else:
-                crate, version, repo, rev = crate_info
-                url, repo_name = repo.rsplit('/', maxsplit=1)
-                if repo_name.endswith('.git'):
-                    repo_name = repo_name[:-4]
-                sources.append({
-                    'git_config': {'url': url, 'repo_name': repo_name, 'commit': rev},
-                    'filename': self.crate_src_filename(crate, version, rev=rev),
-                })
-
         # copy EasyConfig instance before we make changes to it
         self.cfg = self.cfg.copy()
 
-        self.cfg.update('sources', sources)
+        if self.is_extension:
+            self.cfg['crates'] = self.options.get('crates', [])  # Don't inherit crates from parent
+            # The (regular) extract step for extensions is not run so our handling of crates as (multiple) sources
+            # cannot be used for extensions.
+            if self.crates:
+                raise EasyBuildError(f"Extension '{self.name}' cannot have crates. "
+                                     "You can add them to the top-level config parameters when using e.g."
+                                     "the Cargo or CargoPythonBundle easyblock.")
+        else:
+            # Populate sources from "crates" list of tuples
+            sources = []
+            for crate_info in self.crates:
+                if len(crate_info) == 2:
+                    sources.append({
+                        'download_filename': self.crate_download_filename(*crate_info),
+                        'filename': self.crate_src_filename(*crate_info),
+                        'source_urls': [CRATESIO_SOURCE],
+                        'alt_location': 'crates.io',
+                    })
+                else:
+                    crate, version, repo, rev = crate_info
+                    url, repo_name = repo.rsplit('/', maxsplit=1)
+                    if repo_name.endswith('.git'):
+                        repo_name = repo_name[:-4]
+                    sources.append({
+                        'git_config': {'url': url, 'repo_name': repo_name, 'commit': rev, 'recursive': True},
+                        'filename': self.crate_src_filename(crate, version, rev=rev),
+                    })
+            self.cfg.update('sources', sources)
 
     def set_cargo_vars(self):
         """Set environment variables for Rust compilation and Cargo"""
@@ -425,15 +436,20 @@ class Cargo(ExtensionEasyBlock):
         # can't checkout from 'https://github.com/[...]]': you are in the offline mode (--offline)
         for (git_repo, rev), src in git_sources.items():
             crate_name = src['crate'][0]
-            git_branch = self._get_crate_git_repo_branch(crate_name)
-            template = CONFIG_TOML_SOURCE_GIT_BRANCH if git_branch else CONFIG_TOML_SOURCE_GIT
-            self.log.debug(f"Writing config.toml entry for git repo: {git_repo} branch {git_branch}, rev {rev}")
-            write_file(config_toml, template.format(url=git_repo, rev=rev, branch=git_branch), append=True)
+            git_refs = self._get_crate_git_repo_refs(crate_name)
+            branch, tag = git_refs.get('branch'), git_refs.get('tag')
+            self.log.debug(f"Writing config.toml entry for git repo {git_repo}: branch {branch}, tag {tag}, rev {rev}")
+            entry = CONFIG_TOML_SOURCE_GIT.format(url=git_repo, rev=rev)
+            if branch:
+                entry += f'branch = "{branch}"\n'
+            if tag:
+                entry += f'tag = "{tag}"\n'
+            write_file(config_toml, entry, append=True)
 
-    def _get_crate_git_repo_branch(self, crate_name):
+    def _get_crate_git_repo_refs(self, crate_name):
         """
-        Find the dependency definition for given crate in all Cargo.toml files of sources
-        Return branch target for given crate_name if any
+        Find the dependency definitions for the given crate in all Cargo.toml files of sources
+        Return branch and tag if any
         """
         # Search all Cargo.toml files in main source and vendored crates
         cargo_toml_files = []
@@ -448,8 +464,9 @@ class Cargo(ExtensionEasyBlock):
         )
 
         git_repo_spec = re.compile(re.escape(crate_name) + r"\s*=\s*{([^}]*)}", re.M)
-        git_branch_spec = re.compile(r'branch\s*=\s*"([^"]*)"', re.M)
+        git_branch_spec = re.compile(r'(?P<ref>branch|tag)\s*=\s*"(?P<value>[^"]*)"', re.M)
 
+        found_specs = {}
         for cargo_toml in cargo_toml_files:
             git_repo_crate = git_repo_spec.search(read_file(cargo_toml))
             if git_repo_crate:
@@ -458,11 +475,12 @@ class Cargo(ExtensionEasyBlock):
                 git_repo_crate_contents = git_repo_crate.group(1)
                 git_branch_crate = git_branch_spec.search(git_repo_crate_contents)
                 if git_branch_crate:
-                    self.log.debug(f"Found git branch requirement for crate '{crate_name}': " +
-                                   git_branch_crate.group())
-                    return git_branch_crate.group(1)
+                    ref = git_branch_crate['ref']
+                    value = git_branch_crate['value']
+                    self.log.debug(f"Found git {ref} requirement for crate '{crate_name}': {value}")
+                    found_specs[ref] = value
 
-        return None
+        return found_specs
 
     def prepare_step(self, *args, **kwargs):
         """
@@ -473,8 +491,48 @@ class Cargo(ExtensionEasyBlock):
         self.set_cargo_vars()
 
     def configure_step(self):
-        """Empty configuration step."""
-        pass
+        """Create lockfile if it doesn't exist"""
+        cargo_lock = 'Cargo.lock'
+        # Crates should be specified in the main easyconfig for extensions
+        if self.is_extension:
+            crates = self.master.crates
+        else:
+            crates = self.crates
+        if crates and os.path.exists('Cargo.toml') and not os.path.exists(cargo_lock):
+            locate_project_output = run_shell_cmd('cargo -q locate-project --message-format=plain --workspace').output
+            # Usually it is the only line, but there might be some prior messages like warnings
+            # Find path right path by going backwards through each line
+            try:
+                root_toml = next(p for p in locate_project_output.splitlines()[::-1] if os.path.exists(p))
+            except StopIteration:
+                self.log.warning("Failed to find project Cargo.toml. Skipping lockfile check & creation.")
+            else:
+                cargo_lock_path = os.path.join(os.path.dirname(root_toml), cargo_lock)
+                if not os.path.exists(cargo_lock_path):
+                    rust_version = LooseVersion(get_software_version('Rust'))
+                    # File format version, the latest supported is used for forward compatibility
+                    # Versions 1 and 2 were internal only, 2 being autodetected
+                    # 1.47 introduced the version marker as version 3
+                    # 1.78 marked version 4 as stable
+                    if rust_version < '1.47':
+                        version = None
+                    elif rust_version < '1.78':
+                        version = 3
+                    else:
+                        version = 4
+                    # Use vendored crates to ensure those versions are used
+                    self.log.info(f"No {cargo_lock} file found, creating one at {cargo_lock_path}")
+                    content = f'version = {version}\n' if version is not None else ''
+                    for crate_info in crates:
+                        if len(crate_info) == 2:
+                            name, version = crate_info
+                            source = CRATES_REGISTRY_URL
+                        else:
+                            name, version, repo, rev = crate_info
+                            source = f'git+{repo}?rev={rev}#{rev}'
+
+                        content += CONFIG_LOCK_SOURCE.format(name=name, version=version, source=source)
+                    write_file(cargo_lock_path, content)
 
     @property
     def profile(self):
@@ -564,7 +622,7 @@ def generate_crate_list(sourcedir):
         if name == app_name:
             app_in_cratesio = True  # exclude app itself, needs to be first in crates list or taken from pypi
         else:
-            if source_url == 'registry+https://github.com/rust-lang/crates.io-index':
+            if source_url == CRATES_REGISTRY_URL:
                 crates.append((name, version))
             else:
                 # Lock file has revision and branch in the url

@@ -23,7 +23,7 @@ builddependencies = [
 
 dependencies = [
     ('X11', '20250608'),
-    ('glib', '2.87.1'),
+    ('GLib', '2'),
     ('cairo', '1.18.4'),
     ('HarfBuzz', '12.3.0'),
     ('FriBidi', '1.0.16'),

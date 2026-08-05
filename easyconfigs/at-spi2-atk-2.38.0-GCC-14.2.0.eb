@@ -20,10 +20,10 @@ builddependencies = [
 ]
 
 dependencies = [
-    ('glib', '2.87.1'),
+    ('GLib', '2'),
     ('dbus', '1.16.2'),
     ('at-spi2-core', '2.56.2'),
-    ('libxml2', '2.14.3'),
+    ('libxml2', '2'),
     ('ATK', '2.38.0'),
 ]
 

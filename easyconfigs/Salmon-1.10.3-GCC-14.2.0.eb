@@ -39,7 +39,7 @@ builddependencies = [
 dependencies = [
     ('boost', '1.83.0'),
     ('tbb', '2022.3.0'),
-    ('curl', '8.18.0'),
+    ('curl', '8'),
     ('libiconv', '1.18'),
     ('bzip2', '1.0.8'),
     ('xz', '5.2.7', '', SYSTEM),

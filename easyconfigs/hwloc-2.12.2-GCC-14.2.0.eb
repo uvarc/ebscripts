@@ -32,7 +32,7 @@ builddependencies = [
 
 dependencies = [
     ('numactl', '2.0.19'),
-    ('libxml2', '2.14.3'),
+    ('libxml2', '2'),
     ('libpciaccess', '0.18.1'),
 ]
 

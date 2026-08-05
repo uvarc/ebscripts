@@ -24,11 +24,11 @@ builddependencies = [
 
 dependencies = [
     ('gsl', '2.7.1'),
-    ('libxml2', '2.10.3'),
+    ('libxml2', '2'),
     #('pcre', '8.45'),
     ('pcre2', '10.42'),
     ('cfitsio', '4.2.0'),
-    ('freetype', '2.13.0'),
+    ('freetype', '2'),
     ('python', '3.11.4'),
     ('zlib', '1.2.13'),
     ('x11', '20230603'),
@@ -36,9 +36,9 @@ dependencies = [
     ('libglu', '9.0.2'),
     ('gl2ps', '1.4.2'),
     ('FFTW', '3.3.10'),
-    ('sqlite', '3.41.2', '', SYSTEM),
+    ('SQLite', '3'),
     ('xz', '5.2.7', '', SYSTEM),
-    ('libpng', '1.6.39'),
+    ('libpng', '1.6'),
 ]
 
 # NOTE: Ensure that each configopts string begins with a blank

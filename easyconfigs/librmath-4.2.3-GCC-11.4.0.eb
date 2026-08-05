@@ -19,7 +19,7 @@ source_urls = ['https://cloud.r-project.org/src/base/R-%(version_major)s']
 sources = ['R-%(version)s.tar.gz']
 
 dependencies = [
-    ('curl', '8.4.0'),
+    ('curl', '8'),
     ('bzip2', '1.0.6', '', SYSTEM),
     ('xz', '5.2.7', '', SYSTEM),
     ('zlib', '1.2.13'),

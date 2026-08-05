@@ -34,7 +34,7 @@ dependencies = [
     ('OpenSSL', '3', '', SYSTEM),
     ('nghttp3', '1.16.0'),
     ('Python', '3.13.11'),
-    ('libxml2', '2.14.3'),
+    ('libxml2', '2'),
     ('Jansson', '2.15.0'),
     ('jemalloc', '5.3.0'),
     ('ngtcp2', '1.23.0'),

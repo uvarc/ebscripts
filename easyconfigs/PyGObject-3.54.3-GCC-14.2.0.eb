@@ -21,7 +21,7 @@ builddependencies = [
 
 dependencies = [
     ('Python', '3.13.11'),
-    ('glib', '2.87.1'),
+    ('GLib', '2'),
     ('gobject-introspection', '1.86.0'),
     ('PyCairo', '1.28.0'),
 ]

@@ -20,9 +20,9 @@ dependencies = [
     ('proj', '9.2.0'),
     #('libjpeg-turbo', '2.1.4'),
     ('zlib', '1.2.13'),
-    ('sqlite', '3.41.2', '', SYSTEM),
-    #('LibTIFF', '4.4.0'),
-    ('curl', '8.4.0'),
+    ('SQLite', '3'),
+    ('LibTIFF', '4'),
+    ('curl', '8'),
 ]
 
 configopts = ' --with-libtiff=/usr --with-proj=$EBROOTPROJ --with-zlib=$EBROOTZLIB'
