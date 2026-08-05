@@ -80,8 +80,9 @@ esac
 
 EBVER=$(ls $APPSDIR/software/standard/core/easybuild | tail -1)
 EBDIR=$APPSDIR/software/standard/core/easybuild/$EBVER
-PYVER=$($PYTHON -V|awk '{print $2}') # e.g. 3.6.8
-PYVER=${PYVER%.*}                    # e.g. 3.6
+#PYVER=$($PYTHON -V|awk '{print $2}') # e.g. 3.6.8
+#PYVER=${PYVER%.*}                    # e.g. 3.6
+PYVER=3.12
 # the trailing slash matters for rsync
 EASYBLOCKSDIR=$EBDIR/lib/python${PYVER}/site-packages/easybuild/easyblocks/
 SOFTWAREDIR=$APPSDIR/software/standard
