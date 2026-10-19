@@ -1,0 +1,15 @@
+# Ruoshi Sun
+# 2026-07-17
+easyblock = 'ModuleRC'
+
+name = 'Qt6'
+version = '6'
+
+homepage = 'https://qt.io/'
+description = "Qt is a comprehensive cross-platform C++ application framework."
+
+toolchain = {'name': 'GCC', 'version': '14.2.0'}
+
+dependencies = [(name, '6.11.1')]
+
+moduleclass = 'devel'

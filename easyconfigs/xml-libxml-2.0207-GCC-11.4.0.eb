@@ -10,7 +10,7 @@ toolchain = {'name': 'GCC', 'version': '11.4.0'}
 
 dependencies = [
     ('Perl', '5.40.2'),
-    ('libxml2', '2.10.3'),
+    ('libxml2', '2'),
 ]
 
 exts_defaultclass = 'PerlModule'

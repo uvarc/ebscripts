@@ -23,7 +23,7 @@ checksums = [
 #builddependencies = [('binutils', '2.39')]
 
 # curl for HTTPs support
-dependencies = [('curl', '8.4.0')]
+dependencies = [('curl', '8')]
 
 # make would create just static libcfitsio.a.
 # Let's create dynamic lib and testprog too.

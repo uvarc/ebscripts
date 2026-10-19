@@ -1,0 +1,30 @@
+name = 'pybind11'
+version = '3.0.1'
+
+homepage = 'https://pybind11.readthedocs.io'
+description = """pybind11 is a lightweight header-only library that exposes C++ types in Python and vice versa,
+ mainly to create Python bindings of existing C++ code."""
+
+toolchain = {'name': 'GCC', 'version': '14.2.0'}
+
+source_urls = ['https://github.com/pybind/pybind11/archive/']
+sources = ['v%(version)s.tar.gz']
+patches = [
+    'pybind11-2.10.3_require-catch.patch',
+]
+
+builddependencies = [
+    ('cmake', '4.1.2', '', SYSTEM),
+    # Test dependencies
+    ('eigen', '3.4.0'),
+    ('Catch2', '2.13.10'),
+    ('Python-bundle-PyPI', '2025.07'),  # to provide pytest
+    ('scikit-build-core', '0.11.5'),
+]
+
+dependencies = [
+    ('boost', '1.83.0'),
+    ('Python', '3.13.11'),
+]
+
+moduleclass = 'lib'

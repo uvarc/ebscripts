@@ -1,0 +1,45 @@
+# Ruoshi Sun
+# 2026-06-24
+easyblock = 'Conda'
+
+name = 'bart'
+version = '2.1.1'
+
+homepage = 'https://zanglab.github.io/bart/'
+description = "BART (Binding Analysis for Regulation of Transcription) is a bioinformatics tool for predicting functional transcription factors (TFs) that bind at genomic cis-regulatory regions to regulate gene expression in the human or mouse genomes, given a query gene set or a ChIP-seq dataset as input."
+
+toolchain = SYSTEM
+
+# download master.zip and rename with version
+sources = [SOURCE_ZIP]
+
+builddependencies = [
+    ('miniforge', '26.1.0'),
+]
+
+channels = ['conda-forge']
+requirements = 'python=3.9'
+
+_conf = '%(name)s2-master/%(name)s2/%(name)s.conf'
+
+postinstallcmds = [
+    'unzip %s' % sources[0],
+    "sed -i -e 's#hg38_library_dir =.*$#hg38_library_dir = /project/apps_data/%%(name)s#' -e 's#mm10_library_dir =.*$#mm10_library_dir = /project/apps_data/%%(name)s#' %s" % _conf,
+    'cd %(name)s2-master && %(installdir)s/bin/pip install --prefix=%(installdir)s .',
+]
+
+sanity_check_paths = {
+    'files': ['bin/%(name)s2'],
+    'dirs': [],
+}
+
+modextravars = {
+    'BART_DATA_PATH': '/project/apps_data/bart',
+}
+
+modloadmsg = """
+Data files are stored in $BART_DATA_PATH
+"""
+
+
+moduleclass = 'bio'

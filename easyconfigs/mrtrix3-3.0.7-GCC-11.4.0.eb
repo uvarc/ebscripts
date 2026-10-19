@@ -18,10 +18,10 @@ dependencies = [
     ('zlib', '1.2.13'),
     ('python', '3.11.4'),
     ('mesa', '25.2.3'),
-    ('qt5', '5.15.8'),
-    ('libtiff', '4.7.0'),
+    ('Qt5', '5'),
+    ('LibTIFF', '4'),
     ('FFTW', '3.3.10'),
-    ('libpng', '1.6.39'),
+    ('libpng', '1.6'),
 ]
 
 configure_without_installdir = True

@@ -15,15 +15,15 @@ builddependencies = [
     ('gettext', '0.21.1'),
     ('pkgconf', '1.9.5'),
     ('intltool', '0.51.0', '', SYSTEM),
-    ('Meson', '1.0.1', '-py3.11'),
-    ('Ninja', '1.11.1', '-py3.11'),
+    ('Meson', '1.9.0', '', SYSTEM),
+    ('Ninja', '1.13.1', '', SYSTEM),
     ('doxygen', '1.9.5'),
 ]
 
 dependencies = [
     ('bzip2', '1.0.6', '', SYSTEM),
     ('fontconfig', '2.14.2'),
-    ('freetype', '2.13.0'),
+    ('freetype', '2'),
     ('zlib', '1.2.13'),
     ('xorg-macros', '1.20.0'),
     ('libpciaccess', '0.17'),

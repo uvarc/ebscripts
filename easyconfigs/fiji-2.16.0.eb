@@ -1,0 +1,57 @@
+# Ruoshi Sun
+# 2026-06-23
+easyblock = 'PackedBinary'
+
+name = 'fiji'
+version = '2.16.0'
+
+homepage = 'https://fiji.sc'
+description = """Fiji is an image processing package—a 'batteries-included' distribution of
+ ImageJ, bundling a lot of plugins which facilitate scientific image analysis."""
+
+toolchain = SYSTEM
+
+source_urls = ['https://downloads.imagej.net/fiji/archive/stable/20260307-1417']
+sources = ['%(name)s-stable-linux64-jdk.zip']
+
+dependencies = [('Java', '21')]
+
+local_plugin_cmd = '%(installdir)s/ImageJ-linux64 --headless --update '
+
+postinstallcmds = [
+    # Enable any update site (edit existing site with same parameters to enable it)
+    # Full list at https://imagej.github.io/list-of-update-sites/
+    local_plugin_cmd + 'edit-update-site BaSiC http://sites.imagej.net/BaSiC',
+    local_plugin_cmd + 'edit-update-site "ImageScience" https://sites.imagej.net/ImageScience/',
+    local_plugin_cmd + 'edit-update-site "3D ImageJ Suite" https://sites.imagej.net/Tboudier/',
+    local_plugin_cmd + 'edit-update-site CLIJ http://sites.imagej.net/clij',
+    local_plugin_cmd + 'edit-update-site CLIJ2 http://sites.imagej.net/clij2',
+    local_plugin_cmd + 'edit-update-site "CLIJx assistant" http://sites.imagej.net/clijx-assistant',
+    local_plugin_cmd + 'edit-update-site "CLIJx assistant extensions" http://sites.imagej.net/clijx-assistant-extensions',
+    local_plugin_cmd + 'edit-update-site "BioVoxxel 3D Box" http://sites.imagej.net/bv3dbox',
+    local_plugin_cmd + 'edit-update-site SlideBook http://sites.imagej.net/SlideBook',
+    local_plugin_cmd + 'edit-update-site Cookbook http://sites.imagej.net/Cookbook',
+    local_plugin_cmd + 'edit-update-site "OMERO 5.4" http://sites.imagej.net/OMERO-5.4',
+    local_plugin_cmd + 'edit-update-site IBMP-CNRS https://sites.imagej.net/Mutterer',
+    local_plugin_cmd + 'edit-update-site PTBIOP https://biop.epfl.ch/Fiji-Update',
+    # Update the installation
+    local_plugin_cmd + 'update-force',
+    # symlink to OpenCL
+    'ln -s /lib64/libOpenCL.so.1 %(installdir)s/lib/linux64/libOpenCL.so',
+]
+
+sanity_check_paths = {
+    'files': ['ImageJ-linux64'],
+    'dirs': [],
+}
+
+modextravars = {'JAVA_TOOL_OPTIONS': '-Xss1280k'}
+
+modloadmsg = """
+To launch the GUI, request OOD Desktop and run:
+ImageJ-linux64
+
+Additional plugins can be installed in $HOME/.plugins.
+"""
+
+moduleclass = 'vis'

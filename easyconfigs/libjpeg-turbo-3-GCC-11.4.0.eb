@@ -1,0 +1,18 @@
+easyblock = 'ModuleRC'
+
+name = 'libjpeg-turbo'
+version = '3'
+
+homepage = 'https://sourceforge.net/projects/libjpeg-turbo/'
+
+description = """
+ libjpeg-turbo is a fork of the original IJG libjpeg which uses SIMD to
+ accelerate baseline JPEG compression and decompression. libjpeg is a library
+ that implements JPEG image encoding, decoding and transcoding.
+"""
+
+toolchain = {'name': 'GCC', 'version': '11.4.0'}
+
+dependencies = [(name, '3.2.0')]
+
+moduleclass = 'lib'

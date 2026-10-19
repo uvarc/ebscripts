@@ -1,5 +1,5 @@
 ##
-# Copyright 2012-2025 Ghent University
+# Copyright 2012-2026 Ghent University
 #
 # This file is part of EasyBuild,
 # originally created by the HPC team of Ghent University (http://ugent.be/hpc/en),
@@ -36,7 +36,7 @@ from easybuild.tools import LooseVersion
 from easybuild.easyblocks.generic.packedbinary import PackedBinary
 from easybuild.tools.build_log import EasyBuildError
 from easybuild.tools.config import build_option
-from easybuild.tools.filetools import adjust_permissions, change_dir, copy_dir, copy_file, remove_dir, which
+from easybuild.tools.filetools import adjust_permissions, change_dir, clean_dir, copy_dir, copy_file, which
 from easybuild.tools.run import run_shell_cmd
 from easybuild.tools.systemtools import AARCH64, POWER, RISCV64, X86_64, get_cpu_architecture, get_shared_lib_ext
 from easybuild.tools.utilities import nub
@@ -82,8 +82,8 @@ class EB_Java(PackedBinary):
     def install_step(self):
         """Custom install step: just copy unpacked installation files."""
         if LooseVersion(self.version) < LooseVersion('1.7'):
-            remove_dir(self.installdir)
-            copy_dir(os.path.join(self.builddir, 'jdk%s' % self.version), self.installdir)
+            clean_dir(self.installdir)
+            copy_dir(os.path.join(self.builddir, 'jdk%s' % self.version), self.installdir, dirs_exist_ok=True)
         else:
             PackedBinary.install_step(self)
 
@@ -207,8 +207,13 @@ class EB_Java(PackedBinary):
 
     def make_module_extra(self):
         """
-        Set $JAVA_HOME to installation directory
+        Set extra environment variables on module load
         """
         txt = super().make_module_extra()
+        # set $JAVA_HOME to installation directory
         txt += self.module_generator.set_environment('JAVA_HOME', self.installdir)
+        # disable signal catching in UCX, as it conflicts with JVM triggering segfaults
+        # see https://github.com/openucx/ucx/issues/4870
+        txt += self.module_generator.set_environment('UCX_ERROR_SIGNALS', '')
+
         return txt

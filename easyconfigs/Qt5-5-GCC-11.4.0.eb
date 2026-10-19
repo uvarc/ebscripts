@@ -1,0 +1,13 @@
+easyblock = 'ModuleRC'
+
+name = 'Qt5'
+version = '5'
+
+homepage = 'https://qt.io/'
+description = "Qt is a comprehensive cross-platform C++ application framework."
+
+toolchain = {'name': 'GCC', 'version': '11.4.0'}
+
+dependencies = [(name, '5.15.19')]
+
+moduleclass = 'devel'

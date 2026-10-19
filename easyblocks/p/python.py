@@ -1,5 +1,5 @@
 ##
-# Copyright 2009-2025 Ghent University
+# Copyright 2009-2026 Ghent University
 #
 # This file is part of EasyBuild,
 # originally created by the HPC team of Ghent University (http://ugent.be/hpc/en),
@@ -31,7 +31,9 @@ EasyBuild support for building and installing Python, implemented as an easybloc
 @author: Pieter De Baets (Ghent University)
 @author: Jens Timmerman (Ghent University)
 @author: Bart Oldeman (McGill University, Calcul Quebec, Compute Canada)
+@author: Samuel Moors (Vrije Universiteit Brussel)
 """
+import difflib
 import glob
 import json
 import os
@@ -58,6 +60,7 @@ import easybuild.tools.toolchain as toolchain
 
 
 EXTS_FILTER_PYTHON_PACKAGES = ('python -c "import %(ext_name)s"', "")
+EXTS_FILTER_DUMMY_PACKAGES = ("python -m pip show -q '%(ext_name)s'", "")
 
 # magic value for unlimited stack size
 UNLIMITED = 'unlimited'
@@ -72,6 +75,8 @@ PY_ENV_VARS = {
     # Don't let pip connect to PYPI to check for a new version
     'PIP_DISABLE_PIP_VERSION_CHECK': 'true',
 }
+
+REGEX_PIP_NORMALIZE = re.compile(r"[-_.]+")
 
 # We want the following import order:
 # 1. Packages installed into VirtualEnv
@@ -175,28 +180,26 @@ def det_installed_python_packages(names_only=True, python_cmd=None):
     return [pkg['name'] for pkg in pkgs] if names_only else pkgs
 
 
-def run_pip_check(python_cmd=None, unversioned_packages=None):
+def run_pip_check(python_cmd=None, **kwargs):
     """
     Check installed Python packages using 'pip check'
 
-    :param unversioned_packages: set of Python packages to exclude in the version existence check
     :param python_cmd: Python command to use (if None, 'python' is used)
     """
-    log = fancylogger.getLogger('det_installed_python_packages', fname=False)
+    log = fancylogger.getLogger('run_pip_check', fname=False)
+
+    kwargs_keys = kwargs.keys()
+    if 'unversioned_packages' in kwargs_keys:
+        msg = ("Parameter unversioned_packages is no longer supported in run_pip_check, "
+               "it has been moved to run_pip_list.")
+        log.deprecated(msg, '6.0')
+        kwargs_keys -= {'unversioned_packages'}
+
+    if kwargs_keys:
+        raise EasyBuildError("Parameter(s) used which are not supported in run_pip_check: " + ', '.join(kwargs_keys))
 
     if python_cmd is None:
         python_cmd = 'python'
-
-    if unversioned_packages is None:
-        unversioned_packages = set()
-    elif isinstance(unversioned_packages, (list, tuple)):
-        unversioned_packages = set(unversioned_packages)
-    elif not isinstance(unversioned_packages, set):
-        raise EasyBuildError("Incorrect value type for 'unversioned_packages' in run_pip_check: %s",
-                             type(unversioned_packages))
-
-    if build_option('ignore_pip_unversioned_pkgs'):
-        unversioned_packages.update(build_option('ignore_pip_unversioned_pkgs'))
 
     pip_check_cmd = f"{python_cmd} -m pip check"
 
@@ -218,43 +221,160 @@ def run_pip_check(python_cmd=None, unversioned_packages=None):
         trace_msg(msg + 'OK')
         log.info(f"`{pip_check_cmd}` passed successfully")
 
-    # Also check for a common issue where the package version shows up as 0.0.0 often caused
-    # by using setup.py as the installation method for a package which is released as a generic wheel
-    # named name-version-py2.py3-none-any.whl. `tox` creates those from version controlled source code
-    # so it will contain a version, but the raw tar.gz does not.
-    pkgs = det_installed_python_packages(names_only=False, python_cmd=python_cmd)
-    faulty_version = '0.0.0'
-    faulty_pkg_names = sorted([pkg['name'] for pkg in pkgs if pkg['version'] == faulty_version])
+    if pip_check_errors:
+        raise EasyBuildError('\n'.join(pip_check_errors))
 
-    for unversioned_package in sorted(unversioned_packages):
+
+def normalize_pip(name):
+    """
+    Normalize pip package name according to
+    https://packaging.python.org/en/latest/specifications/name-normalization/
+    """
+    return REGEX_PIP_NORMALIZE.sub('-', name).lower()
+
+
+def run_pip_list(pkgs, python_cmd=None, unversioned_packages=None, check_names_versions=True, strict_check=None):
+    """
+    Run pip list to verify normalized names and versions of installed Python packages
+
+    :param pkgs: list of package tuples (name, version) as specified in the easyconfig
+    :param python_cmd: Python command to use (if None, 'python' is used)
+    :param unversioned_packages: set of Python packages to exclude in the version existence check
+    :param check_names_versions: boolean to indicate whether name and versions of Python packages should be checked
+    :param strict_check: boolean to indicate whether to raise an error if package names or versions don’t match,
+                       or emit a warning
+    """
+
+    log = fancylogger.getLogger('run_pip_list', fname=False)
+
+    if unversioned_packages is None:
+        unversioned_packages = set()
+    elif isinstance(unversioned_packages, (list, tuple)):
+        unversioned_packages = set(unversioned_packages)
+    elif not isinstance(unversioned_packages, set):
+        raise EasyBuildError("Incorrect value type for 'unversioned_packages' in run_pip_list: %s",
+                             type(unversioned_packages))
+
+    if build_option('ignore_pip_unversioned_pkgs'):
+        unversioned_packages.update(build_option('ignore_pip_unversioned_pkgs'))
+
+    if strict_check is None:
+        # by default only raise an error for mismatched names or versions if --upload-test-report is used,
+        # to enforce correct extension names/versions for contributions
+        if build_option('upload_test_report'):
+            strict_check = True
+        else:
+            strict_check = False
+
+    pip_list_errors = []
+    pip_list_warnings = []
+
+    msg = "Check on installed Python package names and versions with 'pip list': "
+    try:
+        pip_pkgs_dict = det_installed_python_packages(names_only=False, python_cmd=python_cmd)
+        trace_msg(msg + 'OK')
+        log.info("pip list cmd passed successfully")
+    except EasyBuildError as err:
+        trace_msg(msg + 'FAIL')
+        raise EasyBuildError(f"pip list cmd failed:\n{err}")
+
+    if unversioned_packages:
+        normalized_unversioned = {normalize_pip(x) for x in unversioned_packages}
+    else:
+        normalized_unversioned = set()
+
+    # Create normalized name: version mapping from pip list output
+    normalized_pip_pkgs = {normalize_pip(x['name']): x['version'] for x in pip_pkgs_dict}
+
+    # Check for packages that likely were not installed correctly (version '0.0.0'), excluding packages that are listed
+    # as "unversioned".  This is a common issue caused by using setup.py as the installation method for a package which
+    # is released as a generic wheel named name-version-py2.py3-none-any.whl. `tox` creates those from version
+    # controlled source code so it will contain a version, but the raw tar.gz does not.
+    zero_version = '0.0.0'
+    zero_pkg_names = sorted([name for (name, version) in normalized_pip_pkgs.items() if version == zero_version])
+
+    for unversioned_package in sorted(normalized_unversioned):
         try:
-            faulty_pkg_names.remove(unversioned_package)
+            zero_pkg_names.remove(unversioned_package)
             log.debug(f"Excluding unversioned package '{unversioned_package}' from check")
         except ValueError:
             try:
-                version = next(pkg['version'] for pkg in pkgs if pkg['name'] == unversioned_package)
-            except StopIteration:
+                version = normalized_pip_pkgs[unversioned_package]
+            except KeyError:
                 msg = f"Package '{unversioned_package}' in unversioned_packages was not found in "
                 msg += "the installed packages. Check that the name from `python -m pip list` is used "
                 msg += "which may be different than the module name."
             else:
                 msg = f"Package '{unversioned_package}' in unversioned_packages has a version of {version} "
                 msg += "which is valid. Please remove it from unversioned_packages."
-            pip_check_errors.append(msg)
+            pip_list_errors.append(msg)
 
-    log.info("Found %s invalid packages out of %s packages", len(faulty_pkg_names), len(pkgs))
-    if faulty_pkg_names:
-        faulty_pkg_names_str = '\n'.join(faulty_pkg_names)
+    log.info("Found %s invalid packages out of %s packages", len(zero_pkg_names), len(normalized_pip_pkgs))
+    if zero_pkg_names:
+        zero_pkg_names_str = '\n'.join(zero_pkg_names)
         msg = "The following Python packages were likely not installed correctly because they show a "
-        msg += f"version of '{faulty_version}':\n{faulty_pkg_names_str}\n"
+        msg += f"version of '{zero_version}':\n{zero_pkg_names_str}\n"
         msg += "This may be solved by using a *-none-any.whl file as the source instead. "
         msg += "See e.g. the SOURCE*_WHL templates.\n"
         msg += "Otherwise you could check if the package provides a version at all or if e.g. poetry is "
         msg += "required (check the source for a pyproject.toml and see PEP517 for details on that)."
-        pip_check_errors.append(msg)
+        pip_list_errors.append(msg)
 
-    if pip_check_errors:
-        raise EasyBuildError('\n'.join(pip_check_errors))
+    if check_names_versions:
+        normalized_pkgs = [(normalize_pip(name), version) for name, version in pkgs]
+
+        missing_names = []
+        missing_versions = []
+
+        for name, version in normalized_pkgs:
+            # Skip packages in the unversioned list: they have already been checked
+            if name in normalized_unversioned:
+                continue
+
+            # Skip packages in the zero_pkg_names list: they have already been added to pip_list_errors
+            if name in zero_pkg_names:
+                continue
+
+            # Check for missing (likely wrong) packages names and propose close matches
+            if name not in normalized_pip_pkgs:
+                close_matches = difflib.get_close_matches(name, normalized_pip_pkgs.keys())
+                if close_matches:
+                    msg = f"{name} (close matches in 'pip list' output: " + ', '.join(close_matches) + ")"
+                else:
+                    msg = f"{name} (no close matches found in 'pip list' output)"
+                missing_names.append(msg)
+
+            # Check for missing (likely wrong) package versions
+            elif version != normalized_pip_pkgs[name]:
+                missing_versions.append(f"{name} {version} (version in 'pip list' output: {normalized_pip_pkgs[name]})")
+
+        log.info(f"Found {len(missing_names)} missing names and {len(missing_versions)} missing versions "
+                 f"out of {len(pkgs)} packages")
+
+        if missing_names:
+            missing_names_str = '\n'.join(missing_names)
+            msg = "The following Python packages were likely specified with a wrong name because they are missing "
+            msg += f"in the 'pip list' output (causes failure if --upload-test-report is set):\n{missing_names_str}"
+            if strict_check:
+                pip_list_errors.append(msg)
+            else:
+                pip_list_warnings.append(msg)
+
+        if missing_versions:
+            missing_versions_str = '\n'.join(missing_versions)
+            msg = "The following Python packages were likely specified with a wrong version because they have "
+            msg += "another version in the 'pip list' output (causes failure if --upload-test-report is set):\n"
+            msg += missing_versions_str
+            if strict_check:
+                pip_list_errors.append(msg)
+            else:
+                pip_list_warnings.append(msg)
+
+    if pip_list_warnings:
+        print_warning('\n'.join(pip_list_warnings), log=log)
+
+    if pip_list_errors:
+        raise EasyBuildError('\n' + '\n'.join(pip_list_errors))
 
 
 def set_py_env_vars(log, verbose=False):
@@ -302,6 +422,13 @@ class EB_Python(ConfigureMake):
             'ulimit_unlimited': [False, "Ensure stack size limit is set to '%s' during build" % UNLIMITED, CUSTOM],
             'use_lto': [None, "Build with Link Time Optimization (>= v3.7.0, potentially unstable on some toolchains). "
                         "If None: auto-detect based on toolchain compiler (version)", CUSTOM],
+            'patch_ctypes_ld_library_path': [None,
+                                             "The ctypes module strongly relies on LD_LIBRARY_PATH to find "
+                                             "libraries. This allows specifying a patch that will only be "
+                                             "applied if EasyBuild is configured to filter LD_LIBRARY_PATH, in "
+                                             "order to make sure ctypes can still find libraries without it. "
+                                             "Please make sure to add the checksum for this patch to 'checksums'.",
+                                             CUSTOM],
         }
         return ConfigureMake.extra_options(extra_vars)
 
@@ -322,9 +449,14 @@ class EB_Python(ConfigureMake):
             'pip_ignore_installed': False,
             # disable per-extension 'pip check', since it's a global check done in sanity check step of Python easyblock
             'sanity_pip_check': False,
+            # disable per-extension 'pip list', since it's a global check done in sanity check step of Python easyblock
+            'sanity_check_pip_list': False,
             # EasyBuild 5
             'use_pip': True,
         }
+
+        # build and install additional packages with PythonPackage easyblock
+        self.cfg['exts_defaultclass'] = "PythonPackage"
 
         exts_default_options = self.cfg.get_ref('exts_default_options')
         for key, default_value in ext_defaults.items():
@@ -337,6 +469,8 @@ class EB_Python(ConfigureMake):
             raise EasyBuildError("The ensurepip module required to install pip (requested by install_pip=True) "
                                  "is not available in Python %s", self.version)
 
+        self._inject_patch_ctypes_ld_library_path()
+
     def _get_pip_ext_version(self):
         """Return the pip version from exts_list or None"""
         for ext in self.cfg.get_ref('exts_list'):
@@ -344,6 +478,60 @@ class EB_Python(ConfigureMake):
             if isinstance(ext, tuple) and len(ext) >= 2 and ext[0] == 'pip':
                 return ext[1]
         return None
+
+    def _inject_patch_ctypes_ld_library_path(self):
+        """
+        Add patch specified in patch_ctypes_ld_library_path to list of patches if
+        EasyBuild is configured to filter $LD_LIBRARY_PATH (and is configured not to filter $LIBRARY_PATH).
+        This needs to be done in (or before) the fetch step to ensure that those patches are also fetched.
+        """
+        # If we filter out $LD_LIBRARY_PATH (not unusual when using rpath), ctypes is not able to dynamically load
+        # libraries installed with EasyBuild (see https://github.com/EESSI/software-layer/issues/192).
+        # If EasyBuild is configured to filter $LD_LIBRARY_PATH the patch specified in 'patch_ctypes_ld_library_path'
+        # are added to the list of patches. Also, we add the checksums_filter_ld_library_path to the checksums list in
+        # that case.
+        # This mechanism e.g. makes sure we can patch ctypes, which normally strongly relies on $LD_LIBRARY_PATH to find
+        # libraries. But, we want to do the patching conditionally on EasyBuild configuration (i.e. which env vars
+        # are filtered), hence this setup based on the custom easyconfig parameter 'patch_ctypes_ld_library_path'
+        filtered_env_vars = build_option('filter_env_vars') or []
+        patch_ctypes_ld_library_path = self.cfg.get('patch_ctypes_ld_library_path')
+        if (
+            'LD_LIBRARY_PATH' in filtered_env_vars and
+            'LIBRARY_PATH' not in filtered_env_vars and
+            patch_ctypes_ld_library_path
+        ):
+            # Some sanity checking so we can raise an early and clear error if needed
+            # We expect a (one) checksum for the patch_ctypes_ld_library_path
+            checksums = self.cfg['checksums']
+            sources = self.cfg['sources']
+            patches = self.cfg.get('patches')
+            len_patches = len(patches) if patches else 0
+            if len_patches + len(sources) + 1 == len(checksums):
+                msg = "EasyBuild was configured to filter $LD_LIBRARY_PATH (and not to filter $LIBRARY_PATH). "
+                msg += "The ctypes module relies heavily on $LD_LIBRARY_PATH for locating its libraries. "
+                msg += "The following patch will be applied to make sure ctypes.CDLL, ctypes.cdll.LoadLibrary "
+                msg += f"and ctypes.util.find_library will still work correctly: {patch_ctypes_ld_library_path}."
+                self.log.info(msg)
+                self.log.info(f"Original list of patches: {self.cfg['patches']}")
+                self.log.info(f"Patch to be added: {patch_ctypes_ld_library_path}")
+                self.cfg.update('patches', [patch_ctypes_ld_library_path])
+                self.log.info(f"Updated list of patches: {self.cfg['patches']}")
+            else:
+                msg = "The length of 'checksums' (%s) is not equal to the total amount of sources (%s) + patches (%s). "
+                msg += "Did you forget to add a checksum for patch_ctypes_ld_library_path?"
+                raise EasyBuildError(msg, len(checksums), len(sources), len_patches + 1)
+        # If LD_LIBRARY_PATH is filtered, but no patch is specified, warn the user that his may not work
+        elif (
+            'LD_LIBRARY_PATH' in filtered_env_vars and
+            'LIBRARY_PATH' not in filtered_env_vars and
+            not patch_ctypes_ld_library_path
+        ):
+            msg = "EasyBuild was configured to filter $LD_LIBRARY_PATH (and not to filter $LIBRARY_PATH). "
+            msg += "However, no patch for ctypes was specified through 'patch_ctypes_ld_library_path' in the "
+            msg += "easyconfig. Note that ctypes.util.find_library, ctypes.CDLL and ctypes.cdll.LoadLibrary heavily "
+            msg += "rely on $LD_LIBRARY_PATH. Without the patch, a setup without $LD_LIBRARY_PATH will likely not work "
+            msg += "correctly."
+            self.log.warning(msg)
 
     def patch_step(self, *args, **kwargs):
         """
@@ -356,33 +544,6 @@ class EB_Python(ConfigureMake):
         if self.install_pip:
             # Ignore user site dir. -E ignores PYTHONNOUSERSITE, so we have to add -s
             apply_regex_substitutions('configure', [(r"(PYTHON_FOR_BUILD=.*-E)'", r"\1 -s'")])
-
-        # If we filter out LD_LIBRARY_PATH (not unusual when using rpath), ctypes is not able to dynamically load
-        # libraries installed with EasyBuild (see https://github.com/EESSI/software-layer/issues/192).
-        # ctypes is using GCC (and therefore LIBRARY_PATH) to figure out the full location but then only returns the
-        # soname, instead let's return the full path in this particular scenario
-        filtered_env_vars = build_option('filter_env_vars') or []
-        if 'LD_LIBRARY_PATH' in filtered_env_vars and 'LIBRARY_PATH' not in filtered_env_vars:
-            ctypes_util_py = os.path.join("Lib", "ctypes", "util.py")
-            orig_gcc_so_name = None
-            # Let's do this incrementally since we are going back in time
-            if LooseVersion(self.version) >= "3.9.1":
-                # From 3.9.1 to at least v3.12.4 there is only one match for this line
-                orig_gcc_so_name = "_get_soname(_findLib_gcc(name)) or _get_soname(_findLib_ld(name))"
-            if orig_gcc_so_name:
-                orig_gcc_so_name_regex = r'(\s*)' + re.escape(orig_gcc_so_name) + r'(\s*)'
-                # _get_soname() takes the full path as an argument and uses objdump to get the SONAME field from
-                # the shared object file. The presence or absence of the SONAME field in the ELF header of a shared
-                # library is influenced by how the library is compiled and linked. For manually built libraries we
-                # may be lacking this field, this approach also solves that problem.
-                updated_gcc_so_name = (
-                    "_findLib_gcc(name) or _findLib_ld(name)"
-                )
-                apply_regex_substitutions(
-                    ctypes_util_py,
-                    [(orig_gcc_so_name_regex, r'\1' + updated_gcc_so_name + r'\2')],
-                    on_missing_match=ERROR
-                )
 
         # if we're installing Python with an alternate sysroot,
         # we need to patch setup.py which includes hardcoded paths like /usr/include and /lib64;
@@ -455,11 +616,7 @@ class EB_Python(ConfigureMake):
         """
         Set default class and filter for Python packages
         """
-        # build and install additional packages with PythonPackage easyblock
-        self.cfg['exts_defaultclass'] = "PythonPackage"
         self.cfg['exts_filter'] = EXTS_FILTER_PYTHON_PACKAGES
-
-        set_py_env_vars(self.log)
 
         # don't pass down any build/install options that may have been specified
         # 'make' options do not make sense for when building/installing Python libraries (usually via 'python setup.py')
@@ -578,21 +735,37 @@ class EB_Python(ConfigureMake):
             tclver = get_software_version('Tcl')
             tkver = get_software_version('Tk')
             tcltk_maj_min_ver = '.'.join(tclver.split('.')[:2])
+            tcltk_maj_ver = tkver.split('.')[0]
             if tcltk_maj_min_ver != '.'.join(tkver.split('.')[:2]):
                 raise EasyBuildError("Tcl and Tk major/minor versions don't match: %s vs %s", tclver, tkver)
 
             tcl_libdir = os.path.join(tcl, get_software_libdir('Tcl'))
             tk_libdir = os.path.join(tk, get_software_libdir('Tk'))
-            tcltk_libs = "-L%(tcl_libdir)s -L%(tk_libdir)s -ltcl%(maj_min_ver)s -ltk%(maj_min_ver)s" % {
+            if LooseVersion(tkver) > '9.0':
+                tk_libname = f'tcl{tcltk_maj_ver}tk{tcltk_maj_min_ver}'
+            else:
+                tk_libname = f'tk{tcltk_maj_min_ver}'
+            tcltk_libs = f"-L%(tcl_libdir)s -L%(tk_libdir)s -ltcl%(maj_min_ver)s -l{tk_libname}" % {
                 'tcl_libdir': tcl_libdir,
                 'tk_libdir': tk_libdir,
                 'maj_min_ver': tcltk_maj_min_ver,
             }
+            # Determine if we need to pass -DTCL_WITH_EXTERNAL_TOMMATH
+            # by checking if libtommath has a software root. If we don't,
+            # loading Tkinter will fail, causing the module to be deleted
+            # before installation. This would typically be handled by
+            # pkg-config.
+            libtommath = get_software_root('libtommath')
+            libtommath_define = ''
+            if libtommath:
+                libtommath_define += '-DTCL_WITH_EXTERNAL_TOMMATH'
+
             if LooseVersion(self.version) < '3.11':
-                self.cfg.update('configopts', "--with-tcltk-includes='-I%s/include -I%s/include'" % (tcl, tk))
+                self.cfg.update('configopts',
+                                "--with-tcltk-includes='-I%s/include -I%s/include %s'" % (tcl, tk, libtommath_define))
                 self.cfg.update('configopts', "--with-tcltk-libs='%s'" % tcltk_libs)
             else:
-                env.setvar('TCLTK_CFLAGS', '-I%s/include -I%s/include' % (tcl, tk))
+                env.setvar('TCLTK_CFLAGS', '-I%s/include -I%s/include %s' % (tcl, tk, libtommath_define))
                 env.setvar('TCLTK_LIBS', tcltk_libs)
 
         # This matters e.g. when python installs the bundled pip & setuptools (for >= 3.4)
@@ -685,6 +858,57 @@ class EB_Python(ConfigureMake):
                 symlink(target_lib_dynload, lib_dynload)
                 change_dir(cwd)
 
+    def _sanity_check_ctypes_ld_library_path_patch(self):
+        """
+        Check that ctypes.util.find_library and ctypes.CDLL work as expected.
+        When $LD_LIBRARY_PATH is filtered, a patch is required for this to work correctly
+        (see patch_ctypes_ld_library_path).
+        """
+        # Try find_library first, since ctypes.CDLL relies on that to work correctly
+        cmd = "python -c 'from ctypes import util; print(util.find_library(\"libpython3.so\"))'"
+        res = run_shell_cmd(cmd)
+        out = res.output.strip()
+        escaped_python_root = re.escape(self.installdir)
+        pattern = rf"^{escaped_python_root}.*libpython3\.so$"
+        match = re.match(pattern, out)
+        self.log.debug(f"Matching regular expression pattern {pattern} to string {out}")
+        if match:
+            msg = "Call to ctypes.util.find_library('libpython3.so') successfully found libpython3.so under "
+            msg += f"the installation prefix of the current Python installation ({self.installdir}). "
+            if self.cfg.get('patch_ctypes_ld_library_path'):
+                msg += "This indicates that the patch that fixes ctypes when EasyBuild is "
+                msg += "configured to filter $LD_LIBRARY_PATH was applied succesfully."
+            self.log.info(msg)
+        else:
+            msg = "Finding the library libpython3.so using ctypes.util.find_library('libpython3.so') failed. "
+            msg += "The ctypes Python module requires a patch when EasyBuild is configured to filter $LD_LIBRARY_PATH. "
+            msg += "Please check if you specified a patch through patch_ctypes_ld_library_path and check "
+            msg += "the logs to see if it applied correctly."
+            raise EasyBuildError(msg)
+        # Now that we know find_library was patched correctly, check if ctypes.CDLL is also patched correctly
+        cmd = "python -c 'import ctypes; print(ctypes.CDLL(\"libpython3.so\"))'"
+        res = run_shell_cmd(cmd)
+        out = res.output.strip()
+        pattern = rf"^<CDLL '{escaped_python_root}.*libpython3\.so', handle [a-f0-9]+ at 0x[a-f0-9]+>$"
+        match = re.match(pattern, out)
+        self.log.debug(f"Matching regular expression pattern {pattern} to string {out}")
+        if match:
+            msg = "Call to ctypes.CDLL('libpython3.so') succesfully opened libpython3.so. "
+            if self.cfg.get('patch_ctypes_ld_library_path'):
+                msg += "This indicates that the patch that fixes ctypes when $LD_LIBRARY_PATH is not set "
+                msg += "was applied successfully."
+            self.log.info(msg)
+            msg = "Call to ctypes.CDLL('libpython3.so') succesfully opened libpython3.so. "
+            if self.cfg.get('patch_ctypes_ld_library_path'):
+                msg += "This indicates that the patch that fixes ctypes when $LD_LIBRARY_PATH is not set "
+                msg += "was applied successfully."
+        else:
+            msg = "Opening of libpython3.so using ctypes.CDLL('libpython3.so') failed. "
+            msg += "The ctypes Python module requires a patch when EasyBuild is configured to filter $LD_LIBRARY_PATH. "
+            msg += "Please check if you specified a patch through patch_ctypes_ld_library_path and check "
+            msg += "the logs to see if it applied correctly."
+            raise EasyBuildError(msg)
+
     def _sanity_check_ebpythonprefixes(self):
         """Check that EBPYTHONPREFIXES works"""
         temp_prefix = tempfile.mkdtemp(suffix='-tmp-prefix')
@@ -700,7 +924,8 @@ class EB_Python(ConfigureMake):
         try:
             base_prefix_idx = paths.index(base_site_packages_path)
         except ValueError:
-            raise EasyBuildError("The Python install path was not added to sys.path (%s)", paths)
+            raise EasyBuildError("The Python install path (%s) was not added to sys.path (%s)",
+                                 base_site_packages_path, paths)
         try:
             eb_prefix_idx = paths.index(temp_site_packages_path)
         except ValueError:
@@ -709,6 +934,16 @@ class EB_Python(ConfigureMake):
         if eb_prefix_idx > base_prefix_idx:
             raise EasyBuildError("EasyBuilds sitecustomize.py did not add %s before %s to sys.path (%s)",
                                  temp_site_packages_path, base_site_packages_path, paths)
+
+    def load_module(self, *args, **kwargs):
+        """(Re)set environment variables after loading module file.
+
+        Required here to ensure the variables are also defined for stand-alone installations,
+        because the environment is reset to the initial environment right before loading the module.
+        """
+
+        super().load_module(*args, **kwargs)
+        set_py_env_vars(self.log)
 
     def sanity_check_step(self):
         """Custom sanity check for Python."""
@@ -720,8 +955,19 @@ class EB_Python(ConfigureMake):
         except EasyBuildError as err:
             raise EasyBuildError("Loading fake module failed: %s", err)
 
+        # Set after loading module
+        set_py_env_vars(self.log)
+
         # global 'pip check' to verify that version requirements are met for Python packages installed as extensions
         run_pip_check(python_cmd='python')
+
+        exts_list = self.cfg.get_ref('exts_list')
+        if exts_list and not self.ext_instances:
+            # populate self.ext_instances if not done yet (e.g. with --sanity-check-only or --rebuild --module-only)
+            self.init_ext_instances()
+
+        pkgs = [(x.name, x.version) for x in self.ext_instances]
+        run_pip_list(pkgs, python_cmd='python')
 
         abiflags = ''
         if LooseVersion(self.version) >= LooseVersion("3"):
@@ -748,6 +994,12 @@ class EB_Python(ConfigureMake):
 
         if self.cfg.get('ebpythonprefixes'):
             self._sanity_check_ebpythonprefixes()
+
+        # If the conditions for applying the patch specified through patch_ctypes_ld_library_path are met,
+        # check that a patch was applied and indeed fixed the issue
+        filtered_env_vars = build_option('filter_env_vars') or []
+        if 'LD_LIBRARY_PATH' in filtered_env_vars and 'LIBRARY_PATH' not in filtered_env_vars:
+            self._sanity_check_ctypes_ld_library_path_patch()
 
         pyver = 'python' + self.pyshortver
         custom_paths = {

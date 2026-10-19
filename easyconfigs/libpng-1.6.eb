@@ -1,0 +1,14 @@
+easyblock = 'ModuleRC'
+
+name = 'libpng'
+version = '1.6'
+
+homepage = 'http://www.libpng.org/pub/png/libpng.html'
+
+description = "libpng is the official PNG reference library"
+
+toolchain = SYSTEM
+
+dependencies = [(name, '1.6.58')]
+
+moduleclass = 'lib'

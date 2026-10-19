@@ -1,0 +1,37 @@
+easyblock = 'ConfigureMake'
+
+name = 'libarchive'
+version = '3.8.9'
+
+homepage = 'https://www.libarchive.org/'
+
+description = """
+ Multi-format archive and compression library
+"""
+
+toolchain = {'name': 'GCC', 'version': '16.2.0'}
+
+source_urls = ['https://github.com/libarchive/libarchive/releases/download/v%(version)s/']
+sources = [SOURCE_TAR_GZ]
+checksums = ['f5a6539059cf5e597dbeda37bfa4874b1e8dea063c8d93bf85a2b44af90a5bd4']
+
+builddependencies = [
+    ('binutils', '2.47'),
+]
+
+dependencies = [
+    ('zlib', '2.3.3'),
+    ('XZ', '5.8.3'),
+    ('libxml2', '2'),
+    ('OpenSSL', '3', '', SYSTEM),
+    ('lz4', '1.10.0'),
+    ('zstd', '1.5.7'),
+    ('libiconv', '1.19'),
+]
+
+sanity_check_paths = {
+    'files': ['include/archive.h', 'lib/libarchive.%s' % SHLIB_EXT],
+    'dirs': ['bin', 'share/man/man3'],
+}
+
+moduleclass = 'tools'

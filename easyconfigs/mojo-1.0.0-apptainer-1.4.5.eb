@@ -1,0 +1,19 @@
+# Ruoshi Sun
+# 2026-08-19
+easyblock = 'EB_ApptainerImage'
+
+name = 'mojo'
+version = '1.0.0'
+
+homepage = 'https://mojolang.org/'
+description = """
+The systems language for the AI era.
+Write fast code for diverse hardware (spanning CPUs, GPUs and more) without
+vendor lock-in, in a language that's both user friendly and memory safe.
+"""
+
+toolchain = {'name': 'apptainer', 'version': '1.4.5'}
+
+sources = ['%(name)s-%(version)s.sif']
+
+moduleclass = 'lang'

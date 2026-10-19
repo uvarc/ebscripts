@@ -31,7 +31,7 @@ patches = [
 builddependencies = [
     #('binutils', '2.44'),
     ('python', '3.11.4'),
-    ('cmake', '4.0.0', '', SYSTEM),
+    ('cmake', '3.28.1', '', SYSTEM),
     ('psutil', '7.0.0'),  # Needed to enable test timeout in lit
     ('lit', '18.1.8'),
     ('git', '2.51.0', '', SYSTEM),
@@ -39,7 +39,7 @@ builddependencies = [
 
 dependencies = [
     ('libffi', '3.4.4'),
-    ('libxml2', '2.10.3'),
+    ('libxml2', '2'),
     ('ncurses', '6.3'),
     ('zlib', '1.2.13'),
     ('z3', '4.8.9'),

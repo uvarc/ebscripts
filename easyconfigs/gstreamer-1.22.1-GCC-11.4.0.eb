@@ -23,9 +23,9 @@ checksums = [
 
 builddependencies = [
     #('binutils', '2.39'),
-    ('Meson', '1.0.1', '-py3.11'),
-    ('Ninja', '1.11.1', '-py3.11'),
-    ('perl', '5.36.0'),
+    ('Meson', '1.9.0', '', SYSTEM),
+    ('Ninja', '1.13.1', '', SYSTEM),
+    ('Perl', '5.40.2'),
     ('bison', '3.8.2', '', SYSTEM),
     #('flex', '2.6.4'),
     ('gobject-introspection', '1.74.0'),
@@ -38,7 +38,7 @@ dependencies = [
     ('zlib', '1.2.13'),
     ('gmp', '6.2.0'),
     ('gsl', '2.7.1'),
-    ('glib', '2.76.1'),
+    ('GLib', '2'),
     ('libunwind', '1.6.2'),
     ('elfutils', '0.189'),
 ]

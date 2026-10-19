@@ -1,0 +1,28 @@
+# Ruoshi Sun
+# 2026-06-26 RIV-20617
+easyblock = 'CMakeMake'
+name = 'grackle'
+version = '3.4.1'
+
+homepage = 'https://github.com/grackle-project/grackle'
+description = """Grackle is a chemistry and radiative cooling library for astrophysical simulations and models. Grackle has interfaces for C, C++, Fortran, and Python codes"""
+
+toolchain = {'name': 'GCC', 'version': '14.2.0'}
+
+github_account = 'grackle-project'
+source_urls = [GITHUB_SOURCE]
+sources = [SOURCE_TAR_GZ]
+
+dependencies = [
+    ('CMake', '4.2.2'),
+    ('hdf5', '1.14.6'),
+]
+
+configopts = '-DBUILD_SHARED_LIBS=ON'
+
+sanity_check_paths = {
+    'files': ['lib/libgrackle.so'],
+    'dirs': ['lib', 'include']
+}
+
+moduleclass = 'astro'

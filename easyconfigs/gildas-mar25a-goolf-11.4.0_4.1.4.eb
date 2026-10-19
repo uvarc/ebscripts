@@ -38,4 +38,5 @@ modextravars = {
 modluafooter = """
 execute{cmd="source '"..pathJoin(root, "/etc/bash_profile").."'", modeA={"load"}}
 """
+
 moduleclass = 'astro'

@@ -1,0 +1,33 @@
+easyblock = 'Conda'
+
+name = 'cellpose'
+version = '4.0.8'
+
+homepage = 'https://github.com/MouseLand/cellpose'
+description = """
+A generalist algorithm for cellular segmentation.
+"""
+
+toolchain = {'name': 'GCC', 'version': '14.2.0'}
+
+github_account = 'MouseLand'
+source_urls = [GITHUB_SOURCE]
+sources = ['v%(version)s.tar.gz']
+
+builddependencies = [
+    ('miniforge', '24.3.0', '-py3.11', SYSTEM),
+]
+
+dependencies = [
+    ('X11', '20250608'),
+]
+
+channels = ['conda-forge']
+requirements = 'python=3.11'
+
+postinstallcmds = [
+    '%(installdir)s/bin/pip install --no-cache-dir %(name)s[gui]==%(version)s pyqt6==6.9.1',
+]
+
+modluafooter = 'add_property("arch","gpu")'
+moduleclass = 'bio'

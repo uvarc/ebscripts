@@ -19,8 +19,8 @@ builddependencies = [
 dependencies = [
     ('ncurses', '6.3'),
     ('cairo', '1.17.4'),
-    ('libjpeg-turbo', '3.0.1'),
-    ('libpng', '1.6.39'),
+    ('libjpeg-turbo', '3'),
+    ('libpng', '1.6'),
     ('libgd', '2.3.3'),
     ('pango', '1.50.12'),
     #('libcerf', '2.4'),

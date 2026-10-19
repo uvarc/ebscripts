@@ -1,0 +1,17 @@
+# Ruoshi Sun
+# 2026-06-11
+easyblock = 'EB_ApptainerImage'
+
+name = 'fmriprep'
+version = '25.2.5'
+
+homepage = 'https://fmriprep.org/en/stable/'
+description = """fMRIPrep is a NiPreps (NeuroImaging PREProcessing toolS) application (www.nipreps.org) for the preprocessing of task-based and resting-state functional MRI (fMRI)."""
+
+toolchain = {'name': 'apptainer', 'version': '1.4.5'}
+
+sources = ['%(name)s-%(version)s.sif']
+
+use_gpu = False
+
+moduleclass = 'bio'

@@ -1,0 +1,46 @@
+easyblock = 'ConfigureMake'
+
+name = 'cURL'
+version = '8.21.0'
+
+homepage = 'http://curl.haxx.se'
+description = """
+ libcurl is a free and easy-to-use client-side URL transfer library,
+ supporting DICT, FILE, FTP, FTPS, Gopher, HTTP, HTTPS, IMAP, IMAPS, LDAP,
+ LDAPS, POP3, POP3S, RTMP, RTSP, SCP, SFTP, SMTP, SMTPS, Telnet and TFTP.
+ libcurl supports SSL certificates, HTTP POST, HTTP PUT, FTP uploading, HTTP
+ form based upload, proxies, cookies, user+password authentication (Basic,
+ Digest, NTLM, Negotiate, Kerberos), file transfer resume, http proxy tunneling
+ and more.
+"""
+
+toolchain = {'name': 'GCC', 'version': '16.2.0'}
+
+source_urls = ['https://%(name)s.haxx.se/download/']
+sources = [SOURCELOWER_TAR_GZ]
+
+builddependencies = [
+    ('binutils', '2.47'),
+    ('pkgconf', '3.0.5'),
+]
+
+dependencies = [
+    ('zlib', '2.3.3'),
+    ('OpenSSL', '3', '', SYSTEM),
+    ('libpsl', '0.23.1'),
+# don't know why this causes infinite loop with modulerc curl
+    #('nghttp2', '1.69.0'),
+]
+
+configopts = '--with-zlib '
+configopts += '--with-ssl=$EBROOTOPENSSL '
+#configopts += ' --with-nghttp2 '
+
+modextravars = {'CURL_INCLUDES': '%(installdir)s/include'}
+
+sanity_check_paths = {
+    'files': ['bin/curl', 'lib/libcurl.a', 'lib/libcurl.so'],
+    'dirs': ['lib/pkgconfig'],
+}
+
+moduleclass = 'tools'

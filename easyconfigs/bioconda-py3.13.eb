@@ -1,0 +1,93 @@
+# Ruoshi Sun
+# 2026-06-18
+easyblock = 'Conda'
+
+name = 'bioconda'
+version = 'py3.13'
+
+_samtools_ver = '1.23.1'
+requirements = ' '.join([
+    'bcftools=%s' % _samtools_ver,
+    'biopython=1.87',
+    'cyvcf2=0.33.0',
+    'deeptools=3.5.6',
+    'deeptoolsintervals=0.1.9',
+    'hisat2=2.2.2',
+    'homer=5.1',
+    'htseq=2.1.2',
+    'htslib=%s' % _samtools_ver,
+    'kallisto=0.51.1',
+    'multiqc=1.35',
+    'numpy',
+    'pybigwig=0.3.25',
+    'python=3.13',
+    'pytables',
+    'recon=1.10',
+    'repeatmasker=4.2.3',
+    'repeatmodeler=1.0.8',
+    'repeatscout=1.0.7',
+    'rmblast=2.14.1',
+    'salmon=2.0.1',
+    'samtools=%s' % _samtools_ver,
+    'scikit-learn',
+    'scipy',
+    'stringtie=3.0.3',
+    'subread=2.1.1',
+    'svim=2.0.0',
+    'trf=4.10.0rc2',
+    'twobitreader=3.1.7',
+])
+
+homepage = 'https://bioconda.github.io'
+description = """Bioconda is a channel for the conda package manager specializing in bioinformatics software.
+This module provides:
+
+"""
+description += requirements
+
+toolchain = SYSTEM
+
+builddependencies = [
+    ('miniforge', '26.1.0'),
+]
+#repeatmodeler no longer depends on nseg
+
+channels = [name, 'conda-forge']
+
+# first install without explicit versions, except python
+# then update the list below
+
+_samtools_ver = '1.23.1'
+requirements = ' '.join([
+    'bcftools=%s' % _samtools_ver,
+    'biopython=1.87',
+    'cyvcf2=0.33.0',
+    'deeptools=3.5.6',
+    'deeptoolsintervals=0.1.9',
+    'hisat2=2.2.2',
+    'homer=5.1',
+    'htseq=2.1.2',
+    'htslib=%s' % _samtools_ver,
+    'kallisto=0.51.1',
+    'multiqc=1.35',
+    'numpy',
+    'pybigwig=0.3.25',
+    'python=3.13',
+    'pytables',
+    'recon=1.10',
+    'repeatmasker=4.2.3',
+    'repeatmodeler=1.0.8',
+    'repeatscout=1.0.7',
+    'rmblast=2.14.1',
+    'salmon=2.0.1',
+    'samtools=%s' % _samtools_ver,
+    'scikit-learn',
+    'scipy',
+    'stringtie=3.0.3',
+    'subread=2.1.1',
+    'svim=2.0.0',
+    'trf=4.10.0rc2',
+    'twobitreader=3.1.7',
+])
+
+moduleclass = 'bio'

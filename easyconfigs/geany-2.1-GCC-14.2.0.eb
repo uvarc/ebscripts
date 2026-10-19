@@ -1,0 +1,31 @@
+easyblock = 'ConfigureMake'
+
+name = 'geany'
+version = '2.1'
+
+homepage = 'https://www.geany.org/'
+description = """Geany is a text editor using the GTK+ toolkit with basic features of an integrated development environment. """
+
+toolchain = {'name': 'GCC', 'version': '14.2.0'}
+
+source_urls = ['https://download.geany.org/']
+sources = [SOURCELOWER_TAR_GZ]
+
+builddependencies = [
+    ('binutils', '2.45'),
+    ('pkgconf', '2.4.3'),
+]
+
+dependencies = [
+    ('fontconfig', '2.17.1'),
+    ('GTK3', '3.24.51'),
+]
+
+#configopts = 'GTK_CFLAGS="-I$EBROOTFONTCONFIG/include -I$EBROOTGTK3/include/gtk-3.0 -I$EBROOTHARFBUZZ/include/harfbuzz -I$EBROOTPANGO/include/pango-1.0" GTK_LIBS="-L$EBROOTFONTCONFIG/lib -lfontconfig"'
+
+sanity_check_paths = {
+    'files': ['bin/geany','lib/libgeany.so'],
+    'dirs': [],
+}
+
+moduleclass = 'tools'

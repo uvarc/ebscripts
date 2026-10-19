@@ -1,5 +1,5 @@
 ##
-# Copyright 2009-2025 Ghent University
+# Copyright 2009-2026 Ghent University
 #
 # This file is part of EasyBuild,
 # originally created by the HPC team of Ghent University (http://ugent.be/hpc/en),
@@ -31,6 +31,8 @@ EasyBuild support for Python packages, implemented as an easyblock
 @author: Pieter De Baets (Ghent University)
 @author: Jens Timmerman (Ghent University)
 @author: Alexander Grund (TU Dresden)
+@author: Samuel Moors (Vrije Universiteit Brussel)
+@author: Jan Andre Reuter (Forschungszentrum Jülich)
 """
 import os
 import re
@@ -41,20 +43,28 @@ from sysconfig import get_config_vars
 
 import easybuild.tools.environment as env
 from easybuild.base import fancylogger
-from easybuild.easyblocks.python import EXTS_FILTER_PYTHON_PACKAGES, set_py_env_vars
-from easybuild.easyblocks.python import det_installed_python_packages, det_pip_version, run_pip_check
+from easybuild.easyblocks.python import EXTS_FILTER_DUMMY_PACKAGES, EXTS_FILTER_PYTHON_PACKAGES, set_py_env_vars
+from easybuild.easyblocks.python import det_installed_python_packages, det_pip_version, run_pip_check, run_pip_list
+from easybuild.easyblocks.python import UNLIMITED
 from easybuild.framework.easyconfig import CUSTOM
 from easybuild.framework.easyconfig.default import DEFAULT_CONFIG
 from easybuild.framework.easyconfig.templates import PYPI_SOURCE
 from easybuild.framework.extensioneasyblock import ExtensionEasyBlock
-from easybuild.tools.build_log import EasyBuildError, print_msg
+from easybuild.tools.build_log import EasyBuildError, print_msg, print_warning
 from easybuild.tools.config import build_option, PYTHONPATH, EBPYTHONPREFIXES
-from easybuild.tools.filetools import change_dir, mkdir, read_file, remove_dir, symlink, which, write_file
+from easybuild.tools.filetools import change_dir, mkdir, read_file, remove_dir, symlink, which, write_file, search_file
 from easybuild.tools.modules import ModEnvVarType, get_software_root
+from easybuild.tools.module_generator import ModuleGeneratorLua, ModuleGeneratorTcl
 from easybuild.tools.run import run_shell_cmd
 from easybuild.tools.utilities import nub
 from easybuild.tools.hooks import CONFIGURE_STEP, BUILD_STEP, TEST_STEP, INSTALL_STEP
 
+
+# Default ulimit for stack size, enforced when ulimit is set to unlimited on the system.
+# This is especially important with Python 3.14 and newer, where an unlimited stack size
+# can yield an infinite recursion in recursion tests, eventually filling up all available
+# memory. See: https://github.com/python/cpython/issues/143460
+ULIMIT_DEFAULT = 8192
 
 # not 'easy_install' deliberately, to avoid that pkg installations listed in easy-install.pth get preference
 # '.' is required at the end when using easy_install/pip in unpacked source dir
@@ -73,6 +83,93 @@ PY_INSTALL_SCHEMES = [
     PY_INSTALL_SCHEME_POSIX_PREFIX,
     PY_INSTALL_SCHEME_POSIX_LOCAL,
 ]
+
+CLICK_LUA_AUTOCOMPLETE_TEMPLATE = """
+local shell = myShellName()
+
+if (shell == "bash") or (shell == "sh") then
+    execute{{cmd="eval \\"$(_{_click_bin_envvar}_COMPLETE=bash_source {_click_bin})\\"", modeA={{"load"}}}}
+    execute{{cmd="complete -r {_click_bin} && unset _{_click_bin_nomin}_completion_setup && unset \
+_{_click_bin_nomin}_completion", modeA={{"unload"}}}}
+elseif (shell == "zsh") then
+    execute{{cmd="eval \\"$(_{_click_bin_envvar}_COMPLETE=zsh_source {_click_bin})\\"", modeA={{"load"}}}}
+    execute{{cmd="unset '_comps[{_click_bin}]' && unset -f _{_click_bin_nomin}_completion", modeA={{"unload"}}}}
+elseif (shell == "fish") then
+    execute{{cmd="eval (env _{_click_bin_envvar}_COMPLETE=fish_source {_click_bin})", modeA={{"load"}}}}
+    execute{{cmd="complete -e {_click_bin} && functions --erase _{_click_bin_nomin}_completion", modeA={{"unload"}}}}
+else
+    LmodMessage("Autocompletion cannot be setup automatically for shell: " .. shell)
+end
+"""
+
+CLICK_TCL_AUTOCOMPLETE_TEMPLATE = """
+set shell [module-info shell]
+if {{$shell in {{bash fish zsh}}}} {{
+    # using "puts stdout" to send command to shell to evaluate requires EnvModules or Lmod >=8.6.18
+    if {{![info exists ::env(LMOD_VERSION)] || \\
+        [string equal [lindex [lsort -dictionary [list 8.6.18 $::env(LMOD_VERSION)]] 0] 8.6.18] \\
+    }} {{
+        switch -- [module-info mode] {{
+            load {{
+                switch -- $shell {{
+                    bash {{
+                        puts stdout "eval \\"\\$(_{_click_bin_envvar}_COMPLETE=bash_source {_click_bin})\\""
+                    }}
+                    zsh  {{
+                        puts stdout "eval \\"\\$(_{_click_bin_envvar}_COMPLETE=zsh_source {_click_bin})\\""
+                    }}
+                    fish {{
+                        puts stdout "eval (env _{_click_bin_envvar}_COMPLETE=fish_source {_click_bin})"
+                    }}
+                }}
+            }}
+            remove - unload {{
+                switch -- $shell {{
+                    bash {{
+                        puts stdout {{unset -f _{_click_bin_nomin}_completion 2>/dev/null || true}}
+                        puts stdout {{unset -f _{_click_bin_nomin}_completion_setup 2>/dev/null || true}}
+                        puts stdout {{complete -r {_click_bin}}}
+                    }}
+                    zsh  {{
+                        puts stdout {{unset -f _{_click_bin_nomin}_completion 2>/dev/null || true}}
+                        puts stdout {{unset '_comps[{_click_bin}]'}}
+                    }}
+                    fish {{
+                        puts stdout {{functions -e _{_click_bin_nomin}_completion}}
+                        puts stdout {{complete -e -c {_click_bin}}}
+                    }}
+                }}
+            }}
+        }}
+    }}
+}} else {{
+    puts stderr "Autocompletion of `{_click_bin}` cannot be setup automatically for shell: $shell"
+}}
+"""
+
+
+def click_lua_autocomplete_script(bin_name):
+    """Generate Lua script for setting up autocompletion for Click-based command line tools."""
+    bin_name_nomin = bin_name.replace('-', '_')
+    click_bin_envvar = bin_name_nomin.upper()
+    lua_script = CLICK_LUA_AUTOCOMPLETE_TEMPLATE.format(
+        _click_bin=bin_name,
+        _click_bin_nomin=bin_name_nomin,
+        _click_bin_envvar=click_bin_envvar,
+    )
+    return lua_script
+
+
+def click_tcl_autocomplete_script(bin_name):
+    """"Generate Tcl script for setting up autocompletion for Click-based command line tools."""
+    bin_name_nomin = bin_name.replace('-', '_')
+    click_bin_envvar = bin_name_nomin.upper()
+    tcl_script = CLICK_TCL_AUTOCOMPLETE_TEMPLATE.format(
+        _click_bin=bin_name,
+        _click_bin_nomin=bin_name_nomin,
+        _click_bin_envvar=click_bin_envvar,
+    )
+    return tcl_script
 
 
 def det_python_version(python_cmd):
@@ -394,9 +491,14 @@ class PythonPackage(ExtensionEasyBlock):
                                "Otherwise it will be used as-is. A value of None then skips the build step. "
                                "The template %(python)s will be replace by the currently used Python binary.", CUSTOM],
             'check_ldshared': [None, 'Check Python value of $LDSHARED, correct if needed to "$CC -shared"', CUSTOM],
+            'click_autocomplete_bins': [None, "List of command line tools installed by the package that use "
+                                              "the 'click' package and for which autocompletion scripts "
+                                              "should be generated", CUSTOM],
             'download_dep_fail': [None, "Fail if downloaded dependencies are detected. "
                                   "Defaults to True unless 'use_pip_for_deps' or 'use_pip_requirement' is True.",
                                   CUSTOM],
+            'dummy_package': [None, "Install a dummy package empty in contents but visible by Python package managers "
+                                    "such as pip", CUSTOM],
             'fix_python_shebang_for': [['bin/*'], "List of files for which Python shebang should be fixed "
                                                   "to '#!/usr/bin/env python' (glob patterns supported) "
                                                   "(default: ['bin/*'])", CUSTOM],
@@ -404,6 +506,7 @@ class PythonPackage(ExtensionEasyBlock):
                                   "Defaults to '.' for unpacked sources or the first source file specified", CUSTOM],
             'install_target': ['install', "Option to pass to setup.py", CUSTOM],
             'pip_ignore_installed': [True, "Let pip ignore installed Python packages (i.e. don't remove them)", CUSTOM],
+            'pip_no_build_isolation': [True, "Use --no-build-isolation with pip install", CUSTOM],
             'pip_no_index': [None, "Pass --no-index to pip to disable connecting to PyPi entirely which also disables "
                                    "the pip version check. Enabled by default when pip_ignore_installed=True", CUSTOM],
             'pip_verbose': [None, "Pass --verbose to 'pip install' (if pip is used). "
@@ -414,8 +517,13 @@ class PythonPackage(ExtensionEasyBlock):
             'max_py_minver': [None, "Maximum minor Python version (only relevant when using system Python)", CUSTOM],
             'sanity_pip_check': [True, "Run 'python -m pip check' to ensure all required Python packages are "
                                        "installed and check for any package with an invalid (0.0.0) version.", CUSTOM],
+            'sanity_check_pip_list': [None, "Fail if specified package names and versions do not match "
+                                            "'python -m pip list' output. Defaults to True if --upload-test-report is "
+                                            "set. The check only runs if 'sanity_pip_check' is True.", CUSTOM],
             'runtest': [True, "Run unit tests.", CUSTOM],  # overrides default
             'testinstall': [False, "Install into temporary directory prior to running the tests.", CUSTOM],
+            'ulimit': [None, f"Set ulimit -s to specified value. Default: Limit to {ULIMIT_DEFAULT} if unlimited.",
+                       CUSTOM],
             'unpack_sources': [None, "Unpack sources prior to build/install. Defaults to 'True' except for whl files",
                                CUSTOM],
             # A version of 0.0.0 is usually an error on installation unless the package does really not provide a
@@ -427,7 +535,7 @@ class PythonPackage(ExtensionEasyBlock):
             # see https://packaging.python.org/tutorials/installing-packages/#installing-setuptools-extras
             'use_pip_extras': [None, "String with comma-separated list of 'extras' to install via pip", CUSTOM],
             'use_pip_for_deps': [False, "Install dependencies using '%s'" % PIP_INSTALL_CMD, CUSTOM],
-            'use_pip_requirement': [False, "Install using 'python -m pip install --requirement'. The sources is " +
+            'use_pip_requirement': [False, "Install using 'python -m pip install --requirement'. The sources is "
                                            "expected to be the requirements file.", CUSTOM],
             'zipped_egg': [False, "Install as a zipped eggs", CUSTOM],
         })
@@ -459,12 +567,20 @@ class PythonPackage(ExtensionEasyBlock):
         self.pylibdir = UNKNOWN
         self.all_pylibdirs = [UNKNOWN]
 
+        self.click_autocomplete_bins = self.cfg.get('click_autocomplete_bins') or []
+
         self.install_cmd_output = ''
 
         # make sure there's no site.cfg in $HOME, because setup.py will find it and use it
         home = os.path.expanduser('~')
         if os.path.exists(os.path.join(home, 'site.cfg')):
             raise EasyBuildError("Found site.cfg in your home directory (%s), please remove it.", home)
+
+        # dummy packages have no sources
+        if self.cfg.get('dummy_package', False):
+            self.log.info(f"Disabling sources for dummy package {self.name}-{self.version}")
+            self.cfg['source_urls'] = []
+            self.cfg['sources'] = []
 
         # use lowercase name as default value for expected module name (used in sanity check)
         if 'modulename' not in self.options:
@@ -494,8 +610,48 @@ class PythonPackage(ExtensionEasyBlock):
 
         # avoid that lib subdirs are appended to $*LIBRARY_PATH if they don't provide libraries
         # typically, only lib/pythonX.Y/site-packages should be added to $PYTHONPATH (see make_module_extra)
-        self.module_load_environment.LD_LIBRARY_PATH.type = ModEnvVarType.PATH_WITH_TOP_FILES
-        self.module_load_environment.LIBRARY_PATH.type = ModEnvVarType.PATH_WITH_TOP_FILES
+        try:
+            self.module_load_environment.LD_LIBRARY_PATH.type = ModEnvVarType.PATH_WITH_TOP_FILES
+            self.module_load_environment.LIBRARY_PATH.type = ModEnvVarType.PATH_WITH_TOP_FILES
+        except KeyError as e:
+            if self.is_extension:
+                # When used as a conda extension the 2 variables are fully removed, so no need to change their type
+                self.log.debug(f'Ignoring error when setting type of (LD_)LIBRARY_PATH module variables: {e}')
+            else:
+                raise
+
+    def set_ulimit(self):
+        """
+        Sets the ulimit stack size based on the ulimit config option.
+        Stack size is never set to any value above the hard limit specified by the system.
+        If the user has not set any stack size and the system specifies unlimited, set the
+        value to the default of ULIMIT_DEFAULT.
+        If the system specified anything else than unlimited, we only update the stack size
+        if it was set by the user.
+        """
+        # determine current stack size limit
+        res = run_shell_cmd("ulimit -s", hidden=True)
+        curr_ulimit_s = res.output.strip()
+        if not self.cfg['ulimit']:
+            if curr_ulimit_s != UNLIMITED:
+                return
+            self.cfg['ulimit'] = ULIMIT_DEFAULT
+
+        # figure out hard limit for stack size limit;
+        # this determines whether or not we can use "ulimit -s self.cfg['ulimit']"
+        res = run_shell_cmd("ulimit -s -H", hidden=True)
+        max_ulimit_s = res.output.strip()
+
+        if max_ulimit_s != UNLIMITED and int(self.cfg['ulimit']) < int(max_ulimit_s):
+            msg = "Current stack size limit is %s, and can not be set to %s due to hard limit of %s;"
+            msg += " setting stack size limit to %s instead, "
+            msg += " this may break part of the compilation..."
+            print_warning(msg % (curr_ulimit_s, self.cfg['ulimit'], max_ulimit_s, max_ulimit_s))
+            self.cfg['ulimit'] = max_ulimit_s
+
+        self.log.info(f"Current stack size limit is {curr_ulimit_s}, limiting stack size to {self.cfg['ulimit']}")
+        for opt in 'prebuildopts', 'pretestopts', 'preconfigopts':
+            self.cfg.update(opt, "ulimit -s %s && " % self.cfg['ulimit'])
 
     def determine_install_command(self):
         """
@@ -560,6 +716,8 @@ class PythonPackage(ExtensionEasyBlock):
             # set Python lib directories
             self.set_pylibdirs()
 
+        self.set_ulimit()
+
     def _should_unpack_source(self):
         """Determine whether we need to unpack the source(s)"""
 
@@ -613,11 +771,54 @@ class PythonPackage(ExtensionEasyBlock):
         This requires that 'pip install --prefix' is used, since the active Python installation scheme
         doesn't matter when using 'python setup.py install --prefix'.
         """
+        if not self.using_pip_install():
+            return False
         # see also  https://github.com/easybuilders/easybuild-easyblocks/issues/2976
-        py_install_scheme = det_py_install_scheme(python_cmd=self.python_cmd)
-        return py_install_scheme == PY_INSTALL_SCHEME_POSIX_LOCAL and self.using_pip_install()
+        return det_py_install_scheme(python_cmd=self.python_cmd) == PY_INSTALL_SCHEME_POSIX_LOCAL
 
-    def compose_install_command(self, prefix, extrapath=None, installopts=None):
+    def should_use_ebpythonprefixes(self) -> bool:
+        """
+        Determine if we should update $EBPYTHONPREFIXES rather than $PYTHONPATH.
+        If this Python package was installed for multiple Python versions, the package is using
+        .pth files, or if we prefer it; note: although EasyBuild framework also has logic for
+        this in EasyBlock.make_module_extra, we retain full control here, since the logic is
+        slightly different.
+        """
+
+        use_ebpythonprefixes = False
+        runtime_deps = self.cfg.dependency_names(runtime_only=True)
+
+        if 'Python' in runtime_deps:
+            self.log.info("Found Python runtime dependency, so considering $EBPYTHONPREFIXES...")
+            if build_option('prefer_python_search_path') == EBPYTHONPREFIXES:
+                self.log.info("Preferred Python search path is $EBPYTHONPREFIXES, so using that")
+                use_ebpythonprefixes = True
+
+        # Check if the installdir or sources contain any .pth files. For them to work correctly,
+        # Python needs these files to be in the sitedir path. While this typically works system-wide
+        # or in a venv, having Python modules in separate directories is unusual, and only having
+        # $PYTHONPATH will ignore these files.
+        # Our sitecustomize.py adds paths in $EBPYTHONPREFIXES to the sitedir path though, allowing
+        # these .pth files to work as expected. See: https://docs.python.org/3/library/site.html#module-site
+        # .pth files always should be in the site folder, so most of the path is fixed.
+        # Try the installation directory first
+        _, install_path_configuration_files = search_file([self.installdir], r".*\.pth$", silent=True)
+        if self.installdir and install_path_configuration_files:
+            self.log.info(f"Found path configuration file in installation directory '{self.installdir}'. "
+                          "Enabling $EBPYTHONPREFIXES...")
+            use_ebpythonprefixes = True
+        # If we did a test installation, check that one as well. Ensure that pypkg_test_installdir is set,
+        # since that might not be the case for sanity_check_only or module_only.
+        if self.testinstall and self.pypkg_test_installdir:
+            _, test_path_configuration_files = search_file([self.pypkg_test_installdir], r".*\.pth$", silent=True)
+            if test_path_configuration_files:
+                self.log.info("Found path configuration file in test installation directory "
+                              f"'{self.pypkg_test_installdir}'. Enabling $EBPYTHONPREFIXES...")
+                use_ebpythonprefixes = True
+
+        return self.multi_python or use_ebpythonprefixes
+
+    def compose_install_command(self, prefix, extrapath=None, installopts=None, install_src=None):
         """Compose full install command."""
 
         if self.using_pip_install():
@@ -635,8 +836,10 @@ class PythonPackage(ExtensionEasyBlock):
                 # (see also https://pip.pypa.io/en/stable/reference/pip/#pep-517-and-518-support);
                 # since we provide all required dependencies already, we disable this via --no-build-isolation
                 if LooseVersion(pip_version) >= LooseVersion('10.0'):
-                    if '--no-build-isolation' not in self.cfg['installopts']:
-                        self.py_installopts.append('--no-build-isolation')
+                    pip_no_build_isolation = self.cfg.get('pip_no_build_isolation', True)
+                    no_build_isolation_flag = '--no-build-isolation'
+                    if pip_no_build_isolation and no_build_isolation_flag not in self.cfg['installopts']:
+                        self.py_installopts.append(no_build_isolation_flag)
 
             elif not self.dry_run:
                 raise EasyBuildError("Failed to determine pip version!")
@@ -645,7 +848,8 @@ class PythonPackage(ExtensionEasyBlock):
         if extrapath:
             cmd.append(extrapath)
 
-        loc = self.cfg.get('install_src')
+        loc = self.cfg.get('install_src') if install_src is None else install_src
+
         if not loc:
             if self._should_unpack_source() or not self.src:
                 # specify current directory
@@ -685,6 +889,28 @@ class PythonPackage(ExtensionEasyBlock):
         ])
 
         return ' '.join(cmd)
+
+    def install_dummy_package(self):
+        """
+        Create dist-info directory inside site-packages with the metadata for
+        the given target package
+        """
+        py_package_metadata = [
+            "Metadata-Version: 2.1",
+            f"Name: {self.name}",
+            f"Version: {self.version}",
+        ]
+
+        # make dist-info directory
+        dist_info_name = self.name.replace('-', '_') + f"-{self.version}.dist-info"
+        dist_info_path = os.path.join(self.installdir, self.pylibdir, dist_info_name)
+        mkdir(dist_info_path, parents=True)
+
+        # install METADATA file
+        metadata_path = os.path.join(dist_info_path, 'METADATA')
+        write_file(metadata_path, '\n'.join(py_package_metadata))
+
+        self.log.info(f"Installation of dummy package for {self.name}-{self.version} successfull: {metadata_path}")
 
     def py_post_install_shenanigans(self, install_dir):
         """
@@ -773,12 +999,21 @@ class PythonPackage(ExtensionEasyBlock):
                 else:
                     self.log.info("No value set for $CC, so not touching $LDSHARED either")
 
+        # gives CMake a hint for which Python version to use, if a Python dependency is used
+        python_root = get_software_root('Python')
+        if python_root:
+            env.setvar('Python3_ROOT_DIR', python_root)
+
         # creates log entries for python being used, for debugging
         cmd = "%(python)s -V; %(python)s -c 'import sys; print(sys.executable, sys.path)'"
         run_shell_cmd(cmd % {'python': self.python_cmd}, hidden=True)
 
     def build_step(self):
         """Build Python package using setup.py"""
+
+        if self.cfg.get('dummy_package', False):
+            self.log.info(f"Skipping build step for installation of dummy package {self.name}-{self.version}")
+            return
 
         # inject extra '%(python)s' template value before getting value of 'buildcmd' custom easyconfig parameter
         self.cfg.template_values['python'] = self.python_cmd
@@ -812,6 +1047,10 @@ class PythonPackage(ExtensionEasyBlock):
         :param return_output: return output and exit code of test command
         """
 
+        if self.cfg.get('dummy_package', False):
+            self.log.info(f"Skipping test step for installation of dummy package {self.name}-{self.version}")
+            return None
+
         if isinstance(self.cfg['runtest'], str):
             self.testcmd = self.cfg['runtest']
 
@@ -821,7 +1060,7 @@ class PythonPackage(ExtensionEasyBlock):
             out, ec = (None, None)
 
             if self.testinstall:
-                # install in test directory and export PYTHONPATH
+                # install in test directory and export PYTHONPATH and / or EBPYTHONPREFIX if we need it
 
                 try:
                     if self.pypkg_test_installdir is None:
@@ -849,7 +1088,6 @@ class PythonPackage(ExtensionEasyBlock):
                 # add install location to both $PYTHONPATH and $PATH
                 abs_pylibdirs = [os.path.join(actual_installdir, pylibdir) for pylibdir in self.all_pylibdirs]
                 extrapath = "export PYTHONPATH=%s && " % os.pathsep.join(abs_pylibdirs + ['$PYTHONPATH'])
-
                 extrapath += "export PATH=%s:$PATH && " % os.path.join(actual_installdir, 'bin')
 
                 cmd = self.compose_install_command(self.pypkg_test_installdir, extrapath=extrapath)
@@ -857,6 +1095,11 @@ class PythonPackage(ExtensionEasyBlock):
 
                 self.py_post_install_shenanigans(self.pypkg_test_installdir)
 
+                # Requires having the installation in place to work correctly, since no path configuration files
+                # will be found otherwise
+                if self.should_use_ebpythonprefixes():
+                    extrapath += "export EBPYTHONPREFIXES=%s && " % os.pathsep.join([self.pypkg_test_installdir]
+                                                                                    + ['$EBPYTHONPREFIXES'])
             if self.testcmd:
                 testcmd = self.testcmd % {'python': self.python_cmd}
                 cmd = ' '.join([
@@ -870,7 +1113,6 @@ class PythonPackage(ExtensionEasyBlock):
                     res = run_shell_cmd(cmd, fail_on_error=False)
                     # need to retrieve ec by not failing on error
                     (out, ec) = (res.output, res.exit_code)
-                    self.log.info("cmd '%s' exited with exit code %s and output:\n%s", cmd, ec, out)
                 else:
                     run_shell_cmd(cmd)
 
@@ -880,8 +1122,14 @@ class PythonPackage(ExtensionEasyBlock):
             if return_output_ec:
                 return (out, ec)
 
+        return None
+
     def install_step(self):
         """Install Python package to a custom path using setup.py"""
+
+        if self.cfg.get('dummy_package', False):
+            self.install_dummy_package()
+            return
 
         # if posix_local is the active installation scheme there will be
         # a 'local' subdirectory in the specified prefix;
@@ -900,13 +1148,25 @@ class PythonPackage(ExtensionEasyBlock):
         abs_bindir = os.path.join(actual_installdir, 'bin')
 
         # set PYTHONPATH and PATH as expected
+
+        # When using the system Python also include /usr/local as on some systems (e.g. EL 10 with Python 3.12)
+        # the site config at /usr/lib64/python3.12/site.py only adds the /usr/local folder when NOT using
+        # $PYTHONNOUSERSITE, which we set explicitely.
+        # This then causes packages installed by admins with `pip` to not be found,
+        # see also https://github.com/easybuilders/easybuild-easyblocks/issues/4100
+        if self.toolchain.is_system_toolchain():
+            sys_libdir = os.path.join('/usr/local', self.pylibdir)
+            sysroot = build_option('sysroot')
+            if sysroot:
+                sys_libdir = os.path.join(sysroot, sys_libdir)
+            abs_pylibdirs.append(sys_libdir)
+
         old_values = {}
         for name, new_values in (('PYTHONPATH', abs_pylibdirs), ('PATH', [abs_bindir])):
             old_value = os.getenv(name)
             old_values[name] = old_value
             new_value = os.pathsep.join(new_values + ([old_value] if old_value else []))
-            if new_value:
-                env.setvar(name, new_value, verbose=False)
+            env.setvar(name, new_value, verbose=False)
 
         # actually install Python package
         cmd = self.compose_install_command(self.installdir)
@@ -930,6 +1190,10 @@ class PythonPackage(ExtensionEasyBlock):
 
     def install_extension(self, *args, **kwargs):
         """Perform the actual Python package build/installation procedure"""
+
+        if self.cfg.get('dummy_package', False):
+            self.install_dummy_package()
+            return
 
         # we unpack unless explicitly told otherwise
         kwargs.setdefault('unpack_src', self._should_unpack_source())
@@ -967,12 +1231,25 @@ class PythonPackage(ExtensionEasyBlock):
         super().load_module(*args, **kwargs)
         set_py_env_vars(self.log)
 
+    def sanity_check_load_module(self, *args, **kwargs):
+        """
+        Load module to prepare environment for sanity check.
+        Also make sure that Python command to use has been figured out.
+        """
+        mod_data = super().sanity_check_load_module(*args, **kwargs)
+
+        if self.python_cmd is None:
+            self.prepare_python()
+
+        return mod_data
+
     def sanity_check_step(self, *args, **kwargs):
         """
         Custom sanity check for Python packages
         """
 
         success, fail_msg = True, ''
+        custom_commands = kwargs.pop('custom_commands', [])
 
         # load module early ourselves rather than letting parent sanity_check_step method do so,
         # since custom actions taken below require that environment is set up properly already
@@ -1008,17 +1285,28 @@ class PythonPackage(ExtensionEasyBlock):
         # this is relevant for installations of Python packages for multiple Python versions (via multi_deps)
         # (we can not pass this via custom_paths, since then the %(pyshortver)s template value will not be resolved)
         if not self.is_extension:
+            site_package_dir = os.path.join('lib', 'python%(pyshortver)s', 'site-packages')
+
+            custom_paths_files = []
+            if self.cfg.get('dummy_package', False):
+                dist_info_name = self.name.replace('-', '_') + f'-{self.version}.dist-info'
+                custom_paths_files.append(os.path.join(site_package_dir, dist_info_name, 'METADATA'))
+
             kwargs.setdefault('custom_paths', {
-                'files': [],
-                'dirs': [os.path.join('lib', 'python%(pyshortver)s', 'site-packages')],
+                'files': custom_paths_files,
+                'dirs': [site_package_dir],
             })
 
-        # make sure 'exts_filter' is defined, which is used for sanity check
+        # make sure 'exts_filter' argument is defined, which is used for sanity check
+        exts_sanity_filter = EXTS_FILTER_PYTHON_PACKAGES
+        if self.cfg.get('dummy_package', False):
+            exts_sanity_filter = EXTS_FILTER_DUMMY_PACKAGES
+
         if self.multi_python:
             # when installing for multiple Python versions, we must use 'python', not a full-path 'python' command!
             python_cmd = 'python'
             if 'exts_filter' not in kwargs:
-                kwargs.update({'exts_filter': EXTS_FILTER_PYTHON_PACKAGES})
+                kwargs.update({'exts_filter': exts_sanity_filter})
         else:
             # 'python' is replaced by full path to active 'python' command
             # (which is required especially when installing with system Python)
@@ -1026,22 +1314,27 @@ class PythonPackage(ExtensionEasyBlock):
                 self.prepare_python()
             python_cmd = self.python_cmd
             if 'exts_filter' not in kwargs:
-                orig_exts_filter = EXTS_FILTER_PYTHON_PACKAGES
-                exts_filter = (orig_exts_filter[0].replace('python', self.python_cmd), orig_exts_filter[1])
+                exts_filter = (exts_sanity_filter[0].replace('python', self.python_cmd), exts_sanity_filter[1])
                 kwargs.update({'exts_filter': exts_filter})
 
-        sanity_pip_check = self.cfg.get('sanity_pip_check', True)
-        if self.is_extension:
-            sanity_pip_check_main = self.master.cfg.get('sanity_pip_check')
-            if sanity_pip_check_main is not None:
-                # If the main easyblock (e.g. PythonBundle) defines the variable
-                # we trust it does the pip check if requested and checks for mismatches
-                sanity_pip_check = False
-                self.log.info(f"Sanity 'pip check' disabled for {self.name} extension, "
-                              f"assuming that parent will take care of it"
-                              )
+        # inject extra '%(python)s' template value for use by sanity check commands
+        self.cfg.template_values['python'] = python_cmd
 
-        if sanity_pip_check:
+        params = {
+            'sanity_pip_check': self.cfg.get('sanity_pip_check', True),
+            'sanity_check_pip_list': self.cfg.get('sanity_check_pip_list'),
+        }
+
+        if self.is_extension:
+            for key in params:
+                if self.master.cfg.get(key) is not None:
+                    # If the main easyblock (e.g. PythonBundle) defines the variable
+                    # we trust it does the 'pip check' or 'pip list' if requested and checks for mismatches
+                    params[key] = False
+                    self.log.info(f"'{key}' disabled for {self.name} extension, "
+                                  f"assuming that parent will take care of it")
+
+        if params['sanity_pip_check']:
             if not self.is_extension:
                 # for stand-alone Python package installations (not part of a bundle of extensions),
                 # the (fake or real) module file must be loaded at this point,
@@ -1052,9 +1345,12 @@ class PythonPackage(ExtensionEasyBlock):
                     self.log.debug("Currently loaded modules: %s", loaded_modules)
                     raise EasyBuildError("%s module is not loaded, this should never happen...",
                                          self.short_mod_name)
+            run_pip_check(python_cmd=python_cmd)
 
             unversioned_packages = self.cfg.get('unversioned_packages', [])
-            run_pip_check(python_cmd=python_cmd, unversioned_packages=unversioned_packages)
+            pkgs = [(self.name, self.version)]
+            run_pip_list(pkgs, python_cmd=python_cmd, unversioned_packages=unversioned_packages,
+                         strict_check=params['sanity_check_pip_list'])
 
         # ExtensionEasyBlock handles loading modules correctly for multi_deps, so we clean up fake_mod_data
         # and let ExtensionEasyBlock do its job
@@ -1062,6 +1358,14 @@ class PythonPackage(ExtensionEasyBlock):
             self.clean_up_fake_module(self.fake_mod_data)
             self.sanity_check_module_loaded = False
 
+        for click_bin in self.click_autocomplete_bins:
+            click_bin_nomin = click_bin.replace('-', '_')
+            click_bin_envvar = click_bin_nomin.upper()
+            custom_commands.append(
+                f'_{click_bin_envvar}_COMPLETE=bash_source {click_bin} | grep _{click_bin_nomin}_completion'
+            )
+
+        kwargs['custom_commands'] = custom_commands
         parent_success, parent_fail_msg = super().sanity_check_step(*args, **kwargs)
 
         if parent_fail_msg:
@@ -1073,20 +1377,7 @@ class PythonPackage(ExtensionEasyBlock):
         """Add install path to PYTHONPATH"""
         txt = ''
 
-        # update $EBPYTHONPREFIXES rather than $PYTHONPATH
-        # if this Python package was installed for multiple Python versions, or if we prefer it;
-        # note: although EasyBuild framework also has logic for this in EasyBlock.make_module_extra,
-        # we retain full control here, since the logic is slightly different
-        use_ebpythonprefixes = False
-        runtime_deps = [dep['name'] for dep in self.cfg.dependencies(runtime_only=True)]
-
-        if 'Python' in runtime_deps:
-            self.log.info("Found Python runtime dependency, so considering $EBPYTHONPREFIXES...")
-            if build_option('prefer_python_search_path') == EBPYTHONPREFIXES:
-                self.log.info("Preferred Python search path is $EBPYTHONPREFIXES, so using that")
-                use_ebpythonprefixes = True
-
-        if self.multi_python or use_ebpythonprefixes:
+        if self.should_use_ebpythonprefixes():
             path = ''  # EBPYTHONPREFIXES are relative to the install dir
             txt += self.module_generator.prepend_paths(EBPYTHONPREFIXES, path)
         elif self.require_python:
@@ -1098,3 +1389,33 @@ class PythonPackage(ExtensionEasyBlock):
                     txt += self.module_generator.prepend_paths(PYTHONPATH, path)
 
         return super().make_module_extra(*args, **kwargs) + txt
+
+    def _make_click_module_footer(self, click_bin):
+        """Generate Click autocomplete script for module footer."""
+        extra_footer = []
+        if isinstance(self.module_generator, ModuleGeneratorTcl):
+            self.log.debug("Adding Click autocomplete for '%s' in Tcl module", click_bin)
+            extra_footer.append(click_tcl_autocomplete_script(click_bin))
+        elif isinstance(self.module_generator, ModuleGeneratorLua):
+            self.log.debug("Adding Click autocomplete for '%s' in Lua module", click_bin)
+            extra_footer.append(click_lua_autocomplete_script(click_bin))
+        else:
+            self.log.warning("Not adding Click autocomplete for '%s' in unknown module syntax", click_bin)
+
+        return extra_footer
+
+    def make_module_footer(self):
+        """
+        Extend module footer with statements to set up shell completion for Click-based Python tools.
+        """
+        footer = super().make_module_footer()
+
+        extra_footer = []
+        for click_bin in self.click_autocomplete_bins:
+            extra_footer += self._make_click_module_footer(click_bin)
+
+        if extra_footer:
+            extra_footer = '\n'.join(extra_footer)
+            footer += '\n' + extra_footer + '\n'
+
+        return footer

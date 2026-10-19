@@ -12,7 +12,7 @@ toolchainopts = {'openmp': True, 'usempi': True}
 source_urls = ['https://github.com/LLNL/sundials/releases/download/v%(version)s']
 sources = [SOURCE_TAR_GZ]
 
-builddependencies = [('cmake', '3.23.3', '', SYSTEM)]
+builddependencies = [('cmake', '3.28.1', '', SYSTEM)]
 
 separate_build_dir = True
 

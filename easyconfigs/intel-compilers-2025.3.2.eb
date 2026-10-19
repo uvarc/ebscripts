@@ -1,0 +1,27 @@
+name = 'intel-compilers'
+version = '2025.3.2'
+
+accept_eula = True
+
+homepage = 'https://software.intel.com/content/www/us/en/develop/tools/oneapi/hpc-toolkit.html'
+description = "Intel C, C++ & Fortran compilers"
+
+toolchain = SYSTEM
+
+# see https://software.intel.com/content/www/us/en/develop/articles/oneapi-standalone-components.html
+sources = [
+    'intel-dpcpp-cpp-compiler-%(version)s.26_offline.sh',
+    'intel-fortran-compiler-%(version)s.25_offline.sh',
+]
+
+local_gccver = '14.2.0'
+dependencies = [
+    ('GCC', local_gccver),
+    ('binutils', '2.45', '', ('GCC', local_gccver)),
+]
+
+modextrapaths = {
+    'CPATH': ['compiler/2025.3/opt/compiler/include/intel64'],
+}
+
+moduleclass = 'compiler'

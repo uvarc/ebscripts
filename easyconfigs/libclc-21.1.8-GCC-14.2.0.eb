@@ -1,0 +1,35 @@
+easyblock = 'CMakeMake'
+
+name = 'libclc'
+version = '21.1.8'
+
+homepage = 'https://libclc.llvm.org/'
+description = """
+libclc is an open source, BSD/MIT dual licensed implementation of the library requirements of the OpenCL
+C programming language, as specified by the OpenCL 1.1 Specification.
+"""
+
+toolchain = {'name': 'GCC', 'version': '14.2.0'}
+
+source_urls = ['https://github.com/llvm/llvm-project/releases/download/llvmorg-%(version)s/']
+sources = ['libclc-%(version)s.src.tar.xz']
+
+builddependencies = [
+    ('binutils', '2.45'),
+    ('cmake', '4.1.2', '', SYSTEM),
+    ('LLVM', version),
+]
+
+postinstallcmds = [
+    'cp -r %(builddir)s/%(name)s-%(version)s.src/clc/include %(installdir)s',
+]
+
+sanity_check_paths = {
+    'files': [
+        'share/pkgconfig/libclc.pc',
+        'include/clc/internal/clc.h',
+    ],
+    'dirs': ['include/clc', 'share/clc'],
+}
+
+moduleclass = 'lib'

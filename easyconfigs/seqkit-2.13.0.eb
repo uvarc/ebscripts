@@ -1,0 +1,25 @@
+# Ruoshi Sun
+# 2026-04-30
+easyblock = 'Conda'
+
+name = 'seqkit'
+version = '2.13.0'
+
+homepage = 'https://github.com/shenwei356/seqkit'
+description = """A cross-platform and ultrafast toolkit for FASTA/Q file manipulation"""
+
+toolchain = SYSTEM
+
+builddependencies = [
+    ('miniforge', '26.1.0'),
+]
+
+channels = ['bioconda']
+requirements = '%(namelower)s=%(version)s '
+
+sanity_check_paths = {
+    'files': ['bin/%(name)s'],
+    'dirs': [],
+}
+
+moduleclass = 'bio'

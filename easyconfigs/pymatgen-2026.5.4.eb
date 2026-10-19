@@ -1,0 +1,28 @@
+# Ruoshi Sun
+# 2026-06-26
+easyblock = 'Conda'
+
+name = 'pymatgen'
+version = '2026.5.4'
+
+homepage = 'https://pymatgen.org'
+description = """
+Pymatgen (Python Materials Genomics) is a robust, open-source Python library for
+materials analysis.
+"""
+
+toolchain = SYSTEM
+
+builddependencies = [('miniforge', '26.1.0')]
+
+channels = ['conda-forge']
+requirements = 'python=3.14 %(name)s=%(version)s'
+
+sanity_check_paths = {
+    'files': ['bin/pmg'],
+    'dirs': ['lib/python3.14/site-packages'],
+}
+
+sanity_check_commands = ["pmg --help"]
+
+moduleclass = 'chem'

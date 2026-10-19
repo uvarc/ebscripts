@@ -1,0 +1,39 @@
+# Ruoshi Sun
+# 2026-08-13
+easyblock = 'CMakeMake'
+
+name = 'Doxygen'
+version = '1.18.0'
+
+homepage = 'http://www.doxygen.org'
+description = """Doxygen is a documentation system for C++, C, Java, Objective-C, Python, 
+ IDL (Corba and Microsoft flavors), Fortran, VHDL, PHP, C#, and to some extent D."""
+
+toolchain = {'name': 'GCC', 'version': '16.2.0'}
+
+source_urls = ['https://www.doxygen.nl/files']
+sources = ['%(namelower)s-%(version)s.src.tar.gz']
+
+builddependencies = [
+    ('binutils', '2.47'),
+    ('Bison', '3.8.2'),
+    ('CMake', '4.4.2'),
+    ('flex', '2.6.4'),
+    ('pkgconf', '3.0.5'),
+    #('Python', '3.14.2'),
+]
+
+dependencies = [
+    ('libiconv', '1.19'),
+]
+
+configopts = "-DICONV_DIR=$EBROOTLIBICONV -DICONV_IN_GLIBC=OFF"
+
+sanity_check_paths = {
+    'files': ['bin/doxygen'],
+    'dirs': [],
+}
+
+sanity_check_commands = ['doxygen --help']
+
+moduleclass = 'devel'

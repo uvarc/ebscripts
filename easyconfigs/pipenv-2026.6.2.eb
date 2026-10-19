@@ -1,0 +1,27 @@
+# Ruoshi Sun
+# 2026-06-18
+
+easyblock = 'Conda'
+
+name = 'pipenv'
+version = '2026.6.2'
+
+homepage = 'https://pipenv.pypa.io/en/latest/'
+description = """Pipenv is a tool that aims to bring the best of all packaging worlds (bundler, composer, npm, cargo, yarn, etc.) to the Python world."""
+
+toolchain = SYSTEM
+
+builddependencies = [
+    ('miniforge', '26.1.0'),
+]
+
+channels = ['conda-forge']
+
+requirements = 'python=3.13 %(name)s=%(version)s'
+
+sanity_check_paths = {
+    'files': ['bin/pipenv'],
+    'dirs': ['bin'],
+}
+
+moduleclass = 'tools'

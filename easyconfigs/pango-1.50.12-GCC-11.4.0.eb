@@ -16,15 +16,15 @@ checksums = ['caef96d27bbe792a6be92727c73468d832b13da57c8071ef79b9df69ee058fe3']
 
 builddependencies = [
     #('binutils', '2.39'),
-    ('Meson', '1.0.1', '-py3.11'),
-    ('Ninja', '1.11.1', '-py3.11'),
+    ('Meson', '1.9.0', '', SYSTEM),
+    ('Ninja', '1.13.1', '', SYSTEM),
     ('gobject-introspection', '1.74.0'),
     ('pkgconf', '1.9.5'),
 ]
 
 dependencies = [
     #('X11', '20221110'),
-    ('glib', '2.76.1'),
+    ('GLib', '2'),
     ('cairo', '1.17.4'),
     ('harfbuzz', '5.3.1'),
     ('fribidi', '1.0.12', '', SYSTEM),

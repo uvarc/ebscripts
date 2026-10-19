@@ -12,7 +12,6 @@ homepage = 'http://www.popgen.dk/angsd'
 description = """Program for analysing NGS data."""
 
 toolchain = SYSTEM
-toolchainopts = {'pic': True}
 
 source_urls = ['https://github.com/ANGSD/angsd/releases/download/%(version)s/']
 sources = [{
@@ -22,7 +21,7 @@ sources = [{
 
 dependencies = [
     ('htslib', '1.17'),
-    ('curl', '8.4.0'),
+    ('curl', '8'),
 ]
 
 prebuildopts = 'cd %(name)s && '

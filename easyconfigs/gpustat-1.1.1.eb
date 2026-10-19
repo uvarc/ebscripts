@@ -1,0 +1,26 @@
+# Ruoshi Sun
+# 2026-06-22
+
+easyblock = 'Conda'
+
+name = 'gpustat'
+version = '1.1.1'
+
+homepage = 'https://github.com/wookayin/gpustat'
+description = 'dstat-like utilization monitor for NVIDIA GPUs'
+
+toolchain = SYSTEM
+
+builddependencies = [
+    ('miniforge', '26.1.0'),
+]
+
+channels = ['conda-forge']
+requirements = '%(name)s=%(version)s'
+
+sanity_check_paths = {
+    'files': ['bin/gpustat'],
+    'dirs': ['bin']
+}
+
+moduleclass = 'tools'

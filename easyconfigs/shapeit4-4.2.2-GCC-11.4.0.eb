@@ -17,7 +17,7 @@ sources = ['v%(version)s.tar.gz']
 dependencies = [
     ('htslib', '1.17', '', SYSTEM),
     ('boost', '1.79.0'),
-    ('curl', '8.4.0'),
+    ('curl', '8'),
 ]
 
 # edit makefile
@@ -43,5 +43,11 @@ sanity_check_paths = {
     'files': [],
     'dirs': ['bin']
 }
+
+modluafooter = 'add_property("state","obsolete")'
+modloadmsg = """!!! WARNING !!!
+Module %(name)s/%(version)s has been deprecated and will be REMOVED in the future.
+If this module is required for your work please contact us at
+https://rc.virginia.edu/form/support-request/"""
 
 moduleclass = 'bio'

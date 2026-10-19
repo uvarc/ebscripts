@@ -1,0 +1,27 @@
+easyblock = 'PythonPackage'
+
+name = 'PyYAML'
+version = '6.0.3'
+
+homepage = 'https://github.com/yaml/pyyaml'
+description = "PyYAML is a YAML parser and emitter for the Python programming language."
+
+toolchain = {'name': 'GCC', 'version': '14.2.0'}
+
+sources = ['https://github.com/yaml/pyyaml/archive/refs/tags/%(version)s.tar.gz']
+
+builddependencies = [
+    ('binutils', '2.45'),
+    ('Cython', '3.2.4'),
+]
+dependencies = [
+    ('Python', '3.13.11'),
+    ('libyaml', '0.2.5'),
+    ('Python-bundle-PyPI', '2025.07'),
+]
+
+options = {'modulename': 'yaml'}
+
+sanity_check_commands = ["python -c 'import yaml; yaml.CLoader'"]
+
+moduleclass = 'lib'

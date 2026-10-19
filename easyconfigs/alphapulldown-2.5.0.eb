@@ -1,0 +1,30 @@
+# Ruoshi Sun
+# 2026-06-17 RIV-20546
+easyblock = 'Conda'
+
+name = 'alphapulldown'
+version = '2.5.0'
+
+homepage = 'https://github.com/KosinskiLab/AlphaPulldown'
+description = "AlphaPulldown is a Python package that streamlines protein-protein interaction screens and high-throughput modelling of higher-order oligomers using AlphaFold-Multimer"
+
+toolchain = SYSTEM
+
+builddependencies = [
+    ('miniforge', '26.1.0'),
+]
+
+channels = ['conda-forge', 'bioconda']
+requirements = 'python=3.12 snakemake=9.* snakemake-executor-plugin-slurm snakedeploy pulp click coincbc'
+
+postinstallcmds = [
+    '%(installdir)s/bin/pip install --no-cache-dir alphapulldown-input-parser>=0.5.1',
+    '%(installdir)s/bin/pip install --no-cache-dir git+https://github.com/KosinskiLab/aplit.git',
+]
+
+sanity_check_paths = {
+    'files': ['bin/snakemake'],
+    'dirs': [],
+}
+
+moduleclass = 'bio'

@@ -1,0 +1,37 @@
+# Ruoshi Sun
+# 2026-06-23
+easyblock = 'Tarball'
+
+name = 'qualimap'
+version = '2.3'
+
+homepage = 'http://qualimap.bioinfo.cipf.es/'
+description = """Qualimap 2 is a platform-independent application written in Java and R that provides both
+ a Graphical User Inteface (GUI) and a command-line interface to facilitate the quality control of
+ alignment sequencing data and its derivatives like feature counts."""
+
+toolchain = SYSTEM
+
+source_urls = ['https://bitbucket.org/kokonech/qualimap/downloads/']
+sources = ['%(name)s_v%(version)s.zip']
+
+dependencies = [
+    ('java', '21')
+]
+
+postinstallcmds = [
+    'sed -i "s/MaxPermSize/MaxMetaspaceSize/" %(installdir)s/%(name)s',
+]
+
+sanity_check_paths = {
+    'files': ['qualimap'],
+    'dirs': [],
+}
+
+sanity_check_commands = ['qualimap --help']
+
+modextrapaths = {'PATH': ''}
+
+modloadmsg = 'Files are located in $EBROOTQUALIMAP'
+
+moduleclass = 'bio'

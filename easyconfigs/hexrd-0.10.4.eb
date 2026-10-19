@@ -1,0 +1,25 @@
+# Ruoshi Sun
+# 2026-06-18
+easyblock = 'Conda'
+
+name = 'hexrd'
+version = '0.10.4'
+
+homepage = 'https://github.com/HEXRD/hexrd'
+description = """HEXRD provides a collection of resources for analysis of x-ray diffraction data, especially high-energy x-ray diffraction. HEXRD is comprised of a library and API for writing scripts, a command line interface, and an interactive graphical user interface."""
+
+toolchain = SYSTEM
+
+builddependencies = [
+    ('miniforge', '26.1.0'),
+]
+
+channels = [name, 'conda-forge']
+requirements = 'python=3.13 %(name)s=%(version)s'
+
+sanity_check_paths = {
+    'files': ['bin/hexrd'],
+    'dirs': [],
+}
+
+moduleclass = 'phys'

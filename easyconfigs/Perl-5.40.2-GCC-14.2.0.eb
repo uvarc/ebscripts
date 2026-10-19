@@ -16,7 +16,7 @@ source_urls = ['https://www.cpan.org/src/%(version_major)s.0']
 sources = [SOURCELOWER_TAR_GZ]
 
 builddependencies = [
-    ('binutils', '2.45'),
+    #('binutils', '2.42'),
 ]
 
 dependencies = [

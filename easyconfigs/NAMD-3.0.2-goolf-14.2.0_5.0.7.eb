@@ -1,0 +1,35 @@
+# #
+# This file is an EasyBuild reciPY as per https://github.com/easybuilders/easybuild
+#
+#  Contribution from University of Houston
+# Based on NAMD-3.0.1-foss-2024a-CUDA-12.6.0.eb
+# Author: Jerry Ebalunode <jebalunode@uh.edu>
+# #
+
+name = 'NAMD'
+version = '3.0.2'
+
+homepage = 'https://www.ks.uiuc.edu/Research/namd/'
+description = """NAMD is a parallel molecular dynamics code designed for high-performance simulation of
+ large biomolecular systems."""
+
+toolchain = {'name': 'goolf', 'version': '14.2.0_5.0.7'}
+toolchainopts = {'usempi': True, 'openmp': False, 'pic': True}
+
+sources = ['NAMD_%(version)s_Source.tar.gz']
+
+download_instructions = f'Manually obtain {sources[0]} at'
+download_instructions += ' https://www.ks.uiuc.edu/Development/Download/download.cgi?PackageName=NAMD'
+
+dependencies = [
+    #('Tcl', '9.0.3'),
+]
+
+builddependencies = [
+    #('tcsh', '6.24.16'),
+]
+
+charm_arch = "multicore-linux-%(arch)s"
+charm_extra_cxxflags = '-std=c++17 -fpermissive'
+
+moduleclass = 'chem'

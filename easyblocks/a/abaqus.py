@@ -1,5 +1,5 @@
 ##
-# Copyright 2009-2025 Ghent University
+# Copyright 2009-2026 Ghent University
 #
 # This file is part of EasyBuild,
 # originally created by the HPC team of Ghent University (http://ugent.be/hpc/en),
@@ -180,7 +180,7 @@ class EB_ABAQUS(Binary):
                 (r"SIMULIA[0-9]*doc.*:", os.path.join(self.installdir, 'doc')),  # if docs are installed
                 (r"SimulationServices.*:", sim_subdir),
                 (r"Choose the CODE installation directory.*:\n.*\n\n.*:", sim_subdir),
-                (r"SIMULIA/CAE.*:", cae_subdir),
+                (r"SIMULIA/CAE(?!/plugins).*:", cae_subdir),
                 (r"location of your Abaqus services \(solvers\).*(\n.*){8}:\s*", sim_subdir),
                 (r"Default.*SIMULIA/Commands\]:\s*", os.path.join(self.installdir, 'Commands')),
                 (r"Default.*SIMULIA/CAE/plugins.*:\s*", os.path.join(self.installdir, 'plugins')),
@@ -199,6 +199,7 @@ class EB_ABAQUS(Binary):
                 (r"License Server . \(redundant\)\s*(\n.*){3}:", ''),
                 (r"License Server Configuration((?!___).*\n)*?" + nextstr, ''),
                 (r"Please choose an action:", '1'),
+                (r"Choose an action:", '1'),
             ])
 
             if LooseVersion(self.version) >= LooseVersion('2022') and installed_docs:

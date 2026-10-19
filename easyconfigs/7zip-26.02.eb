@@ -1,0 +1,25 @@
+# Ruoshi Sun
+# 2026-07-23
+easyblock = 'Tarball'
+
+name = '7zip'
+version = '26.02'
+
+homepage = 'https://www.7-zip.org'
+description = """7-Zip is a file archiver with a high compression ratio."""
+
+toolchain = SYSTEM
+
+source_urls = ['https://www.7-zip.org/a/']
+sources = ['7z%(version_major)s%(version_minor)s-linux-x64.tar.xz']
+
+sanity_check_paths = {
+    'files': ['7zz'],
+    'dirs': [],
+}
+
+modextrapaths = {
+    'PATH': ''
+}
+
+moduleclass = 'tools'

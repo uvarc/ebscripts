@@ -1,0 +1,26 @@
+# Ruoshi Sun
+# 2026-04-17
+
+easyblock = 'ConfigureMake'
+
+name = 'unrar'
+version = '7.21'
+
+homepage = 'https://www.rarlab.com/'
+description = "RAR is a powerful archive manager."
+
+toolchain = SYSTEM
+
+source_urls = ['http://www.rarlab.com/rar/']
+sources = ['%(name)ssrc-7.2.5.tar.gz']
+
+skipsteps = ['configure']
+
+installopts = 'DESTDIR=%(installdir)s'
+
+sanity_check_paths = {
+    'files': ['bin/unrar'],
+    'dirs': [],
+}
+
+moduleclass = 'tools'

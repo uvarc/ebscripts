@@ -26,12 +26,12 @@ builddependencies = [
 ]
 
 dependencies = [
-    #('libpng', '1.6.38'),
+    ('libpng', '1.6'),
     ('zlib', '1.2.13'),
-    ('libjpeg-turbo', '3.0.1'),
+    ('libjpeg-turbo', '3'),
     ('xz', '5.2.7', '', SYSTEM),
     ('jbigkit', '2.1'),
-    ('libtiff', '4.7.0'),
+    ('LibTIFF', '4'),
     #('expat', '2.4.9'),
     ('gtk3', '3.24.43'),
     #('X11', '20221110'),
@@ -40,7 +40,7 @@ dependencies = [
     ('sdl2', '2.26.4', '', SYSTEM),
     ('cairo', '1.17.4'),
     #('GST-plugins-base', '1.22.1'),
-    ('glib', '2.76.1'),
+    ('GLib', '2'),
     ('util-linux', '2.38.1', '', SYSTEM), # mount.pc
 ]
 

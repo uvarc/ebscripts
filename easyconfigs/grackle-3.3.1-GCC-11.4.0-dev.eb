@@ -29,4 +29,5 @@ sanity_check_paths = {
     'files': ['lib/libgrackle.so'],
     'dirs': ['lib', 'include']
 }
+
 moduleclass = 'astro'

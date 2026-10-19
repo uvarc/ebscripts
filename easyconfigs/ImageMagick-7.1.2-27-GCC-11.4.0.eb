@@ -1,0 +1,44 @@
+easyblock = 'ConfigureMake'
+
+name = 'ImageMagick'
+version = '7.1.2-27'
+
+homepage = 'https://www.imagemagick.org/'
+description = "ImageMagick is a software suite to create, edit, compose, or convert bitmap images"
+
+toolchain = {'name': 'GCC', 'version': '11.4.0'}
+
+source_urls = ['https://github.com/%(name)s/%(name)s/archive/']
+sources = ['%(version)s.tar.gz']
+
+builddependencies = [
+    ('binutils', '2.40'),
+    ('pkgconf', '1.9.5'),
+]
+dependencies = [
+    ('bzip2', '1.0.6', '', SYSTEM),
+    ('x11', '20230603'),
+    ('Ghostscript', '10.07.1'),
+    ('jasper', '4.2.8'),
+    ('libjpeg-turbo', '3'),
+    ('LibTIFF', '4'),
+    ('LittleCMS', '2.17'),
+    ('pango', '1.50.12'),
+    ('pixman', '0.42.2'),
+    ('fribidi', '1.0.12', '', SYSTEM),
+]
+
+configopts = "--with-gslib --with-x"
+
+sanity_check_paths = {
+    'files': ['bin/magick'],
+    'dirs': ['etc/%(name)s-%(version_major)s', 'include/%(name)s-%(version_major)s', 'lib', 'share'],
+}
+
+sanity_check_commands = [
+    'magick --help',
+]
+
+modextravars = {'MAGICK_HOME': '%(installdir)s'}
+
+moduleclass = 'vis'

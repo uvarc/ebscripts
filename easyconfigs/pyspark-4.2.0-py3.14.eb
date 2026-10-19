@@ -1,0 +1,37 @@
+# Ruoshi Sun
+# 2026-09-15
+easyblock = 'Conda'
+
+name = 'pyspark'
+version = '4.2.0'
+versionsuffix = '-py3.14'
+
+homepage = 'https://spark.apache.org'
+description = "PySpark is the Python API for Apache Spark. It enables you to perform real-time, large-scale data processing in a distributed environment using Python. It also provides a PySpark shell for interactively analyzing your data."
+
+toolchain = SYSTEM
+
+builddependencies = [('miniforge', '26.7.2')]
+dependencies = [('Java', '21')]
+
+channels = ['conda-forge']
+requirements = ' '.join([
+    'python=3.14',
+    'ipykernel',
+    'numpy=2.5.3',
+    'pandas=3.0.5',
+    'scipy=1.18.1',
+])
+
+postinstallcmds = [
+    '%(installdir)s/bin/pip install --no-cache-dir %(name)s==%(version)s matplotlib==3.11.2',
+]
+
+modextravars = {
+    'PIP_DISABLE_PIP_VERSION_CHECK': '1',
+}
+modextrapaths = {
+    'PYTHONPATH': ['python', 'python/lib/py4j-0.10.9.9-src.zip'],
+}
+
+moduleclass = 'devel'

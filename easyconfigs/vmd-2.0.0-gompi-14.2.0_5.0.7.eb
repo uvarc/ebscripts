@@ -1,0 +1,47 @@
+# Ruoshi Sun
+# 2026-09-10
+easyblock = 'ConfigureMake'
+
+name = 'vmd'
+version = '2.0.0'
+
+homepage = 'https://www.ks.uiuc.edu/Research/vmd/'
+description = "VMD is a molecular visualization program for displaying, animating, and analyzing large biomolecular systems using 3-D graphics and built-in scripting."
+
+toolchain = {'name': 'gompi', 'version': '14.2.0_5.0.7'}
+
+source_urls = ['https://www.ks.uiuc.edu/Research/vmd/vmd-%(version)s/files/final']
+sources = ['%(name)s-%(version)s.bin.LINUXAMD64.tar.gz']
+
+dependencies = [
+    #('Tcl', '9.0.1'),
+    #('Tk', '9.0.1'),
+    ('FLTK', '1.4.4'),
+    ('Python', '3.13.11'),
+    #('SciPy-bundle', '2025.07'),
+    #('Tkinter', '%(pyver)s'),
+    ('OpenGL', '2025.09'),
+    ('netcdf', '4.9.2'),
+    ('FFmpeg', '9.0'),
+    ('ImageMagick', '7.1.2-27'),
+    #('ACTC', '1.1'),  # Needs New EC
+    ('zlib', '1.3.1'),
+    ('libpng', '1.6'),
+    #('POV-Ray', '3.7.0.10'),
+]
+
+preconfigopts = 'VMDINSTALLBINDIR=%(installdir)s/bin VMDINSTALLLIBRARYDIR=%(installdir)s/lib '
+configure_cmd = './configure LINUXAMD64 TK TCL CUDA LIBPNG ZLIB'
+# ignore prefix - not supported
+prefix_opt = '#'
+
+skipsteps = ['build']
+
+preinstallopts = 'cd src && '
+
+sanity_check_paths = {
+    'files': ['bin/%(name)s'],
+    'dirs': [],
+}
+
+moduleclass = 'chem'

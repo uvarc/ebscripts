@@ -1,0 +1,40 @@
+easyblock = 'ConfigureMake'
+
+name = 'elfutils'
+version = '0.193'
+
+homepage = 'https://elfutils.org/'
+
+description = """
+ The elfutils project provides libraries and tools for ELF files
+ and DWARF data.
+"""
+
+toolchain = {'name': 'GCC', 'version': '14.2.0'}
+
+source_urls = ['https://sourceware.org/elfutils/ftp/%(version)s/']
+sources = [SOURCE_TAR_BZ2]
+
+builddependencies = [
+    #('M4', '1.4.19'),
+    ('pkgconf', '2.4.3'),
+]
+
+dependencies = [
+    ('binutils', '2.45'),
+    ('bzip2', '1.0.8'),
+    ('libarchive', '3.8.1'),
+    ('xz', '5.2.7', '', SYSTEM),
+    ('zstd', '1.5.7'),
+]
+
+configopts = "--disable-debuginfod --disable-libdebuginfod"
+
+sanity_check_paths = {
+    'files': ['bin/eu-elfcmp', 'include/dwarf.h', 'lib/libelf.%s' % SHLIB_EXT],
+    'dirs': []
+}
+
+sanity_check_commands = ["eu-elfcmp --help"]
+
+moduleclass = 'lib'

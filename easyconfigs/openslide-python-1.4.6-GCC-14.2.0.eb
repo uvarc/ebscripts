@@ -1,0 +1,28 @@
+# Ruoshi Sun
+# 2026-07-22
+easyblock = 'PythonPackage'
+
+name = 'openslide-python'
+version = '1.4.6'
+
+homepage = 'https://openslides.org'
+description = "Python bindings for the OpenSlide libary"
+
+toolchain = {'name': 'GCC', 'version': '14.2.0'}
+
+source_urls = ['https://github.com/openslide/%(name)s/releases/download/v%(version)s']
+sources = ['openslide_python-%(version)s.tar.gz']
+
+dependencies = [
+    ('Python', '3.13.11'),
+    ('Pillow', '11.3.0'),
+    ('OpenSlide', '4.0.1'),
+]
+
+use_pip = True
+download_dep_fail = True
+sanity_pip_check = True
+
+options = {'modulename': 'openslide'}
+
+moduleclass = 'vis'

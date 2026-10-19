@@ -1,0 +1,40 @@
+# Ruoshi Sun
+# 2026-08-11
+easyblock = 'ConfigureMake'
+
+name = 'netcdf-cxx'
+version = '4.3.1'
+hidden = True
+
+homepage = 'http://www.unidata.ucar.edu/software/netcdf/'
+description = """NetCDF (network Common Data Form) is a set of software libraries and machine-independent data formats that support the creation, access, and sharing of array-oriented scientific data."""
+
+compver = '16.2.0'
+comp = ('GCC', compver)
+mpiver = '5.0.10'
+
+toolchain = {'name': 'gompi', 'version': '%s_%s' % (compver,mpiver)}
+toolchainopts = {'pic': True, 'usempi': True}
+
+source_urls = ['https://github.com/Unidata/netcdf-cxx4/archive/']
+sources = ['v%(version)s.tar.gz']
+patches = ['netCDF-C++4_fix-nc-set-log-level.patch']
+checksums = [
+    {'v4.3.1.tar.gz': 'e3fe3d2ec06c1c2772555bf1208d220aab5fee186d04bd265219b0bc7a978edc'},
+    {'netCDF-C++4_fix-nc-set-log-level.patch': '8ebd7727dca11350a8f1805a959f45828389df979e18c5088f303b53e7ac6dbf'},
+]
+
+builddependencies = [
+    ('binutils', '2.47'),
+]
+
+dependencies = [
+    ('netcdf-c', '4.10.1'),
+]
+
+sanity_check_paths = {
+    'files': ['lib/libnetcdf_c++4.a', 'lib/libnetcdf_c++4.%s' % SHLIB_EXT],
+    'dirs': [],
+}
+
+moduleclass = 'data'

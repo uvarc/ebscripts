@@ -1,0 +1,21 @@
+easyblock = 'Conda'
+
+name = 'vapor'
+version = '3.10.0'
+
+homepage = 'https://www.vapor.ucar.edu'
+description = "VAPOR is the Visualization and Analysis Platform for Ocean, Atmosphere, and Solar Researchers.  VAPOR provides an interactive 3D visualization environment that can also produce animations and still frame images"
+
+toolchain = SYSTEM
+
+builddependencies = [('miniforge', '26.1.0')]
+
+channels = ['conda-forge', 'ncar-vapor']
+requirements = 'python=3.9 %(name)s=%(version)s'
+
+sanity_check_paths = {
+    'files': [],
+    'dirs': ['bin', 'include', 'lib', 'share'],
+}
+
+moduleclass = 'vis'

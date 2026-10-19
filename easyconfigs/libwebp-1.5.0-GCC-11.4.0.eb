@@ -22,9 +22,9 @@ builddependencies = [
     #('binutils', '2.44'),
 ]
 dependencies = [
-    ('libjpeg-turbo', '3.0.1'),
-    ('libpng', '1.6.39'),
-    ('libtiff', '4.7.0'),
+    ('libjpeg-turbo', '3'),
+    ('libpng', '1.6'),
+    ('LibTIFF', '4'),
     ('giflib', '5.2.2'),
 ]
 

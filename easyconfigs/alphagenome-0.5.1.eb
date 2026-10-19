@@ -5,8 +5,16 @@ easyblock = 'Conda'
 name = 'alphagenome'
 version = '0.5.1'
 
-homepage = 'https://mesonbuild.com'
-description = "Meson is a cross-platform build system designed to be both as fast and as user friendly as possible."
+homepage = 'https://github.com/google-deepmind/alphagenome'
+description = """
+AlphaGenome offers multimodal predictions, encompassing diverse functional
+outputs such as gene expression, splicing patterns, chromatin features, and
+contact maps. The model analyzes DNA sequences of up to 1 million base pairs in
+length and can deliver predictions at single base-pair resolution for most
+outputs. AlphaGenome achieves state-of-the-art performance across a range of
+genomic prediction benchmarks, including numerous diverse variant effect
+prediction tasks.
+"""
 
 toolchain = SYSTEM
 
@@ -14,7 +22,7 @@ builddependencies = [
     ('miniforge', '24.11.3', '-py3.12'),
 ]
 
-requirements = 'python=3.12 numpy'
+requirements = 'python=3.12 numpy scipy matplotlib seaborn'
 
 postinstallcmds = [
     '%(installdir)s/bin/pip install git+https://github.com/google-deepmind/alphagenome@v%(version)s',

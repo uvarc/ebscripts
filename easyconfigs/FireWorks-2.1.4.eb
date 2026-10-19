@@ -1,0 +1,26 @@
+# Ruoshi Sun
+# 2026-08-28
+easyblock = 'Conda'
+
+name = 'FireWorks'
+version = '2.1.4'
+
+homepage = 'https://materialsproject.github.io/fireworks'
+description = """
+FireWorks is a free, open-source code for defining, managing, and executing
+workflows. Complex workflows can be defined using Python, JSON, or YAML, are
+stored using MongoDB, and can be monitored through a built-in web interface.
+"""
+
+toolchain = SYSTEM
+
+builddependencies = [('miniforge', '26.3.2')]
+
+channels = ['conda-forge']
+requirements = 'python=3.13'
+
+postinstallcmds = [
+    '%(installdir)s/bin/pip install --no-cache-dir %(name)s[vis]==%(version)s matplotlib'
+]
+
+moduleclass = 'chem'

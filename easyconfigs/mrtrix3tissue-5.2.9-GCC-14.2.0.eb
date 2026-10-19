@@ -1,0 +1,31 @@
+# Ruoshi Sun
+# 2026-05-21
+
+easyblock = 'PackedBinary'
+
+name = 'mrtrix3tissue'
+version = '5.2.9'
+
+homepage = 'https://3tissue.github.io'
+description = """MRtrix3Tissue is a fork of the MRtrix3 project. It aims to add capabilities for 3-Tissue CSD modelling and analysis to a complete version of the MRtrix3 software."""
+
+source_urls = ['https://github.com/3Tissue/MRtrix3Tissue/archive/']
+sources = ['3Tissue_v%(version)s.tar.gz']
+
+toolchain = {'name': 'GCC', 'version': '14.2.0'}
+
+dependencies = [
+    # must use python<3.12 for "import imp"
+    ('miniforge', '24.3.0', '-py3.11', SYSTEM),
+    ('eigen', '3.4.0'),
+    ('FFTW', '3.3.10'),
+]
+
+install_cmd = """
+    cd %(builddir)s/MRtrix3Tissue-3Tissue_v%(version)s
+    ./configure -nogui
+    ./build
+    cp -r bin lib LICENCE.txt %(installdir)s
+"""
+
+moduleclass = 'bio'

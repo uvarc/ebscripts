@@ -1,0 +1,26 @@
+easyblock = 'CMakeMake'
+
+name = 'Neovim'
+version = '0.12.5'
+
+homepage = 'http://neovim.io'
+description = """Vim-fork focused on extensibility and usability"""
+
+toolchain = SYSTEM
+
+source_urls = ['https://github.com/neovim/neovim/archive/refs/tags/']
+sources = ['v%(version)s.tar.gz']
+
+builddependencies = [
+    ('cmake', '3.28.1'),
+]
+
+skipsteps = ['configure']
+build_cmd = 'make CMAKE_BUILD_TYPE=Release CMAKE_EXTRA_FLAGS="-DCMAKE_INSTALL_PREFIX=%(installdir)s"'
+
+sanity_check_paths = {
+    'files': ['bin/nvim'],
+    'dirs': ['lib'],
+}
+
+moduleclass = 'tools'

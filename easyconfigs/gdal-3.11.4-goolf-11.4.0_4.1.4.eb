@@ -19,7 +19,7 @@ sources = [SOURCELOWER_TAR_XZ]
 patches = ['GDAL-3.6.2_fix-python-CC-CXX.patch']
 
 builddependencies = [
-    ('cmake', '4.1.2', '', SYSTEM),
+    ('cmake', '3.28.1', '', SYSTEM),
     #('pkgconf', '1.9.5'),
     ('bison', '3.8.2', '', SYSTEM),
 ]
@@ -30,13 +30,13 @@ dependencies = [
     ('netcdf', '4.9.2'),
     #('expat', '2.4.9'),
     ('geos', '3.14.0'),
-    ('sqlite', '3.41.2', '', SYSTEM),
+    ('SQLite', '3'),
     #('libxml2', '2.10.3'),
-    ('libpng', '1.6.39'),
-    ('libjpeg-turbo', '3.0.1'),
-    ('libtiff', '4.7.0'),
+    ('libpng', '1.6'),
+    ('libjpeg-turbo', '3'),
+    ('LibTIFF', '4'),
     ('zlib', '1.2.13'),
-    ('curl', '8.4.0'),
+    ('curl', '8'),
     ('pcre', '8.45'),
     ('proj', '9.7.0'),
     ('libgeotiff', '1.7.4'),

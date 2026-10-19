@@ -1,0 +1,26 @@
+# Ruoshi Sun
+# 2026-06-22
+
+name = 'google-api'
+version = '2.197.0'
+
+easyblock = 'Conda'
+
+homepage = 'https://developers.google.com/api-client-library'
+description = """Google APIs give you programmatic access to Google Maps, Google Drive, YouTube, and many other Google products."""
+
+toolchain = SYSTEM
+
+builddependencies = [
+    ('miniforge', '26.1.0'),
+]
+
+channels = ['conda-forge']
+requirements = '%(name)s-python-client=%(version)s'
+
+sanity_check_paths = {
+    'dirs': ['lib',],
+    'files': [],
+}
+
+moduleclass = 'tools'

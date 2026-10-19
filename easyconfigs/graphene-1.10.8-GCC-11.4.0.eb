@@ -14,13 +14,13 @@ sources = ['%(version)s.tar.gz']
 checksums = ['922dc109d2dc5dc56617a29bd716c79dd84db31721a8493a13a5f79109a4a4ed']
 
 builddependencies = [
-    ('Meson', '1.0.1', '-py3.11'),
-    ('Ninja', '1.11.1', '-py3.11'),
+    ('Meson', '1.9.0', '', SYSTEM),
+    ('Ninja', '1.13.1', '', SYSTEM),
     ('pkgconf', '1.9.5'),
     ('gobject-introspection', '1.74.0'),
     #('binutils', '2.39'),
 ]
-dependencies = [('glib', '2.76.1')]
+dependencies = [('GLib', '2')]
 
 configopts = "-Dgobject_types=true -Dintrospection=enabled"
 

@@ -24,7 +24,7 @@ dependencies = [
     ('szip', '2.1.1'),
     ('zlib', '1.2.13'),
     ('libtirpc', '1.3.3'),
-    ('libjpeg-turbo', '3.0.1'),
+    ('libjpeg-turbo', '3'),
 ]
 
 local_common_configopts = '--with-szlib=$EBROOTSZIP CFLAGS="$CFLAGS -I$EBROOTLIBTIRPC/include/tirpc" '

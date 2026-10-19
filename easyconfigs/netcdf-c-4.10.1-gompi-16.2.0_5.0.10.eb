@@ -1,0 +1,46 @@
+# Ruoshi Sun
+# 2026-08-11
+easyblock = 'EB_netCDF'
+
+name = 'netcdf-c'
+version = '4.10.1'
+
+hidden = True
+
+homepage = 'http://www.unidata.ucar.edu/software/netcdf/'
+description = """NetCDF (network Common Data Form) is a set of software libraries and machine-independent data formats that support the creation, access, and sharing of array-oriented scientific data."""
+
+compver = '16.2.0'
+comp = ('GCC', compver)
+
+mpiver = '5.0.10'
+
+toolchain = {'name': 'gompi', 'version': '%s_%s' % (compver,mpiver)}
+toolchainopts = {'pic': True, 'usempi': True}
+
+source_urls = ['https://downloads.unidata.ucar.edu/%(name)s/%(version)s/']
+sources = [SOURCELOWER_TAR_GZ]
+
+builddependencies = [
+    ('CMake', '4.4.2'),
+    #('doxygen', '1.9.5'),
+]
+
+dependencies = [
+    ('bzip2', '1.0.8'),
+    ('cURL', '8'),
+    ('szip', '2.1.1'),
+    ('HDF5', '2.2.0'),
+    ('libxml2', '2'),
+]
+
+# make sure both static and shared libs are built
+# and disable "remote" tests that access a unreliable external test server over internet
+configopts = [
+    "-DNETCDF_ENABLE_DAP_REMOTE_TESTS=OFF -DBUILD_SHARED_LIBS=OFF",
+    "-DNETCDF_ENABLE_DAP_REMOTE_TESTS=OFF -DBUILD_SHARED_LIBS=ON",
+]
+
+# skip test; 1/233 fail
+
+moduleclass = 'data'

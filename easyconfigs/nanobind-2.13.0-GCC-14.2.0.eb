@@ -1,0 +1,28 @@
+easyblock = 'PythonPackage'
+
+name = 'nanobind'
+version = '2.13.0'
+
+homepage = 'https://github.com/wjakob/nanobind'
+description = """nanobind is a small binding library for C++11 / C++17 / C++20 that heavily
+builds on capabilities introduced in recent versions of C++."""
+
+source_urls = ['https://github.com/wjakob/nanobind/archive/refs/tags/']
+sources = ['v%(version)s.tar.gz']
+
+toolchain = {'name': 'GCC', 'version': '14.2.0'}
+
+builddependencies = [
+    ('CMake', '4.2.2'),
+    ('scikit-build-core', '0.11.5'),
+]
+
+dependencies = [
+    ('binutils', '2.45'),
+    ('robin-map', '1.4.1'),
+    ('Python', '3.13.11'),
+]
+
+prebuildopts = preinstallopts = "CMAKE_ARGS='-DNB_USE_SUBMODULE_DEPS=OFF'"
+
+moduleclass = 'devel'
