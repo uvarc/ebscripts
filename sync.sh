@@ -26,7 +26,7 @@ DIVIDER=$(printf %"$COLUMNS"s|tr ' ' '-')
 
 # determine YYYYMM for production and derp
 YMd=$(basename $(realpath /apps))
-YMp=$(date -d "${YMd}01 - 6 month" +%Y%m)
+YMp=202606 #$(date -d "${YMd}01 - 6 month" +%Y%m)
 
 function sync() {
     # collect all files in a temp dir first and then bulk rsync later to capture deleted modules
